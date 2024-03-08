@@ -52,7 +52,7 @@ public class User {
     private Date updatedAt;
 
     @Column(nullable = false)
-    private int status;
+    private String status;
 
     public User() {
         this.createdAt = new Date();

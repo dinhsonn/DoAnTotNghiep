@@ -1,5 +1,6 @@
 function ProductTrash() {
-    return (   <div className="content">
+    return ( 
+   <div className="content">
     <section className="content-header my-2">
        <h1 className="d-inline">Thùng rác sản phẩm</h1>
        <div className="row mt-3 align-items-center">

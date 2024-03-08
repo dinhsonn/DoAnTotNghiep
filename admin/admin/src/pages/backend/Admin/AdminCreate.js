@@ -22,8 +22,7 @@ function AdminCreate() {
   const handleSubmit = (e) => {
    e.preventDefault();
    UserServices.create(formData)
-       .then(response => {
-       
+       .then(response => {      
            console.log('Tạo mới người dùng thành công:', response.data);
             alert('Thêm thành viên thành công!')
        })
@@ -31,7 +30,6 @@ function AdminCreate() {
            console.error('Lỗi khi tạo mới người dùng:', error);
        });
 };
-
     return (
     <div className="content">
     <section className="content-header my-2">
@@ -108,7 +106,6 @@ function AdminCreate() {
              </div>
           </div>
        </form>
-
     </section>
  </div> );
 }

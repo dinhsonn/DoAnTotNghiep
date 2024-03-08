@@ -19,7 +19,7 @@ function ImageUpload() {
       setMessage('Please select a file and provide a custom name.');
       return;
     }
-
+    
     const formData = new FormData();
     formData.append('file', file);
     formData.append('customName', imageName);

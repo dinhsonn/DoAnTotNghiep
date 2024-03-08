@@ -1,12 +1,40 @@
+import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import CategoryService from "../../../services/CategoryServices";
+
 function Category() {
+   const [categories, setCategories] = useState([]);
+   const [trash, setTrash] = useState([]);
+
+   useEffect(() => {
+      CategoryService.getAll()
+       .then(response => {
+         setCategories(response.data.content);
+         console.log("data",response.data.content)
+       })
+       .catch(error => {
+         console.error('Error fetching data:', error);
+       });
+   }, []);
+
+   const removeProduct = (id) => {
+      CategoryService.remove(id)
+        .then(() => {
+         setCategories(categories.filter(category => category.id !== id));
+          console.log("Admin deleted successfully");
+          alert("Thành viên đã được xóa!")
+        })
+        .catch(error => {
+          console.error('Error deleting product:', error);
+        });
+    };
     return (  
         <div className="content">
         <section className="content-header my-2">
            <h1 className="d-inline">Danh mục</h1>
            <hr style={{border: 'none'}} />
         </section>
-        <section className="content-body my-2">
-
+        <section className="content-body my-2"> 
            <div className="row">
               <div className="col-md-4">
                  <div className="mb-3">

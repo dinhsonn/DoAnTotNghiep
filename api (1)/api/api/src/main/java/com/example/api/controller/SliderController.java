@@ -53,7 +53,6 @@ public class SliderController {
             try {
                 String sanitizedFileName = customName.replaceAll("[^a-zA-Z0-9]", "_");
                 String uploadDir = "src/main/resources/static/dataImage";
-
                 File directory = new File(uploadDir);
                 if (!directory.exists()) {
                     directory.mkdirs();
@@ -73,7 +72,7 @@ public class SliderController {
         }
         @GetMapping("/image/{imageName}")
         public ResponseEntity<byte[]> getImage(@PathVariable String imageName) throws IOException {
-            String imagePath = "src/main/resources/static/dataImage" + imageName;
+            String imagePath = "C:\\Users\\DELL\\Desktop\\New folder\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage\\" + imageName;
 
             Resource resource = new FileSystemResource(imagePath);
 

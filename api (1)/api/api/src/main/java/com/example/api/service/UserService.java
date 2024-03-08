@@ -12,4 +12,5 @@ public interface UserService {
     public Page<User> getAllUsers(Pageable pageable);
     public User updateUser(User user);
     public void deleteUser(Long userId);
+
 }

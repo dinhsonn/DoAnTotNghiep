@@ -9,13 +9,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @RequestMapping("/api/users")
 @CrossOrigin(origins = "*", exposedHeaders = "Content-Range")
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
 
     public UserController(UserService userService) {
         this.userService = userService;
@@ -62,4 +61,5 @@ public class UserController {
         userService.deleteUser(id);
         return new ResponseEntity<>("User successfully deleted!", HttpStatus.OK);
     }
+
 }

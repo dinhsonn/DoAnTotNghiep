@@ -1,5 +1,6 @@
 function ProductShow() {
-    return (         <div className="content">
+    return (
+   <div className="content">
     <section className="content-header my-2">
        <h1 className="d-inline">Chi tiết</h1>
        <div className="row mt-2 align-items-center">

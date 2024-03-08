@@ -15,7 +15,6 @@ function App() {
                           <Route key={index} path={router.path} element={<Page />} />
                         );      
                       })}
-                  
                     </Route>               
                 </Routes>
     </BrowserRouter>
