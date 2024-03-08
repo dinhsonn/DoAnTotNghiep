@@ -33,10 +33,16 @@ import OrderExport from '../pages/backend/Order/OrderExport';
  import PageCreate from '../pages/backend/Page/PageCreate';
  import PageEdit from '../pages/backend/Page/PageEdit';
  import PageTrash from '../pages/backend/Page/PageTrash';
-// import SliderList from '../pages/backend/Slider/SliderList';
-// import SliderShow from '../pages/backend/Slider/SliderShow';
-// import SliderCreate from '../pages/backend/Slider/SliderCreate';
-// import SliderUpdate from '../pages/backend/Slider/SliderUpdate';
+import Slider from '../pages/backend/Slider/index';
+import SliderShow from '../pages/backend/Slider/SliderShow';
+import SliderCreate from '../pages/backend/Slider/SliderCreate';
+import SliderEdit from '../pages/backend/Slider/SliderEdit';
+import SliderTrash from '../pages/backend/Slider/SliderTrash';
+import Banner from '../pages/backend/Banner/index';
+import BannerShow from '../pages/backend/Banner/BannerShow';
+import BannerCreate from '../pages/backend/Banner/BannerCreate';
+import BannerEdit from '../pages/backend/Banner/BannerEdit';
+import BannerTrash from '../pages/backend/Banner/BannerTrash';
  import Topic from '../pages/backend/Topic/index';
  import TopicShow from '../pages/backend/Topic/TopicShow';
  import TopicEdit from '../pages/backend/Topic/TopicEdit';
@@ -96,10 +102,17 @@ const RouterPrivate = [
   { path: "/page/edit/:id", component: PageEdit },
   { path: "/page/trash", component: PageTrash },
 
-  // { path: "/admin/Slider", component: SliderList },
-  // { path: "/admin/Slider/show/:id", component: SliderShow },
-  // { path: "/admin/Slider/create", component: SliderCreate },
-  // { path: "/admin/Slider/update/:id", component: SliderUpdate },
+  { path: "/slider", component: Slider },
+  { path: "/slider/show/:id", component: SliderShow },
+  { path: "/slider/create", component: SliderCreate },
+  { path: "/slider/edit/:id", component: SliderEdit },
+  { path: "/slider/trash", component: SliderTrash },
+  
+  { path: "/banner", component: Banner },
+  { path: "/banner/show/:id", component: BannerShow },
+  { path: "/banner/create", component: BannerCreate},
+  { path: "/banner/edit/:id", component: BannerEdit },
+  { path: "/banner/trash", component: BannerTrash },
   
   { path: "/topic", component: Topic },
   { path: "/topic/show/:id", component: TopicShow },

@@ -81,6 +81,9 @@ function Sidebar() {
                                  <Link to={"/menu"}>Menu</Link>
                               </li>
                               <li>
+                                 <Link to={"/slider"}>Slider</Link>
+                              </li>
+                              <li>
                                  <Link to={"/banner"}>Banner</Link>
                               </li>
                            </ul>

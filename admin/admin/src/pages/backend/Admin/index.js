@@ -3,7 +3,6 @@ import UserServices from "../../../services/UserServices";
 import { useEffect, useState } from "react";
 function Admin() {
    const [admins, setAdmins] = useState([]);
-   const [trash, setTrash] = useState([]);
    //api này gọi user 
    useEffect(() => {
       UserServices.getAll()
@@ -16,7 +15,7 @@ function Admin() {
        });
    }, []);
    //xóa sản phẩm
-   const removeProduct = (id) => {
+   const removeAdmin = (id) => {
       UserServices.remove(id)
         .then(() => {
          setAdmins(admins.filter(admin => admin.id !== id));
@@ -110,7 +109,7 @@ function Admin() {
                       <Link to={`/admin/show/${admin.id}`} className="text-info mx-1">
                          <i className="fa fa-eye"></i>
                       </Link>
-                      <Link to="#" className="text-danger mx-1" onClick={() => removeProduct(admin.id)}>
+                      <Link to="#" className="text-danger mx-1" onClick={() => removeAdmin(admin.id)}>
                          <i className="fa fa-trash"></i>
                       </Link>
                    </div>
