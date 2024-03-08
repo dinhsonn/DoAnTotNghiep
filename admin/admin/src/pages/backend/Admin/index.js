@@ -114,7 +114,7 @@ function Admin() {
                       </Link>
                    </div>
                 </td>
-                <td>{admin.sex}</td>
+                <td>{admin.sex === "0" ? "Nữ" : "Nam"}</td>
                 <td>{admin.birthday}</td>
                 <td>{admin.phone}</td>
                 <td>{admin.email}</td>

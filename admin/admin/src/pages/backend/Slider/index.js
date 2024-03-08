@@ -101,8 +101,8 @@ function Slider() {
                     <td className="text-center">
                        <input type="checkbox" />
                     </td>
-                    <td>
-                       <img src={getImgUrl(slider.image)} alt={slider.image} />
+                    <td >
+                       <img src={getImgUrl(slider.image)} alt={slider.image} style={{width: '180px'}}/>
                     </td>
                     <td>
                        <div className="name">
@@ -114,10 +114,10 @@ function Slider() {
                           <Link to="#" className="text-success mx-1">
                              <i className="fa fa-toggle-on"></i>
                           </Link>
-                          <Link to="banner_edit.html" className="text-primary mx-1">
+                          <Link to={`/slider/edit/${slider.id}`} className="text-primary mx-1">
                              <i className="fa fa-edit"></i>
                           </Link>
-                          <Link to="banner_show.html" className="text-info mx-1">
+                          <Link to={`/slider/show/${slider.id}`} className="text-info mx-1">
                              <i className="fa fa-eye"></i>
                           </Link>
                           <Link to="#" className="text-danger mx-1" onClick={() => removeSlider(slider.id)}>

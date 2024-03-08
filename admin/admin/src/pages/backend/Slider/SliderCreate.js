@@ -121,13 +121,13 @@ function SliderCreate() {
                   <strong>Hình (*)</strong>
                 </div>
                 <div className="box-body p-2 border-bottom">
-                  <input type="file" onChange={handleFileChange} />
+                  <input type="file" onChange={handleFileChange} style={{marginBottom:"5px"}}/>
                   <br />
-                  <input type="text" placeholder="Custom Name" value={imageName} onChange={handleNameChange} />
+                  <input type="text" placeholder="Custom Name" style={{width:"280px",height:"35px"}} value={imageName} onChange={handleNameChange} />
                   <br />
                 </div>
                 <div className="box-footer text-end px-2 py-3">
-                  <button type="submit"className="btn btn-success btn-sm text-end">Upload</button>
+                  <button type="submit"className="btn btn-success btn-sm text-end">Thêm</button>
                 </div>
               </div>
             </div>

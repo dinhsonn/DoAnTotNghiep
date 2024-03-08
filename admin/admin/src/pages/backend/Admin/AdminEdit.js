@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import UserService from "../../../services/UserServices";
+import UserServices from "../../../services/UserServices";
 import { useParams } from "react-router-dom";
 
 function AdminEdit() {
-   let {id}= useParams;
+   let { id } = useParams();
 
    const [formData, setFormData] = useState({
       name: '',
@@ -18,15 +18,15 @@ function AdminEdit() {
       status: ''
   });
 
-  useEffect(() => {
-   UserService.getById(id)
-     .then(response => {
-         setFormData(response.data.content);
-     })
-     .catch(error => {
-         console.error('Error fetching user:', error);
-     });
- }, [id]);
+useEffect(() => {
+   UserServices.getById(id)
+       .then(response => {
+         setFormData(response.data);
+       })
+       .catch(error => {
+           console.error('Error fetching user data:', error);
+       });
+}, [id]);
 
  const handleChange = (e) => {
   const { name, value } = e.target;
@@ -35,16 +35,17 @@ function AdminEdit() {
       [name]: value
   }));
 };
- const handleSubmit = (e) => {
-  e.preventDefault();
-  UserService.update(formData, id)
-      .then(response => {
-          console.log("Updated user:", response.data);
-      })
-      .catch(error => {
-          console.error('Error updating user:', error);
-      });
-};
+const handleSubmit = (e) => {
+   e.preventDefault();
+   UserServices.update(formData, id)
+       .then(response => {
+           console.log("Updated user:", response.data);
+           alert('Thành viên cập nhật thành công!')
+       })
+       .catch(error => {
+           console.error('Error updating user:', error);
+       });
+ };
     return ( 
       
     <form action="" method="post" encType="multipart/form-data">
@@ -53,7 +54,7 @@ function AdminEdit() {
           <h1 className="d-inline">Cập nhật thành viên</h1>
           <div className="row mt-2 align-items-center">
              <div className="col-md-12 text-end">
-                <button className="btn btn-success btn-sm m-1" name="CAPNHAT">
+                <button className="btn btn-success btn-sm m-1" name="CAPNHAT" onClick={handleSubmit}>
                    <i className="fa fa-save"></i> Lưu [Cập nhật]
                 </button>
                 <a href="user_index.html" className="btn btn-primary btn-sm">
