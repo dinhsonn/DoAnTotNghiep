@@ -63,7 +63,7 @@ function Contact() {
                     </td>
                     <td>
                        <div className="name">
-                          <a href="contact_reply.html">Hồ Diên Lợi</a>
+                          <a>Hồ Diên Lợi</a>
                        </div>
                        <div className="function_style">
                           <a href="#" className="text-success mx-1">

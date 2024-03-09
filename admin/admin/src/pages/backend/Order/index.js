@@ -70,7 +70,7 @@ function Order() {
                 </td>
                 <td>
                    <div className="name">
-                      <a href="order_show.html">
+                      <a>
                          Hoten
                       </a>
                    </div>

@@ -71,7 +71,7 @@ function Banner() {
                     </td>
                     <td>
                        <div className="name">
-                          <a href="banner_edit.html">
+                          <a>
                              Tên banner
                           </a>
                        </div>

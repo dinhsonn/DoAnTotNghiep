@@ -68,7 +68,7 @@ function Page() {
                     </td>
                     <td>
                        <div className="name">
-                          <a href="page_index.html">
+                          <a>
                              Tên trang đơn
                           </a>
                        </div>

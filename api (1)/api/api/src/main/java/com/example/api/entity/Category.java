@@ -32,7 +32,7 @@ public class Category {
     @Column(name = "parent_id")
     private Long parentId;
 
-    @Column(name = "sort_order", nullable = false)
+    @Column(name = "sort_order")
     private int sortOrder;
 
     @Column(nullable = false)

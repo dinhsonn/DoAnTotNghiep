@@ -106,14 +106,11 @@ function Slider() {
                     </td>
                     <td>
                        <div className="name">
-                          <a href="banner_edit.html">
+                          <a>
                              {slider.name}
                           </a>
                        </div>
                        <div className="function_style">
-                          <Link to="#" className="text-success mx-1">
-                             <i className="fa fa-toggle-on"></i>
-                          </Link>
                           <Link to={`/slider/edit/${slider.id}`} className="text-primary mx-1">
                              <i className="fa fa-edit"></i>
                           </Link>

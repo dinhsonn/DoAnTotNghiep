@@ -47,32 +47,35 @@ public class SliderController {
         }
 
         @PostMapping("/image")
-        public ResponseEntity<String> uploadImage(
-                @RequestParam("file") MultipartFile file,
-                @RequestParam("customName") String customName) {
-            try {
-                String sanitizedFileName = customName.replaceAll("[^a-zA-Z0-9]", "_");
-                String uploadDir = "src/main/resources/static/dataImage";
-                File directory = new File(uploadDir);
-                if (!directory.exists()) {
-                    directory.mkdirs();
-                }
-
-                String filePath = uploadDir + File.separator + sanitizedFileName + ".png";
-
-                try (FileOutputStream fos = new FileOutputStream(filePath)) {
-                    fos.write(file.getBytes());
-                }
-
-                return ResponseEntity.ok("Image uploaded successfully");
-            } catch (IOException e) {
-                e.printStackTrace();
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image");
-            }
+public ResponseEntity<String> uploadImage(
+        @RequestParam("file") MultipartFile file,
+        @RequestParam("customName") String customName) {
+    try {
+        String uploadDir = "C:\\Users\\DELL\\Desktop\\New folder\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage";
+        File directory = new File(uploadDir);
+        if (!directory.exists()) {
+            directory.mkdirs();
         }
+
+        String fileName = customName + ".png"; 
+
+        String filePath = uploadDir + File.separator + fileName;
+
+        try (FileOutputStream fos = new FileOutputStream(filePath)) {
+            fos.write(file.getBytes());
+        }
+
+        return ResponseEntity.ok("Image uploaded successfully");
+    } catch (IOException e) {
+        e.printStackTrace();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image");
+    }
+}
+
+
         @GetMapping("/image/{imageName}")
         public ResponseEntity<byte[]> getImage(@PathVariable String imageName) throws IOException {
-            String imagePath = "C:\\Users\\MY-PC\\OneDrive\\Máy tính\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage\\" + imageName;
+            String imagePath = "C:\\Users\\DELL\\Desktop\\New folder\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage\\" + imageName;
 
             Resource resource = new FileSystemResource(imagePath);
 
@@ -107,34 +110,39 @@ public class SliderController {
         }
 
 
-        @PutMapping("{id}")
+        @PutMapping("/{id}")
         public ResponseEntity<Slider> updateSlider(
         @PathVariable("id") Long sliderId,
         @RequestParam(value = "file", required = false) MultipartFile file,
         @RequestBody Slider slider) {
-        
-        try {
-            if (file != null && !file.isEmpty()) {
-                // Nếu có file ảnh được cung cấp, thì cập nhật ảnh
-                String sanitizedFileName = slider.getName().replaceAll("[^a-zA-Z0-9]", "_");
-                String uploadDir = "src/main/resources/static/dataImage";
-                String filePath = uploadDir + File.separator + sanitizedFileName + ".png";
 
-                try (FileOutputStream fos = new FileOutputStream(filePath)) {
-                    fos.write(file.getBytes());
-                }
+    try {
+        if (file != null && !file.isEmpty()) {
+            String uploadDir = "C:\\Users\\DELL\\Desktop\\New folder\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage";
 
-                slider.setImage(sanitizedFileName + ".png");
+            String originalFilename = file.getOriginalFilename();
+            String fileName = originalFilename.substring(0, originalFilename.lastIndexOf('.')) + ".png";
+
+            String filePath = uploadDir + File.separator + fileName;
+
+            try (FileOutputStream fos = new FileOutputStream(filePath)) {
+                fos.write(file.getBytes());
             }
 
-            slider.setId(sliderId);
-            Slider updateSlider = sliderService.updateSlider(slider);
-            return new ResponseEntity<>(updateSlider, HttpStatus.OK);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            // Cập nhật tên file mới
+            slider.setImage(fileName);
         }
+
+        slider.setId(sliderId);
+        Slider updateSlider = sliderService.updateSlider(slider);
+        return new ResponseEntity<>(updateSlider, HttpStatus.OK);
+    } catch (IOException e) {
+        e.printStackTrace();
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
+}
+
+
 
     @DeleteMapping("{id}")
     public ResponseEntity<String> deleteSlider(@PathVariable("id") Long sliderId) { 

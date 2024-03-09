@@ -8,7 +8,7 @@ function SliderCreate() {
     link: '',
     position: '',
     sort_order: '1',
-    image: null,
+    image: "",
     status: '',
   });
   const [file, setFile] = useState(null);
@@ -17,6 +17,7 @@ function SliderCreate() {
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
+    
   };
 
   const handleNameChange = (e) => {
@@ -68,7 +69,7 @@ function SliderCreate() {
       <section className="content-header my-2">
         <h1 className="d-inline">Thêm slider</h1>
         <div className="text-end">
-          <a href="banner_index.html" className="btn btn-sm btn-success">
+          <a href="/slider" className="btn btn-sm btn-success">
             <i className="fa fa-arrow-left"></i> Về danh sách
           </a>
         </div>

@@ -71,7 +71,7 @@ function Post() {
                 </td>
                 <td>
                    <div className="name">
-                      <a href="post_edit.html">
+                      <a>
                          Tiêu đề bài viết
                       </a>
                    </div>

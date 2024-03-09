@@ -69,7 +69,7 @@ function Customer() {
                     </td>
                     <td>
                        <div className="name">
-                          <a href="customer_edit.html">Ho Din Loi</a>
+                          <a>Ho Din Loi</a>
                        </div>
                        <div className="function_style">
                           <a href="#" className="text-success mx-1">

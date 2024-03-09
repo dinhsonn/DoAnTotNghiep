@@ -82,7 +82,7 @@ function Brand() {
                           </td>
                           <td>
                              <div className="name">
-                                <a href="brand_index.html">
+                                <a>
                                    Tên thương hiệu
                                 </a>
                              </div>

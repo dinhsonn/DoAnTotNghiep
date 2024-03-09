@@ -4,9 +4,8 @@ import Brand from '../pages/backend/Brand/index';
 // import BrandCreate from '../pages/backend/Brand/BrandCreate';
 // import BrandUpdate from '../pages/backend/Brand/BrandUpdate';
 import Category from '../pages/backend/Category/index';
-// import CategoryShow from '../pages/backend/Category/CategoryShow';
-// import CategoryCreate from '../pages/backend/Category/CategoryCreate';
-// import CategoryUpdate from '../pages/backend/Category/CategoryUpdate';
+  import CategoryShow from '../pages/backend/Category/CategoryShow';
+  //import CategoryUpdate from '../pages/backend/Category/CategoryUpdate';
  import ProductList from '../pages/backend/Product/ProductList';
  import ProductImport from '../pages/backend/Product/ProductImport';
  import ProductShow from '../pages/backend/Product/ProductShow';
@@ -57,6 +56,7 @@ import CustomerCreate from '../pages/backend/Customer/CustomerCreate';
 import CustomerEdit from '../pages/backend/Customer/CustomerEdit';
 import CustomerShow from '../pages/backend/Customer/CustomerShow';
 import CustomerTrash from '../pages/backend/Customer/CustomerTrash';
+import CategoryEdit from "../pages/backend/Category/CategoryEdit";
 
 const RouterPrivate = [
  { path: "/", component: Dashboard },
@@ -66,9 +66,10 @@ const RouterPrivate = [
   // { path: "/admin/brand/update/:id", component: BrandUpdate },
 
   { path: "/category", component: Category },
-  // { path: "/admin/category/show/:id", component: CategoryShow },
-  // { path: "/admin/category/create", component: CategoryCreate },
-  // { path: "/admin/category/update/:id", component: CategoryUpdate },
+{ path: "/category/show/:id", component: CategoryShow },
+{ path: "/category/edit/:id", component: CategoryEdit },
+
+//{ path: "/admin/category/update/:id", component: CategoryUpdate },
 
   { path: "/product", component: ProductList },
   { path: "/product/import", component: ProductImport },

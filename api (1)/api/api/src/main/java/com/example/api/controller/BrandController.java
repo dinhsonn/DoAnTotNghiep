@@ -49,8 +49,9 @@ public class BrandController {
             if (!directory.exists()) {
                 directory.mkdirs();
             }
+            String fileName = customName + ".png"; 
 
-            String filePath = uploadDir + File.separator + customName + ".png";
+            String filePath = uploadDir + File.separator + fileName;
 
             try (FileOutputStream fos = new FileOutputStream(filePath)) {
                 fos.write(file.getBytes());
@@ -111,16 +112,17 @@ public ResponseEntity<byte[]> getImage(@PathVariable String imageName) throws IO
         
         try {
             if (file != null && !file.isEmpty()) {
-                // Nếu có file ảnh được cung cấp, thì cập nhật ảnh
-                String sanitizedFileName = brand.getName().replaceAll("[^a-zA-Z0-9]", "_");
+                String originalFilename = file.getOriginalFilename();
                 String uploadDir = "src/main/resources/static/dataImage";
-                String filePath = uploadDir + File.separator + sanitizedFileName + ".png";
+                String fileName = originalFilename.substring(0, originalFilename.lastIndexOf('.')) + ".png";
 
+                String filePath = uploadDir + File.separator + fileName;
+    
                 try (FileOutputStream fos = new FileOutputStream(filePath)) {
                     fos.write(file.getBytes());
                 }
 
-                brand.setImage(sanitizedFileName + ".png");
+                brand.setImage(fileName);
             }
 
             brand.setId(brandId);

@@ -1,151 +1,227 @@
-import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import CategoryService from "../../../services/CategoryServices";
+import { Link } from "react-router-dom";
 
 function Category() {
-   const [categories, setCategories] = useState([]);
-   const [trash, setTrash] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [formData, setFormData] = useState({
+        name: '',
+        description: '',
+        parent_id: '0',
+        sort_order:'1',
+        status: '1' // Set default status to '1' (published)
+    });
 
-   useEffect(() => {
-      CategoryService.getAll()
-       .then(response => {
-         setCategories(response.data.content);
-         console.log("data",response.data.content)
-       })
-       .catch(error => {
-         console.error('Error fetching data:', error);
-       });
-   }, []);
+    useEffect(() => {
+        loadCategories();
+    }, []);
 
-   const removeProduct = (id) => {
-      CategoryService.remove(id)
-        .then(() => {
-         setCategories(categories.filter(category => category.id !== id));
-          console.log("Admin deleted successfully");
-          alert("Thành viên đã được xóa!")
-        })
-        .catch(error => {
-          console.error('Error deleting product:', error);
+    const loadCategories = () => {
+        CategoryService.getAll()
+            .then(response => {
+                setCategories(response.data.content);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    };
+
+    const removeProduct = (id) => {
+        CategoryService.remove(id)
+            .then(() => {
+                setCategories(categories.filter(category => category.id !== id));
+                console.log("Admin deleted successfully");
+                alert("Thành viên đã được xóa!")
+            })
+            .catch(error => {
+                console.error('Error deleting product:', error);
+            });
+    };
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+
+        if (name === 'sort_order' && (!Number(value) || Number(value) <= 0)) {
+            alert('Thứ tự phải là một số lớn hơn 0!');
+            return;
+        }
+
+        setFormData({
+            ...formData,
+            [name]: value
         });
     };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        CategoryService.create(formData)
+            .then(response => {
+                console.log("Category created successfully:", response.data);
+                loadCategories(); // Reload categories after creating a new one
+                setFormData({ // Reset form data after successful submission
+                    name: '',
+                    description: '',
+                    parent_id: '0',
+                    sort_order:'',
+                    status: '1'
+                });
+            })
+            .catch(error => {
+                console.error('Error creating category:', error);
+            });
+    };
+    
     return (  
         <div className="content">
-        <section className="content-header my-2">
-           <h1 className="d-inline">Danh mục</h1>
-           <hr style={{border: 'none'}} />
-        </section>
-        <section className="content-body my-2"> 
-           <div className="row">
-              <div className="col-md-4">
-                 <div className="mb-3">
-                    <label>
-                       <strong>Tên danh mục (*)</strong>
-                    </label>
-                    <input type="text" name="name" id="name" placeholder="Nhập tên danh mục"
-                       className="form-control" required/>
-                 </div>
-                 <div className="mb-3">
-                    <label><strong>Mô tả</strong></label>
-                    <textarea name="description" placeholder="Mô tả" rows="4" className="form-control"></textarea>
-                 </div>
-                 <div className="mb-3">
-                    <label><strong>Danh mục cha</strong></label>
-                    <select name="parent_id" className="form-select">
-                       <option value="0">None</option>
-                       <option value="1">Tên danh mục</option>
-                    </select>
-                 </div>
-                 <div className="mb-3">
-                    <label><strong>Hình đại diện</strong></label>
-                    <input type="file" name="image" className="form-control"/>
-                 </div>
-                 <div className="mb-3">
-                    <label><strong>Trạng thái</strong></label>
-                    <select name="status" className="form-select">
-                       <option value="1">Xuất bản</option>
-                       <option value="2">Chưa xuất bản</option>
-                    </select>
-                 </div>
-                 <div className="mb-3 text-end">
-                    <button type="submit" className="btn btn-success" name="THEM">
-                       <i className="fa fa-save"></i> Lưu[Thêm]
-                    </button>
-                 </div>
-              </div>
-              <div className="col-md-8">
-                 <div className="row mt-3 align-items-center">
-                    <div className="col-12">
-                       <ul className="manager">
-                          <li><a href="category_index.html">Tất cả (123)</a></li>
-                          <li><a href="#">Xuất bản (12)</a></li>
-                          <li><a href="category_trash.html">Rác (12)</a></li>
-                       </ul>
+            <section className="content-header my-2">
+                <h1 className="d-inline">Danh mục</h1>
+                <hr style={{border: 'none'}} />
+            </section>
+            <section className="content-body my-2"> 
+                <div className="row">
+                    <div className="col-md-4">
+                    <form onSubmit={handleSubmit}>
+                            <div className="mb-3">
+                                <label>
+                                    <strong>Tên danh mục (*)</strong>
+                                </label>
+                                <input
+                                    type="text"
+                                    name="name"
+                                    id="name"
+                                    placeholder="Nhập tên danh mục"
+                                    className="form-control"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+                            <div className="mb-3">
+                                <label><strong>Mô tả</strong></label>
+                                <textarea
+                                    name="description"
+                                    placeholder="Mô tả"
+                                    rows="4"
+                                    className="form-control"
+                                    value={formData.description}
+                                    onChange={handleChange}
+                                ></textarea>
+                            </div>
+                            <div className="mb-3">
+                                <label><strong>Danh mục cha</strong></label>
+                                <select
+                                    name="parent_id"
+                                    className="form-select"
+                                    value={formData.parent_id}
+                                    onChange={handleChange}
+                                >
+                                    <option value="0">1</option>
+                                    <option value="1">2</option>
+                                </select>
+                            </div>
+                            <div className="mb-3">
+                                <label><strong>Thứ tự</strong></label>
+                                <input
+                                    type="text"
+                                    name="sort_order"
+                                    className="form-control"
+                                    onChange={handleChange}
+                                    value={formData.sort_order}
+                                />
+                            </div>
+                            <div className="mb-3">
+                                <label><strong>Trạng thái</strong></label>
+                                <select
+                                    name="status"
+                                    className="form-select"
+                                    value={formData.status}
+                                    onChange={handleChange}
+                                >
+                                    <option value="1">Xuất bản</option>
+                                    <option value="2">Chưa xuất bản</option>
+                                </select>
+                            </div>
+                            <div className="mb-3 text-end">
+                                <button type="submit" className="btn btn-success" name="THEM">
+                                    <i className="fa fa-save"></i> Lưu[Thêm]
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                 </div>
-                 <div className="row my-2 align-items-center">
-                    <div className="col-md-6">
-                       <select name="" className="d-inline me-1">
-                          <option value="">Hành động</option>
-                          <option value="">Bỏ vào thùng rác</option>
-                       </select>
-                       <button className="btnapply">Áp dụng</button>
+                    <div className="col-md-8">
+                        <div className="row mt-3 align-items-center">
+                            <div className="col-12">
+                                <ul className="manager">
+                                    <li><a href="category_index.html">Tất cả (123)</a></li>
+                                    <li><a href="#">Xuất bản (12)</a></li>
+                                    <li><a href="category_trash.html">Rác (12)</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div className="row my-2 align-items-center">
+                            <div className="col-md-6">
+                                <select name="" className="d-inline me-1">
+                                    <option value="">Hành động</option>
+                                    <option value="">Bỏ vào thùng rác</option>
+                                </select>
+                                <button className="btnapply">Áp dụng</button>
+                            </div>
+                            <div className="col-md-6 text-end">
+                                <input type="text" className="search d-inline" />
+                                <button className="d-inline btnsearch">Tìm kiếm</button>
+                            </div>
+                        </div>
+                        <table className="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th className="text-center" style={{width: '30px'}}>
+                                        <input type="checkbox" id="checkboxAll" />
+                                    </th>
+                                    <th>Tên danh mục</th>
+                                    <th>Parent_id</th>
+                                    <th>Thứ tự</th>
+                                    <th>Trạng thái</th>
+                                    <th className="text-center" style={{width: '30px'}}>ID</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {categories.map(category => (
+                                    <tr className="datarow" key={category.id}>
+                                        <td className="text-center">
+                                            <input type="checkbox" id={`checkId${category.id}`} />
+                                        </td>
+                                        <td>
+                                            <div className="name">
+                                                <a>{category.name}</a>
+                                            </div>
+                                            <div className="function_style">
+                                                <a href="#" className="px-1 text-success">
+                                                    <i className="fa fa-toggle-on"></i>
+                                                </a>
+                                                <Link to={`/category/edit/${category.id}`} className="px-1 text-primary">
+                                                    <i className="fa fa-edit"></i>
+                                                </Link>
+                                                <Link to={`/category/show/${category.id}`} className="px-1 text-info">
+                                                    <i className="fa fa-eye"></i>
+                                                </Link>
+                                                <a href="#" className="px-1 text-danger" onClick={() => removeProduct(category.id)}>
+                                                    <i className="fa fa-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                        <td>{category.parentId}</td>
+                                        <td>{category.sortOrder}</td>
+                                        <td>{category.status === 1 ? 'Xuất bản' : 'Chưa xuất bản'}</td>
+                                        <td className="text-center">{category.id}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
-                    <div className="col-md-6 text-end">
-                       <input type="text" className="search d-inline" />
-                       <button className="d-inline btnsearch">Tìm kiếm</button>
-                    </div>
-                 </div>
-                 <table className="table table-bordered">
-                    <thead>
-                       <tr>
-                          <th className="text-center" style={{width: '30px'}}>
-                             <input type="checkbox" id="checkboxAll" />
-                          </th>
-                          <th className="text-center" style={{width: '90px'}}>Hình ảnh</th>
-                          <th>Tên danh mục</th>
-                          <th>Tên slug</th>
-                          <th className="text-center" style={{width: '30px'}}>ID</th>
-                       </tr>
-                    </thead>
-                    <tbody>
-                       <tr className="datarow">
-                          <td className="text-center">
-                             <input type="checkbox" id="checkId" />
-                          </td>
-                          <td>
-                             <img className="img-fluid" src="public/images/category.jpg" alt="category.jpg"/>
-                          </td>
-                          <td>
-                             <div className="name">
-                                <a href="category_index.html">
-                                   Tên danh mục
-                                </a>
-                             </div>
-                             <div className="function_style">
-                                <a href="#" className="px-1 text-success">
-                                   <i className="fa fa-toggle-on"></i>
-                                </a>
-                                <a href="category_edit.html" className="px-1 text-primary">
-                                   <i className="fa fa-edit"></i>
-                                </a>
-                                <a href="category_show.html" className="px-1 text-info">
-                                   <i className="fa fa-eye"></i>
-                                </a>
-                                <a href="#" className="px-1 text-danger">
-                                   <i className="fa fa-trash"></i>
-                                </a>
-                             </div>
-                          </td>
-                          <td>Slug</td>
-                          <td className="text-center">1</td>
-                       </tr>
-                    </tbody>
-                 </table>
-              </div>
-           </div>
+                </div>
 
-        </section>
-     </div>
+            </section>
+        </div>
     );
 }
 

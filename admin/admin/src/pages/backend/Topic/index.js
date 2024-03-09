@@ -70,7 +70,7 @@ function Topic() {
                       </td>
                       <td>
                          <div className="name">
-                            <a href="topic_edit.html">
+                            <a>
                                Tên chủ đề
                             </a>
                          </div>
