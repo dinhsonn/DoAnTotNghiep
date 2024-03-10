@@ -1,5 +1,55 @@
+import { useEffect, useState } from "react";
+import TopicService from "../../../services/TopicServices";
+import { Link } from "react-router-dom";
+
+
 function Topic() {
-    return (     <div className="content">
+   const [topics, setTopic] = useState([]);
+    const [formData, setFormData] = useState({
+        name: '',
+        slug: '',
+        parentId: '',
+        sortOrder:'',
+        status: ''
+    });
+
+    useEffect(() => {
+      loadTopics();
+    }, []);
+
+    const loadTopics = () => {
+      TopicService.getAll()
+            .then(response => {
+               setTopic(response.data.content);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    };
+
+    const removeProduct = (id) => {
+      TopicService.remove(id)
+            .then(() => {
+               setTopic(topics.filter(topic => topic.id !== id));
+                console.log("Admin deleted successfully");
+                alert("Topic đã được xóa!")
+            })
+            .catch(error => {
+                console.error('Error deleting product:', error);
+            });
+    };
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+
+        setFormData({
+            ...formData,
+            [name]: value
+        });
+    };
+
+    return (    
+       <div className="content">
     <section className="content-header my-2">
        <h1 className="d-inline">Chủ đề bài viết</h1>
        <hr style={{border: 'none'}} />

@@ -8,10 +8,9 @@ function CategoryEdit() {
     const [formData, setFormData] = useState({
         name: '',
         slug: '',
-        description: '',
         status: 1,
-        parent_id: 0,
-        sort_order: ''
+        parentId: '',
+        sortOrder: ''
     });
 
     useEffect(() => {
@@ -71,10 +70,6 @@ function CategoryEdit() {
                                 <label><strong>Slug</strong></label>
                                 <input type="text" name="slug" className="form-control" placeholder="Slug" onChange={handleChange} value={formData.slug} />
                             </div>
-                            <div className="mb-3">
-                                <label><strong>Mô tả</strong></label>
-                                <textarea name="description" className="form-control" rows="4" placeholder="Mô tả" onChange={handleChange} value={formData.description}></textarea>
-                            </div>
                         </div>
                         <div className="col-md-6">
                             <div className="mb-3">
@@ -86,14 +81,14 @@ function CategoryEdit() {
                             </div>
                             <div className="mb-3">
                                 <label><strong>Danh mục cha</strong></label>
-                                <select name="parent_id" className="form-select" onChange={handleChange} value={formData.parent_id}>
+                                <select name="parentId" className="form-select" onChange={handleChange} value={formData.parentId}>
                                     <option value="0">None</option>
                                     <option value="1">Tên danh mục</option>
                                 </select>
                             </div>
                             <div className="mb-3">
                                 <label><strong>Thứ tự</strong></label>
-                                <input type="number" name="sort_order" className="form-control" placeholder="Thứ tự" onChange={handleChange} value={formData.sort_order} />
+                                <input type="number" name="sortOrder" className="form-control" placeholder="Thứ tự" onChange={handleChange} value={formData.sortOrder} />
                             </div>
                         </div>
                     </div>

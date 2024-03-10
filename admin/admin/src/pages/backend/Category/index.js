@@ -6,10 +6,9 @@ function Category() {
     const [categories, setCategories] = useState([]);
     const [formData, setFormData] = useState({
         name: '',
-        description: '',
-        parent_id: '0',
-        sort_order:'1',
-        status: '1' // Set default status to '1' (published)
+        parentId: '',
+        sortOrder:'',
+        status: ''
     });
 
     useEffect(() => {
@@ -41,7 +40,7 @@ function Category() {
     const handleChange = (e) => {
         const { name, value } = e.target;
 
-        if (name === 'sort_order' && (!Number(value) || Number(value) <= 0)) {
+        if (name === 'sortOrder' && (!Number(value) || Number(value) <= 0)) {
             alert('Thứ tự phải là một số lớn hơn 0!');
             return;
         }
@@ -56,19 +55,12 @@ function Category() {
         e.preventDefault();
         CategoryService.create(formData)
             .then(response => {
-                console.log("Category created successfully:", response.data);
-                loadCategories(); // Reload categories after creating a new one
-                setFormData({ // Reset form data after successful submission
-                    name: '',
-                    description: '',
-                    parent_id: '0',
-                    sort_order:'',
-                    status: '1'
-                });
-            })
-            .catch(error => {
-                console.error('Error creating category:', error);
-            });
+                console.log("Tạo danh mục thành công:", response.data);
+                alert('Thêm thành viên thành công!')
+       })
+       .catch(error => {
+           console.error('Lỗi khi tạo mới người dùng:', error);
+       });
     };
     
     return (  
@@ -110,9 +102,9 @@ function Category() {
                             <div className="mb-3">
                                 <label><strong>Danh mục cha</strong></label>
                                 <select
-                                    name="parent_id"
+                                    name="parentId"
                                     className="form-select"
-                                    value={formData.parent_id}
+                                    value={formData.parentId}
                                     onChange={handleChange}
                                 >
                                     <option value="0">1</option>
@@ -123,10 +115,10 @@ function Category() {
                                 <label><strong>Thứ tự</strong></label>
                                 <input
                                     type="text"
-                                    name="sort_order"
+                                    name="sortOrder"
                                     className="form-control"
                                     onChange={handleChange}
-                                    value={formData.sort_order}
+                                    value={formData.sortOrder}
                                 />
                             </div>
                             <div className="mb-3">
