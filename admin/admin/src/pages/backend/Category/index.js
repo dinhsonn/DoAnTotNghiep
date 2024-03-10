@@ -8,7 +8,7 @@ function Category() {
         name: '',
         parentId: '',
         sortOrder:'',
-        status: ''
+        status: '0'
     });
 
     useEffect(() => {
@@ -29,8 +29,8 @@ function Category() {
         CategoryService.remove(id)
             .then(() => {
                 setCategories(categories.filter(category => category.id !== id));
-                console.log("Admin deleted successfully");
-                alert("Thành viên đã được xóa!")
+                console.log("Categories deleted successfully");
+                alert("Danh mục đã được xóa!")
             })
             .catch(error => {
                 console.error('Error deleting product:', error);
@@ -56,7 +56,7 @@ function Category() {
         CategoryService.create(formData)
             .then(response => {
                 console.log("Tạo danh mục thành công:", response.data);
-                alert('Thêm thành viên thành công!')
+                alert('Thêm danh mục thành công!')
        })
        .catch(error => {
            console.error('Lỗi khi tạo mới người dùng:', error);
@@ -107,8 +107,10 @@ function Category() {
                                     value={formData.parentId}
                                     onChange={handleChange}
                                 >
-                                    <option value="0">1</option>
-                                    <option value="1">2</option>
+                                    <option value="">Chọn danh mục</option>
+                                    {categories.map(category => (
+                                        <option key={category.id} value={category.id}>{category.name}</option>
+                                    ))}
                                 </select>
                             </div>
                             <div className="mb-3">
@@ -129,8 +131,8 @@ function Category() {
                                     value={formData.status}
                                     onChange={handleChange}
                                 >
-                                    <option value="1">Xuất bản</option>
-                                    <option value="2">Chưa xuất bản</option>
+                                    <option value="0">Xuất bản</option>
+                                    <option value="1">Chưa xuất bản</option>
                                 </select>
                             </div>
                             <div className="mb-3 text-end">
@@ -170,7 +172,7 @@ function Category() {
                                         <input type="checkbox" id="checkboxAll" />
                                     </th>
                                     <th>Tên danh mục</th>
-                                    <th>Parent_id</th>
+                                    <th>Danh mục cha</th>
                                     <th>Thứ tự</th>
                                     <th>Trạng thái</th>
                                     <th className="text-center" style={{width: '30px'}}>ID</th>
@@ -201,9 +203,9 @@ function Category() {
                                                 </a>
                                             </div>
                                         </td>
-                                        <td>{category.parentId}</td>
+                                        <td>{categories.find(cat => cat.id === category.parentId)?.name || 'None'}</td>
                                         <td>{category.sortOrder}</td>
-                                        <td>{category.status === 1 ? 'Xuất bản' : 'Chưa xuất bản'}</td>
+                                        <td>{category.status === 0 ? 'Xuất bản' : 'Chưa xuất bản'}</td>
                                         <td className="text-center">{category.id}</td>
                                     </tr>
                                 ))}

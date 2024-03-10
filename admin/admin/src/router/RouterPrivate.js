@@ -1,8 +1,8 @@
 import Dashboard from "../pages/backend/Dashboard";
 import Brand from '../pages/backend/Brand/index';
-// import BrandShow from '../pages/backend/Brand/BrandShow';
-// import BrandCreate from '../pages/backend/Brand/BrandCreate';
-// import BrandUpdate from '../pages/backend/Brand/BrandUpdate';
+import BrandShow from '../pages/backend/Brand/BrandShow';
+import BrandEdit from '../pages/backend/Brand/BrandEdit';
+import BrandTrash from '../pages/backend/Brand/BrandTrash';
 import Category from '../pages/backend/Category/index';
   import CategoryShow from '../pages/backend/Category/CategoryShow';
   //import CategoryUpdate from '../pages/backend/Category/CategoryUpdate';
@@ -61,9 +61,9 @@ import CategoryEdit from "../pages/backend/Category/CategoryEdit";
 const RouterPrivate = [
  { path: "/", component: Dashboard },
   { path: "/brand", component: Brand },
-  // { path: "/admin/brand/show/:id", component: BrandShow },
-  // { path: "/admin/brand/create", component: BrandCreate },
-  // { path: "/admin/brand/update/:id", component: BrandUpdate },
+  { path: "/brand/show/:id", component: BrandShow },
+  { path: "/brand/trash", component: BrandTrash },
+  { path: "/brand/edit/:id", component: BrandEdit },
 
   { path: "/category", component: Category },
 { path: "/category/show/:id", component: CategoryShow },

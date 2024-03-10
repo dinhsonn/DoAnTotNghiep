@@ -33,9 +33,6 @@ public class Post {
     private Long topicId;
 
     @Column(nullable = false)
-    private String title;
-
-    @Column(nullable = false)
     private String slug;
 
     @Column(nullable = false)

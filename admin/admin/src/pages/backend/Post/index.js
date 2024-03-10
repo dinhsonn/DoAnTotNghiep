@@ -1,7 +1,35 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-
+import PostServices from "../../../services/PostServices";
 function Post() {
-    return (   <div className="content">
+   const [posts , setPosts] = useState([]);
+   useEffect(() => {
+      PostServices.getAll()
+       .then(response => {
+         setPosts(response.data.content);
+       })
+       .catch(error => {
+         console.error('Error fetching data:', error);
+       });
+   }, []);
+   const removePost = (id) => {
+      PostServices.remove(id)
+        .then(() => {
+         setPosts(posts.filter(post => post.id !== id));
+          console.log("Post deleted successfully");
+          alert("Bài viết đã được xóa!")
+        })
+        .catch(error => {
+          console.error('Error deleting product:', error);
+        });
+    };
+    //image
+    const getImgUrl = (imageName) => {
+      const endpoint = 'posts'; 
+      return `http://localhost:8082/api/${endpoint}/image/${imageName}`;
+  };
+    return (   
+    <div className="content">
     <section className="content-header my-2">
        <h1 className="d-inline">Quản lý bài viết</h1>
        <Link to={"/post/create"} className="btn-add">Thêm mới</Link>
@@ -57,22 +85,25 @@ function Post() {
                 </th>
                 <th className="text-center" style={{width: '130px'}}>Hình ảnh</th>
                 <th>Tiêu đề bài viết</th>
+                <th>Chi tiết bài viết</th>
                 <th>Tên danh mục</th>
+                <th>Trạng thái</th>
                 <th className="text-center" style={{width: '30px'}}>ID</th>
              </tr>
           </thead>
           <tbody>
+            {posts.map((post,index)=>(
              <tr className="datarow">
                 <td>
                    <input type="checkbox" id="checkId" />
                 </td>
                 <td>
-                   <img className="img-fluid" src="public/images/post.jpg" alt="post.jpg"/>
+                <img src={getImgUrl(post.image)} alt={post.image} style={{width: '180px'}}/>
                 </td>
                 <td>
                    <div className="name">
                       <a>
-                         Tiêu đề bài viết
+                         {post.name}
                       </a>
                    </div>
                    <div className="function_style">
@@ -90,9 +121,12 @@ function Post() {
                       </Link>
                    </div>
                 </td>
-                <td>Tên chủ đề</td>
-                <td className="text-center">1</td>
+                <td>{post.detail}</td>
+                <td>{post.topicId}</td>
+                <td>{post.status}</td>
+                <td className="text-center">{post.id}</td>
              </tr>
+            ))}
           </tbody>
        </table>
 

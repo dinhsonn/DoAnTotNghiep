@@ -1,4 +1,23 @@
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import BrandServices from "../../../services/BrandServices";
 function BrandShow() {
+   let { id } = useParams();
+   const [brand, setBrand] = useState({});
+   useEffect(() => {
+      BrandServices.getById(id)
+           .then(response => {
+            setBrand(response.data);
+
+           })
+           .catch(error => {
+               console.error('Error fetching user data:', error);
+           });
+   }, [id]);
+   const getImgUrl = (imageName) => {
+      const endpoint = 'brand'; 
+      return `http://localhost:8082/api/${endpoint}/image/${imageName}`;
+  };
     return ( 
         <div className="content">
         <section className="content-header my-2">
@@ -26,11 +45,28 @@ function BrandShow() {
                     <th>Giá trị</th>
                  </tr>
               </thead>
-              <tbody>
+          <tbody>
+                 <tr>
+                    <td>Hình ảnh</td>
+                    <td><img src={getImgUrl(brand.image)} alt={brand.image} style={{width: '200px'}}/></td>
+                 </tr>
                  <tr>
                     <td>Id</td>
-                    <td>1</td>
+                    <td>{brand.id}</td>
                  </tr>
+                 <tr>
+                    <td>Tên thương hiệu</td>
+                    <td>{brand.name}</td>
+                 </tr>
+                 <tr>
+                    <td>Thứ tự</td>
+                    <td>{brand.sortOrder}</td>
+                 </tr>
+                 <tr>
+                    <td>Trạng thái</td>
+                    <td>{brand.status === 0 ? 'Xuất bản' : 'Chưa xuất bản'}</td>
+                 </tr>
+      
               </tbody>
            </table>
 

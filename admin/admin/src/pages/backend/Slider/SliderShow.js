@@ -65,7 +65,7 @@ function SliderShow() {
                  </tr>
                  <tr>
                     <td>Trạng thái</td>
-                    <td>{sliders.status}</td>
+                    <td>{sliders.status === 0 ? 'Xuất bản' : 'Chưa xuất bản'}</td>
                  </tr>
                  <tr>
                     <td>Vị trí</td>

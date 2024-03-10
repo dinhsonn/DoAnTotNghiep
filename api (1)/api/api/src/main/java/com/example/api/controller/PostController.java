@@ -37,21 +37,20 @@ public class PostController {
         return new ResponseEntity<>(savedPost, HttpStatus.CREATED);
     }
 
-@PostMapping("/image")
+    @PostMapping("/image")
     public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file,
-                                             @RequestParam("customName") String customName) {
+            @RequestParam("customName") String customName) {
         try {
-            String uploadDir = "E:\\Downloads\\api_data\\api\\src\\main\\resources\\static\\dataImage";
-
+            String uploadDir = "C:\\Users\\MY-PC\\OneDrive\\Máy tính\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage";
             File directory = new File(uploadDir);
             if (!directory.exists()) {
                 directory.mkdirs();
             }
 
-            String fileName = customName + ".png"; 
+            String fileName = customName + ".png";
 
             String filePath = uploadDir + File.separator + fileName;
-    
+
             try (FileOutputStream fos = new FileOutputStream(filePath)) {
                 fos.write(file.getBytes());
             }
@@ -63,26 +62,26 @@ public class PostController {
         }
     }
 
-@GetMapping("/image/{imageName}")
-public ResponseEntity<byte[]> getImage(@PathVariable String imageName) throws IOException {
-    String imagePath = "E:\\Downloads\\api\\api\\src\\main\\resources\\static\\dataImage\\" + imageName;
+    @GetMapping("/image/{imageName}")
+    public ResponseEntity<byte[]> getImage(@PathVariable String imageName) throws IOException {
+        String imagePath = "C:\\Users\\MY-PC\\OneDrive\\Máy tính\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage\\" + imageName;
 
-    Resource resource = new FileSystemResource(imagePath);
+        Resource resource = new FileSystemResource(imagePath);
 
-    if (!resource.exists() || !resource.isReadable()) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        if (!resource.exists() || !resource.isReadable()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+        byte[] imageBytes = Files.readAllBytes(resource.getFile().toPath());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_PNG);
+
+        return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
     }
 
-    byte[] imageBytes = Files.readAllBytes(resource.getFile().toPath());
-
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.IMAGE_PNG);
-
-    return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
-}
-
     @GetMapping("{id}")
-    public ResponseEntity<Post> getPostById(@PathVariable("id") Long postId) { 
+    public ResponseEntity<Post> getPostById(@PathVariable("id") Long postId) {
         Post post = postService.getPostById(postId);
         if (post != null) {
             return new ResponseEntity<>(post, HttpStatus.OK);
@@ -102,19 +101,19 @@ public ResponseEntity<byte[]> getImage(@PathVariable String imageName) throws IO
 
     @PutMapping("{id}")
     public ResponseEntity<Post> updatePost(
-        @PathVariable("id") Long postId,
-        @RequestParam(value = "file", required = false) MultipartFile file,
-        @RequestBody Post post) {
-        
+            @PathVariable("id") Long postId,
+            @RequestParam(value = "file", required = false) MultipartFile file,
+            @RequestBody Post post) {
+
         try {
             if (file != null && !file.isEmpty()) {
-                // Nếu có file ảnh được cung cấp, thì cập nhật ảnh
+                String uploadDir = "C:\\Users\\MY-PC\\OneDrive\\Máy tính\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage";
+
                 String originalFilename = file.getOriginalFilename();
-                String uploadDir = "E:\\Downloads\\api_data\\api\\src\\main\\resources\\static\\dataImage";
                 String fileName = originalFilename.substring(0, originalFilename.lastIndexOf('.')) + ".png";
 
                 String filePath = uploadDir + File.separator + fileName;
-    
+
                 try (FileOutputStream fos = new FileOutputStream(filePath)) {
                     fos.write(file.getBytes());
                 }
@@ -137,6 +136,7 @@ public ResponseEntity<byte[]> getImage(@PathVariable String imageName) throws IO
         postService.deletePost(postId); // Rename the service method
         return new ResponseEntity<>("Post successfully deleted!", HttpStatus.OK);
     }
+
     //
     @GetMapping("/topic/{topicId}")
     public ResponseEntity<Page<Post>> getPostsByTopicId(

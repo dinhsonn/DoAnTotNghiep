@@ -41,7 +41,6 @@ public class PostServiceImpl implements PostService {
         Post existingPost = postRepository.findById(post.getId()).orElse(null);
         if (existingPost != null) {
             existingPost.setTopicId(post.getTopicId());
-            existingPost.setTitle(post.getTitle());
             existingPost.setSlug(post.getSlug());
             existingPost.setDetail(post.getDetail());
             existingPost.setImage(post.getImage());
