@@ -54,7 +54,7 @@ function TopicEdit() {
     <section className="content-header my-2">
        <h1 className="d-inline">Cập nhật chủ đề</h1>
        <div className="text-end">
-          <a className="btn btn-sm btn-primary" href="topic_index.html">Về danh sách</a>
+          <a className="btn btn-sm btn-primary" href="/topic">Về danh sách</a>
        </div>
     </section>
     <section className="content-body my-2">

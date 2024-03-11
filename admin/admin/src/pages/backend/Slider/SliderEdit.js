@@ -9,10 +9,9 @@ function SliderEdit() {
     name: '',
     link: '',
     position: '',
-    sort_order: '1',
+    sortOrder: '1',
     image: "",
     status: '',
-    description: '', // Thêm trường mô tả vào state
   });
 
   const [newImage, setNewImage] = useState(null);
@@ -123,10 +122,6 @@ function SliderEdit() {
               <div className="mb-3">
                 <label><strong>Liên kết</strong></label>
                 <input type="text" name="link" className="form-control" placeholder="Nhập liên kết" onChange={handleChange} value={formData.link} />
-              </div>
-              <div className="mb-3">
-                <label><strong>Mô tả (*)</strong></label>
-                <textarea name="description" rows="5" className="form-control" placeholder="Nhập mô tả" onChange={handleChange} value={formData.description}></textarea> {/* Thêm trường mô tả */}
               </div>
             </div>
             <div className="col-md-3">

@@ -1,74 +1,132 @@
+import React, { useState } from 'react';
+import BannerService from '../../../services/BannerServices';
+import axios from 'axios';
+
 function BannerCreate() {
-    return ( 
-        <div className="content">
-        <section className="content-header my-2">
-           <h1 className="d-inline">Thêm banner</h1>
-           <div className="text-end">
-              <a href="banner_index.html" className="btn btn-sm btn-success">
-                 <i className="fa fa-arrow-left"></i> Về danh sách
-              </a>
-           </div>
-        </section>
-        <section className="content-body my-2">
-           <div className="row">
-              <div className="col-md-9">
-                 <div className="mb-3">
-                    <label><strong>Tên banner (*)</strong></label>
-                    <input type="text" name="name" className="form-control" placeholder="Nhập tên banner" />
-                 </div>
-                 <div className="mb-3">
-                    <label><strong>Liên kết</strong></label>
-                    <input type="text" name="link" className="form-control" placeholder="Nhập liên kết" />
-                 </div>
-                 <div className="mb-3">
-                    <label><strong>Mô tả (*)</strong></label>
-                    <textarea name="description" rows="5" className="form-control"
-                       placeholder="Nhập mô tả"></textarea>
-                 </div>
+  const [formData, setFormData] = useState({
+    name: '',
+    link: '',
+    sort: '',
+    image: '',
+    type: '',
+    status: '',
+  });
+  const [file, setFile] = useState(null);
+  const [imageName, setImageName] = useState('');
+  const [message, setMessage] = useState('');
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  const handleNameChange = (e) => {
+    setImageName(e.target.value);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!file || !imageName) {
+      setMessage('Vui lòng chọn một file và cung cấp tên tùy chỉnh.');
+      return;
+    }
+
+    const formDataBanner = { ...formData };
+    formDataBanner.image = imageName;
+
+    const formDataUpload = new FormData();
+    formDataUpload.append('file', file);
+    formDataUpload.append('customName', imageName);
+
+    try {
+      const response = await axios.post('http://localhost:8082/api/banners/image', formDataUpload);
+      setMessage(response.data);
+      setFile(null);
+      setImageName('');
+
+      // Sau khi tải lên ảnh thành công, thực hiện tạo mới banner
+      BannerService.create(formDataBanner)
+        .then(response => {
+          console.log('Tạo mới banner thành công:', response.data);
+          alert('Thêm Banner thành công!')
+        })
+        .catch(error => {
+          console.error('Lỗi khi tạo mới banner:', error);
+        });
+    } catch (error) {
+      setMessage('Không thể tải lên ảnh.');
+      console.error(error);
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  return (
+    <div className="content">
+      <section className="content-header my-2">
+        <h1 className="d-inline">Thêm banner</h1>
+        <div className="text-end">
+          <a href="/banner" className="btn btn-sm btn-success">
+            <i className="fa fa-arrow-left"></i> Về danh sách
+          </a>
+        </div>
+      </section>
+      <section className="content-body my-2">
+        <form onSubmit={handleSubmit}>
+          <div className="row">
+            <div className="col-md-9">
+              <div className="mb-3">
+                <label><strong>Tên banner (*)</strong></label>
+                <input type="text" name="name" className="form-control" placeholder="Nhập tên banner" onChange={handleChange} value={formData.name}/>
               </div>
-              <div className="col-md-3">
-                 <div className="box-container mt-4 bg-white">
-                    <div className="box-header py-1 px-2 border-bottom">
-                       <strong>Đăng</strong>
-                    </div>
-                    <div className="box-body p-2 border-bottom">
-                       <p>Chọn trạng thái đăng</p>
-                       <select name="status" className="form-select">
-                          <option value="1">Xuất bản</option>
-                          <option value="2">Chưa xuất bản</option>
-                       </select>
-                    </div>
-                    <div className="box-footer text-end px-2 py-3">
-                       <button type="submit" className="btn btn-success btn-sm text-end">
-                          <i className="fa fa-save" aria-hidden="true"></i> Đăng
-                       </button>
-                    </div>
-                 </div>
-                 <div className="box-container mt-4 bg-white">
-                    <div className="box-header py-1 px-2 border-bottom">
-                       <strong>Vị trí (*)</strong>
-                    </div>
-                    <div className="box-body p-2 border-bottom">
-                       <select name="position" className="form-select">
-                          <option>Chọn vị trí</option>
-                          <option value="slideshow">Slide Show</option>
-                          <option value="ads">Quảng cáo</option>
-                       </select>
-                       <p className="pt-2">Vị trí hiển thị banner</p>
-                    </div>
-                 </div>
-                 <div className="box-container mt-4 bg-white">
-                    <div className="box-header py-1 px-2 border-bottom">
-                       <strong>Hình (*)</strong>
-                    </div>
-                    <div className="box-body p-2 border-bottom">
-                       <input type="file" name="image" className="form-control" />
-                    </div>
-                 </div>
+              <div className="mb-3">
+                <label><strong>Liên kết</strong></label>
+                <input type="text" name="link" className="form-control" placeholder="Nhập liên kết" onChange={handleChange} value={formData.link}/>
               </div>
-           </div>
-        </section>
-     </div> );
+              <div className="mb-3">
+                <label><strong>Vị trí</strong></label>
+                <input type="text" name="sort" className="form-control" placeholder="Nhập vị trí" onChange={handleChange} value={formData.sort}/>
+              </div>
+              <div className="mb-3">
+                <label><strong>Type</strong></label>
+                <input type="text" name="type" className="form-control" placeholder="Nhập" onChange={handleChange} value={formData.type}/>
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="box-container mt-4 bg-white">
+                <div className="box-header py-1 px-2 border-bottom">
+                  <strong>Đăng</strong>
+                </div>
+                <div className="box-body p-2 border-bottom">
+                  <p>Chọn trạng thái đăng</p>
+                  <select name="status" className="form-select" onChange={handleChange} value={formData.status}>
+                    <option value="1">Xuất bản</option>
+                    <option value="2">Chưa xuất bản</option>
+                  </select>
+                </div>
+              </div>
+              <div className="box-container mt-4 bg-white">
+                <div className="box-header py-1 px-2 border-bottom">
+                  <strong>Hình (*)</strong>
+                </div>
+                <div className="box-body p-2 border-bottom">
+                  <input type="file" onChange={handleFileChange} style={{marginBottom:"5px"}}/>
+                  <br />
+                  <input type="text" placeholder="Tên tùy chỉnh" style={{width:"280px",height:"35px"}} value={imageName} onChange={handleNameChange} />
+                  <br />
+                </div>
+                <div className="box-footer text-end px-2 py-3">
+                  <button type="submit" className="btn btn-success btn-sm text-end">Thêm</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </section>
+    </div>
+  );
 }
 
 export default BannerCreate;

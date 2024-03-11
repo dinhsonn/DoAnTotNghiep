@@ -14,7 +14,7 @@ function Topic() {
 
   useEffect(() => {
     loadTopics();
-  }, []);
+  }, [formData]);
 
   const loadTopics = () => {
     TopicService.getAll()
@@ -52,6 +52,7 @@ function Topic() {
       .then((response) => {
         console.log("Tạo chủ đề thành công:", response.data);
         alert("Thêm chủ đề thành công!");
+        loadTopics();
       })
       .catch((error) => {
         console.error("Lỗi khi tạo mới người dùng:", error);
@@ -150,7 +151,6 @@ function Topic() {
               </div>
             </form>
           </div>
-
           <div className="col-md-8">
             <div className="row mt-3 align-items-center">
               <div className="col-12">

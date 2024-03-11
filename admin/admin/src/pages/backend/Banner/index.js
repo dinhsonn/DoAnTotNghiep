@@ -1,105 +1,150 @@
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import BannerService from "../../../services/BannerServices";
+
 function Banner() {
-    return ( 
-        <div className="content">
-        <section className="content-header my-2">
-           <h1 className="d-inline">Banner</h1>
-           <a className="btn-add" href="banner_create.html">Thêm mới</a>
-           <div className="row mt-3 align-items-center">
-              <div className="col-6">
-                 <ul className="manager">
-                    <li><a href="banner_index.html">Tất cả (123)</a></li>
-                    <li><a href="#">Xuất bản (12)</a></li>
-                    <li><a href="banner_trash.html">Rác (12)</a></li>
-                 </ul>
-              </div>
-              <div className="col-6 text-end">
-                 <input type="text" className="search d-inline" />
-                 <button className="d-inline btnsearch">Tìm kiếm</button>
-              </div>
-           </div>
-           <div className="row mt-1 align-items-center">
-              <div className="col-md-8">
-                 <select name="" className="d-inline me-1">
-                    <option value="">Hành động</option>
-                    <option value="">Bỏ vào thùng rác</option>
-                 </select>
-                 <button className="btnapply">Áp dụng</button>
-                 <select name="" className="d-inline me-1">
-                    <option value="">Tất cả vị trí</option>
-                 </select>
-                 <button className="btnfilter">Lọc</button>
-              </div>
-              <div className="col-md-4 text-end">
-                 <nav aria-label="Page navigation example">
-                    <ul className="pagination pagination-sm justify-content-end">
-                       <li className="page-item disabled">
-                          <a className="page-link">&laquo;</a>
-                       </li>
-                       <li className="page-item"><a className="page-link" href="#">1</a></li>
-                       <li className="page-item"><a className="page-link" href="#">2</a></li>
-                       <li className="page-item"><a className="page-link" href="#">3</a></li>
-                       <li className="page-item">
-                          <a className="page-link" href="#">&raquo;</a>
-                       </li>
-                    </ul>
-                 </nav>
-              </div>
-           </div>
-        </section>
-        <section className="content-body my-2">
+   const [banners, setBanners] = useState([]);
+   //api này gọi user 
+   useEffect(() => {
+      BannerService.getAll()
+       .then(response => {
+         setBanners(response.data.content);
+         console.log("data",response.data.content)
+       })
+       .catch(error => {
+         console.error('Error fetching data:', error);
+       });
+   }, []);
+   //xóa sản phẩm
+   const removeBanner = (id) => {
+      BannerService.remove(id)
+        .then(() => {
+         setBanners(banners.filter(slider => slider.id !== id));
+          console.log("Slider deleted successfully");
+          alert("Slider đã được xóa!")
+        })
+        .catch(error => {
+          console.error('Error deleting product:', error);
+        });
+    };
+    //image
+    const getImgUrl = (imageName) => {
+      const endpoint = 'sliders'; 
+      return `http://localhost:8082/api/${endpoint}/image/${imageName}`;
+  };
+  return (
+    <div className="content">
+      <section className="content-header my-2">
+        <h1 className="d-inline">Banner</h1>
+        <Link className="btn-add" to={"/banner/create"}>
+          Thêm mới
+        </Link>
+      </section>
+      <section className="content-body my-2">
+      <div className="row">
 
-           <table className="table table-bordered">
-              <thead>
-                 <tr>
-                    <th className="text-center" style={{width: '30px'}}>
-                       <input type="checkbox" id="checkboxAll" />
-                    </th>
-                    <th className="text-center" style={{width: '130px'}}>Hình ảnh</th>
-                    <th>Tên banner</th>
-                    <th>Vị trí</th>
-                    <th>Liên kết</th>
-                    <th className="text-center" style={{width: '30px'}}>ID</th>
-                 </tr>
-              </thead>
-              <tbody>
-                 <tr className="datarow">
-                    <td className="text-center">
-                       <input type="checkbox" />
-                    </td>
-                    <td>
-                       <img src="public/images/banner.jpg" alt="banner.jpg" />
-                    </td>
-                    <td>
-                       <div className="name">
-                          <a>
-                             Tên banner
-                          </a>
-                       </div>
-                       <div className="function_style">
-                          <a href="#" className="text-success mx-1">
-                             <i className="fa fa-toggle-on"></i>
-                          </a>
-                          <a href="banner_edit.html" className="text-primary mx-1">
-                             <i className="fa fa-edit"></i>
-                          </a>
-                          <a href="banner_show.html" className="text-info mx-1">
-                             <i className="fa fa-eye"></i>
-                          </a>
-                          <a href="#" className="text-danger mx-1">
-                             <i className="fa fa-trash"></i>
-                          </a>
-                       </div>
-                    </td>
-                    <td>vitri</td>
-                    <td>lien-ket</td>
-                    <td className="text-center">id</td>
-                 </tr>
-              </tbody>
-           </table>
+      <div className="col-md-8">
+      <div className="row mt-3 align-items-center">
+              <div className="col-12">
+                <ul className="manager">
+                  <li>
+                    <a href="brand_index.html">Tất cả (123)</a>
+                  </li>
+                  <li>
+                    <a href="#">Xuất bản (12)</a>
+                  </li>
+                  <li>
+                    <a href="brand_trash.html">Rác (12)</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div className="row my-2 align-items-center">
+              <div className="col-md-6">
+                <select name="" className="d-inline me-1">
+                  <option value="">Hành động</option>
+                  <option value="">Bỏ vào thùng rác</option>
+                </select>
+                <button className="btnapply">Áp dụng</button>
+              </div>
+              <div className="col-md-6 text-end">
+                <input type="text" className="search d-inline" />
+                <button className="d-inline">Tìm kiếm</button>
+              </div>
+            </div>
+        <table className="table table-bordered">
+          <thead>
+            <tr>
+              <th className="text-center" style={{ width: "30px" }}>
+                <input type="checkbox" id="checkboxAll" />
+              </th>
+              <th className="text-center" style={{ width: "130px" }}>
+                Hình ảnh
+              </th>
+              <th>Tên banner</th>
+              <th>Liên kết</th>
+              <th>Vị trí</th>
+              <th>Trạng thái</th>
+               <th>Type</th>
+              <th className="text-center" style={{ width: "30px" }}>
+                ID
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {banners.map((banner, index) => (
+              <tr className="datarow" key={banner.id}>
+                <td className="text-center">
+                  <input type="checkbox" id="checkId"/>
+                </td>
+                <td>
+                  <img
+                    src={getImgUrl(banner.image)}
+                    style={{ width: "180px" }}
+                  />
+                </td>
+                <td>
+                  <div className="name">
+                    <a>{banner.name}</a>
+                  </div>
+                  <div className="function_style">
+                    {/* Các chức năng khác như chỉnh sửa, xem, xóa */}
+                    <Link
+                      to={`/banner/edit/${banner.id}`}
+                      className="text-primary mx-1"
+                    >
+                      <i className="fa fa-edit"></i>
+                    </Link>
+                    <Link
+                      to={`/banner/show/${banner.id}`}
+                      className="text-info mx-1"
+                    >
+                      <i className="fa fa-eye"></i>
+                    </Link>
+                    <a
+                      href="#"
+                      className="text-danger mx-1"
+                      onClick={() => removeBanner(banner.id)}
+                    >
+                      <i className="fa fa-trash"></i>
+                    </a>
+                  </div>
+                </td>
+                <td>{banner.link}</td>
+               <td>{banner.status}</td>
+               <td>{banner.sort}</td>
+               <td>{banner.type}</td>
+                <td className="text-center">{banner.id}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+         </div>
+         </div>
 
-        </section>
-     </div>
-     );
+      </section>
+    </div>
+  );
 }
 
 export default Banner;
