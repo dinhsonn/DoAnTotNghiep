@@ -1,6 +1,31 @@
 import { Link } from "react-router-dom";
-
+import UserServices from "../../../services/UserServices";
+import { useEffect, useState } from "react";
 function Customer() {
+   const [customers, setCustomers] = useState([]);
+   //api này gọi user 
+   useEffect(() => {
+      UserServices.getAll()
+       .then(response => {
+         const filteredCustomers = response.data.content.filter(customer => customer.roles === 1);
+         setCustomers(filteredCustomers );
+       })
+       .catch(error => {
+         console.error('Error fetching data:', error);
+       });
+   }, []);
+   //xóa user
+   const removeAdmin = (id) => {
+      UserServices.remove(id)
+        .then(() => {
+         setCustomers(customers.filter(customer => customer.id !== id));
+          console.log("Customer deleted successfully");
+          alert("Người dùng đã được xóa!")
+        })
+        .catch(error => {
+          console.error('Error deleting product:', error);
+        });
+    };
     return ( 
         <div className="content">
         <section className="content-header my-2">
@@ -46,52 +71,59 @@ function Customer() {
         </section>
         <section className="content-body my-2">
 
-           <table className="table table-bordered">
-              <thead>
-                 <tr>
-                    <th className="text-center" style={{width: '30px'}}>
-                       <input type="checkbox" id="checkboxAll" />
-                    </th>
-                    <th className="text-center" style={{width: '130px'}}>Hình ảnh</th>
-                    <th>Họ tên</th>
-                    <th>Điện thoại</th>
-                    <th>Email</th>
-                    <th className="text-center" style={{width: '30px'}}>ID</th>
-                 </tr>
-              </thead>
-              <tbody>
-                 <tr className="datarow">
-                    <td>
-                       <input type="checkbox" id="checkId" />
-                    </td>
-                    <td>
-                       <img className="img-fluid" src="public/images/user/default_user.jpg" alt="user.jpg" />
-                    </td>
-                    <td>
-                       <div className="name">
-                          <a>Ho Din Loi</a>
-                       </div>
-                       <div className="function_style">
-                          <a href="#" className="text-success mx-1">
-                             <i className="fa fa-toggle-on"></i>
-                          </a>
-                          <a href="customer_edit.html" className="text-primary mx-1">
-                             <i className="fa fa-edit"></i>
-                          </a>
-                          <a href="customer_show.html" className="text-info mx-1">
-                             <i className="fa fa-eye"></i>
-                          </a>
-                          <a href="#" className="text-danger mx-1">
-                             <i className="fa fa-trash"></i>
-                          </a>
-                       </div>
-                    </td>
-                    <td>0987654331</td>
-                    <td>dienloisoft@gmail.com</td>
-                    <td className="text-center">1</td>
-                 </tr>
-              </tbody>
-           </table>
+        <table className="table table-bordered">
+          <thead>
+             <tr>
+                <th className="text-center" style={{width: '30px'}}>
+                   <input type="checkbox" id="checkAll" />
+                </th>
+                <th>Họ tên</th>
+                <th>Giới tính</th>
+                <th>Ngày sinh</th>
+                <th>Điện thoại</th>
+                <th>Email</th>
+                <th>Địa chỉ</th>
+                <th className="text-center" style={{width: '30px'}}>ID</th>
+             </tr>
+          </thead>
+          <tbody>
+            {customers.map((customer,index) => (
+             <tr className="datarow">
+                <td className="text-center">
+                   <input type="checkbox" id="checkId" />
+                </td>
+              
+                <td>
+                   <div className="name ">
+                      <Link to={`/customer/show/${customer.id}`} >
+                         {customer.name}
+                      </Link>
+                   </div>
+                   <div className="function_style">
+                      <Link to="#" className="text-success mx-1">
+                         <i className="fa fa-toggle-on"></i>
+                      </Link>
+                      <Link to={`/customer/edit/${customer.id}`} className="text-primary mx-1">
+                         <i className="fa fa-edit"></i>
+                      </Link>
+                      <Link to={`/customer/show/${customer.id}`} className="text-info mx-1">
+                         <i className="fa fa-eye"></i>
+                      </Link>
+                      <Link to="#" className="text-danger mx-1" onClick={() => removeAdmin(customer.id)}>
+                         <i className="fa fa-trash"></i>
+                      </Link>
+                   </div>
+                </td>
+                <td>{customer.sex === "0" ? "Nữ" : "Nam"}</td>
+                <td>{customer.birthday}</td>
+                <td>{customer.phone}</td>
+                <td>{customer.email}</td>
+                <td>{customer.address}</td>
+                <td className="text-center">{customer.id}</td>
+             </tr>
+             ))}
+          </tbody>
+       </table>
 
         </section>
      </div>

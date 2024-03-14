@@ -1,0 +1,4 @@
+.wrap_newmore {
+  max-height: 200px; /* Đặt chiều cao tối đa của thanh cuộn */
+  overflow-y: auto; /* Hiển thị thanh cuộn dọc khi nội dung vượt quá kích thước */
+}

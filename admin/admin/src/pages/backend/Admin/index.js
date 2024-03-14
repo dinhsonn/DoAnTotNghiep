@@ -7,14 +7,14 @@ function Admin() {
    useEffect(() => {
       UserServices.getAll()
        .then(response => {
-         setAdmins(response.data.content);
-         console.log("data",response.data.content)
+         const filteredAdmins = response.data.content.filter(admin => admin.roles === 0);
+         setAdmins(filteredAdmins );
        })
        .catch(error => {
          console.error('Error fetching data:', error);
        });
    }, []);
-   //xóa sản phẩm
+   //xóa admin
    const removeAdmin = (id) => {
       UserServices.remove(id)
         .then(() => {
