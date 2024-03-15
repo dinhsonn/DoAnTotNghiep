@@ -57,6 +57,8 @@ import CustomerEdit from '../pages/backend/Customer/CustomerEdit';
 import CustomerShow from '../pages/backend/Customer/CustomerShow';
 import CustomerTrash from '../pages/backend/Customer/CustomerTrash';
 import CategoryEdit from "../pages/backend/Category/CategoryEdit";
+import About from "../pages/backend/About";
+import AboutCreate from "../pages/backend/About/AboutCreate";
 
 const RouterPrivate = [
  { path: "/", component: Dashboard },
@@ -94,6 +96,12 @@ const RouterPrivate = [
   { path: "/post", component: Post },
   { path: "/post/show/:id", component: PostShow },
   { path: "/post/create", component: PostCreate },
+  { path: "/post/edit/:id", component: PostEdit },
+  { path: "/post/trash", component:  PostTrash},
+
+  { path: "/about", component: About },
+  { path: "/post/show/:id", component: PostShow },
+  { path: "/about/create", component: AboutCreate },
   { path: "/post/edit/:id", component: PostEdit },
   { path: "/post/trash", component:  PostTrash},
 

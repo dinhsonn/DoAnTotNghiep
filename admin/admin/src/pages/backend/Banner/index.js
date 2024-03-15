@@ -29,7 +29,7 @@ function Banner() {
     };
     //image
     const getImgUrl = (imageName) => {
-      const endpoint = 'sliders'; 
+      const endpoint = 'banners'; 
       return `http://localhost:8082/api/${endpoint}/image/${imageName}`;
   };
   return (

@@ -7,7 +7,7 @@ function Admin() {
    useEffect(() => {
       UserServices.getAll()
        .then(response => {
-         const filteredAdmins = response.data.content.filter(admin => admin.roles === 0);
+         const filteredAdmins = (response.data.content);
          setAdmins(filteredAdmins );
        })
        .catch(error => {
@@ -83,6 +83,7 @@ function Admin() {
                 <th>Điện thoại</th>
                 <th>Email</th>
                 <th>Địa chỉ</th>
+                <th>Vai trò</th>
                 <th className="text-center" style={{width: '30px'}}>ID</th>
              </tr>
           </thead>
@@ -119,6 +120,7 @@ function Admin() {
                 <td>{admin.phone}</td>
                 <td>{admin.email}</td>
                 <td>{admin.address}</td>
+                <td>{admin.roles === 0 ? "Admin" : "Người dùng"}</td>
                 <td className="text-center">{admin.id}</td>
              </tr>
              ))}

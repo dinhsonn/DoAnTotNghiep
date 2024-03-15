@@ -48,6 +48,7 @@ const handleSubmitLogin = (e) => {
       const users = response.data.content;
       const user = users.find(user => user.email === email && user.password === password);
       if (user) {
+        localStorage.setItem('user', JSON.stringify(user));
         Swal.fire({
           title: "Thành công!",
           text: "Đăng nhập thành công!",
@@ -95,7 +96,6 @@ const handleGoogleLogin = async (credentialResponse) => {
       if (closeButton) {
         closeButton.click();
       }
-
       navigate("/");
     } else {
       console.error("Invalid Google Login response:", credentialResponse);

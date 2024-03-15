@@ -9,10 +9,6 @@ function getAll()
 function getById(id) {
     return httpAxios.get(`sliders/${id}`);
 }
-
-
-
-
 const SliderService = {
     getAll:getAll,
 
