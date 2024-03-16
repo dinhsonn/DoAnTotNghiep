@@ -86,6 +86,9 @@ function Sidebar() {
                               <li>
                                  <Link to={"/banner"}>Banner</Link>
                               </li>
+                              <li>
+                                 <Link to={"/about"}>About</Link>
+                              </li>
                            </ul>
                         </li>
                         <li className="hdlitem item-sub">

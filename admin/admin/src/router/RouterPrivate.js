@@ -59,6 +59,8 @@ import CustomerTrash from '../pages/backend/Customer/CustomerTrash';
 import CategoryEdit from "../pages/backend/Category/CategoryEdit";
 import About from "../pages/backend/About";
 import AboutCreate from "../pages/backend/About/AboutCreate";
+import AboutShow from "../pages/backend/About/AboutShow";
+import AboutEdit from "../pages/backend/About/AboutEdit";
 
 const RouterPrivate = [
  { path: "/", component: Dashboard },
@@ -100,10 +102,10 @@ const RouterPrivate = [
   { path: "/post/trash", component:  PostTrash},
 
   { path: "/about", component: About },
-  { path: "/post/show/:id", component: PostShow },
+  { path: "/about/show/:id", component: AboutShow },
   { path: "/about/create", component: AboutCreate },
-  { path: "/post/edit/:id", component: PostEdit },
-  { path: "/post/trash", component:  PostTrash},
+  { path: "/about/edit/:id", component: AboutEdit },
+  { path: "/about/trash", component:  PostTrash},
 
   { path: "/page", component: Page },
   { path: "/page/show/:id", component: PageShow },

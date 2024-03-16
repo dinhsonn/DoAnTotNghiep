@@ -99,6 +99,9 @@ function About() {
                                         <Link to={`/about/edit/${about.id}`} className="text-primary mx-1">
                                             <i className="fa fa-edit"></i>
                                         </Link>
+                                        <Link to={`/about/show/${about.id}`} className="text-primary mx-1">
+                                            <i className="fa fa-eye"></i>
+                                        </Link>
                                         <Link to="#" className="text-danger mx-1" onClick={() => removeAbout(about.id)}>
                                             <i className="fa fa-trash"></i>
                                         </Link>

@@ -1,23 +1,72 @@
 import { Link } from "react-router-dom";
-import ProductService from "../../../services/ProductServices";
 import { useEffect, useState } from "react";
+import ProductService from "../../../services/ProductServices";
+import CategoryService from "../../../services/CategoryServices";
+import BrandServices from "../../../services/BrandServices";
 
 function ProductList() {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [brands, setBrands] = useState([]);
+
   useEffect(() => {
-    ProductService.getAll()
-      .then(response => {
-        setProducts(response.data.content);
-        console.log("dâta",response.data.content)
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
+    loadProducts();
+    loadCategories();
+    loadBrands();
   }, []);
 
-    return (  
-      <div className="content">
-      <section className="content-header my-2">
+  const loadProducts = async () => {
+    try {
+      const response = await ProductService.getAll();
+      setProducts(response.data.content);
+    } catch (error) {
+      console.error("Error loading products:", error);
+    }
+  };
+  
+  const loadCategories = async () => {
+    try {
+      const response = await CategoryService.getAll();
+      setCategories(response.data.content);
+    } catch (error) {
+      console.error("Error loading categories:", error);
+    }
+  };
+  
+  const loadBrands = async () => {
+    try {
+      const response = await BrandServices.getAll();
+      setBrands(response.data.content);
+    } catch (error) {
+      console.error("Error loading brands:", error);
+    }
+  };
+  
+  const removeProduct = async (id) => {
+    try {
+      await ProductService.remove(id); 
+      setProducts(products.filter((product) => product.id !== id));
+      console.log("Product deleted successfully");
+      alert("Sản phẩm đã được xóa!");
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
+  };
+  
+
+  const getCategoryName = (categoryId) => {
+    const category = categories.find((c) => c.id === categoryId);
+    return category ? category.name : "";
+  };
+
+  const getBrandName = (brandId) => {
+    const brand = brands.find((b) => b.id === brandId);
+    return brand ? brand.name : "";
+  };
+
+  return (
+    <div className="content">
+<section className="content-header my-2">
         <h1 className="d-inline">Sản phẩm</h1>
         <Link to={"/product/create"} className="btn-add">
           Thêm mới
@@ -88,66 +137,65 @@ function ProductList() {
         </div>
       </section>
       <section className="content-body my-2">
+        {/* Phần hiển thị danh sách sản phẩm */}
         <table className="table table-bordered">
           <thead>
             <tr>
               <th className="text-center" style={{ width: 30 }}>
                 <input type="checkbox" id="checkboxAll" />
               </th>
-              <th className="text-center" style={{ width: 130 }}>
-                Hình ảnh
-              </th>
               <th>Tên sản phẩm</th>
+              <th>Giá</th>
+              <th>Số lượng</th>
+              <th>Mô tả</th>
+              <th>Bảo hành</th>
+              <th>Thông số kỹ thuật</th>
               <th>Tên danh mục</th>
               <th>Tên thương hiệu</th>
               <th>ID</th>
             </tr>
           </thead>
           <tbody>
-          {products.map((product, index) => (
-            <tr className="datarow">
-              <td>
-                <input type="checkbox" id="checkId" />
-              </td>
-              <td>
-                <img
-                  className="img-fluid"
-                  src="public/images/product.jpg"
-                  alt="product.jpg"
-                />
-              </td>
-              <td>
-                <div className="name">
-                  <a href="product_edit.html">{product.name}</a>
-                </div>
-                <div className="function_style">
-                  <Link to="#" className="px-1 text-success">
-                    <i className="fa fa-toggle-on" />
-                  </Link>
-                  <Link to={"/product/edit"} className="px-1 text-primary">
-                    <i className="fa fa-edit" />
-                  </Link>
-                  <Link to={"product_show.html"} className="px-1 text-info">
-                    <i className="fa fa-eye" />
-                  </Link>
-                  <Link to={"#"} className="px-1 text-danger">
-                    <i className="fa fa-trash" />
-                  </Link>
-                </div>
-              </td>
-              <td>Tên danh mục</td>
-              <td>Tên Thuong hiệu</td>
-              <td className="text-center" style={{ width: 30 }}>
-                1
-              </td>
-            </tr>
-          ))}
+            {products.map((product, index) => (
+              <tr key={index} className="datarow">
+                {/* Thêm các cột dữ liệu */}
+                <td>
+                  <input type="checkbox" id={`checkId${index}`} />
+                </td>
+                <td>
+                  <div className="name">
+                    <Link to={`/product/edit/${product.id}`}>{product.name}</Link>
+                  </div>
+                  <div className="function_style">
+                    <Link to="#" className="px-1 text-success">
+                      <i className="fa fa-toggle-on" />
+                    </Link>
+                    <Link to={`/product/edit/${product.id}`} className="px-1 text-primary">
+                      <i className="fa fa-edit" />
+                    </Link>
+                    <Link to={`/product/show/${product.id}`} className="px-1 text-info">
+                      <i className="fa fa-eye" />
+                    </Link>
+                    <Link to="#" className="text-danger mx-1" onClick={() => removeProduct(product.id)}>
+                             <i className="fa fa-trash"></i>
+                          </Link>
+                  </div>
+                </td>
+                <td>{product.price}</td>
+                <td>{product.qty}</td>
+                <td>{product.description}</td>
+                <td>{product.warranty}</td>
+                <td>{product.specifications}</td>
+                <td>{getCategoryName(product.categoryId)}</td>
+                <td>{getBrandName(product.brandId)}</td>
+                <td>{product.id}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </section>
     </div>
-
-    );
+  );
 }
 
 export default ProductList;

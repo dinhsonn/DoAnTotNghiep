@@ -43,6 +43,9 @@ public class Product {
 
     @Column(nullable = false)
     private String content;
+    
+    @Column(nullable = false)
+    private int qty;
 
     @Column(nullable = false)
     private String warranty;

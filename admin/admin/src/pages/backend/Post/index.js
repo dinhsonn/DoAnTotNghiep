@@ -116,9 +116,9 @@ function Post() {
                       <a href="post_show.html" className="text-info mx-1">
                          <i className="fa fa-eye"></i>
                       </a>
-                      <Link to="#" className="text-danger mx-1">
-                         <i className="fa fa-trash"></i>
-                      </Link>
+                      <Link to="#" className="text-danger mx-1" onClick={() => removePost(post.id)}>
+                             <i className="fa fa-trash"></i>
+                          </Link>
                    </div>
                 </td>
                 <td>{post.detail}</td>

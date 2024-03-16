@@ -59,7 +59,7 @@ function Category() {
                 alert('Thêm danh mục thành công!')
        })
        .catch(error => {
-           console.error('Lỗi khi tạo mới người dùng:', error);
+           console.error('Lỗi khi tạo mới:', error);
        });
     };
     

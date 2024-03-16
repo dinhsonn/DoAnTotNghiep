@@ -1,108 +1,169 @@
+import React, { useState, useEffect } from "react";
+import { useNavigate, Link, useParams } from "react-router-dom";
+import ProductService from "../../../services/ProductServices";
+import CategoryService from "../../../services/CategoryServices";
+import BrandServices from "../../../services/BrandServices";
+
 function ProductEdit() {
-    return (    <div className="content">
-    <section className="content-header my-2">
-       <h1 className="d-inline">Cập nhập sản phẩm</h1>
-       <div className="mt-1 text-end">
-          <a className="btn btn-sm btn-primary" href="product_index.html">
-             <i className="fa fa-arrow-left"></i> Về danh sách
-          </a>
-       </div>
-    </section>
-    <section className="content-body my-2">
+  const navigate = useNavigate();
+  const { id } = useParams();
 
-       <div className="row">
-          <div className="col-md-9">
-             <div className="mb-3">
+  const [product, setProduct] = useState({
+    name: "",
+    content: "",
+    price: "",
+    qty: "",
+    warranty: "",
+    description: "",
+    categoryId: "",
+    brandId: "",
+    specifications: "",
+    status: "1",
+  });
+
+  const [categories, setCategories] = useState([]);
+  const [brands, setBrands] = useState([]);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const productResponse = await ProductService.getById(id);
+        setProduct(productResponse.data);
+
+        const categoriesResponse = await CategoryService.getAll();
+        setCategories(categoriesResponse.data.content);
+
+        const brandsResponse = await BrandServices.getAll();
+        setBrands(brandsResponse.data.content);
+      } catch (error) {
+        console.error("Error fetching product details:", error);
+      }
+    };
+
+    fetchProduct();
+  }, [id]);
+
+  const handleChange = (e) => {
+   const { name, value } = e.target;
+   setProduct(prevState => ({
+       ...prevState,
+       [name]: value
+   }));
+};
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    ProductService.update(product,id)
+      .then((response) => {
+        console.log("Updated product:", response.data);
+        alert("Cập nhật sản phẩm thành công!");
+      })
+      .catch((error) => {
+        console.error("Error updating product:", error);
+      });
+  };
+
+  return (
+    <div className="content">
+      <section className="content-header my-2">
+        <h1 className="d-inline">Chỉnh sửa sản phẩm</h1>
+        <div className="mt-1 text-end">
+          <Link className="btn btn-sm btn-primary" to={"/product"}>
+            <i className="fa fa-arrow-left"></i> Về danh sách
+          </Link>
+        </div>
+      </section>
+      <section className="content-body my-2">
+        <form onSubmit={handleSubmit}>
+          <div className="row">
+            <div className="col-md-9">
+              <div className="mb-3">
                 <label><strong>Tên sản phẩm (*)</strong></label>
-                <input type="text" placeholder="Nhập tên sản phẩm" name="name" className="form-control" />
-             </div>
-             <div className="mb-3">
-                <label><strong>Slug (*)</strong></label>
-                <input type="text" placeholder="Slug" name="slug" className="form-control" />
-             </div>
-             <div className="mb-3">
-                <label><strong>Chi tiết (*)</strong></label>
-                <textarea name="detail" placeholder="Nhập chi tiết sản phẩm" rows="7"
-                   className="form-control"></textarea>
-             </div>
-             <div className="mb-3">
+                <input type="text" placeholder="Nhập tên sản phẩm" name="name" value={product.name} onChange={handleChange} className="form-control" />
+              </div>
+              <div className="mb-3">
                 <label><strong>Mô tả (*)</strong></label>
-                <textarea name="description" rows="3" className="form-control"
-                   placeholder="Nhập mô tả"></textarea>
-             </div>
+                <textarea name="description" rows="3" value={product.description} onChange={handleChange} className="form-control" placeholder="Nhập mô tả"></textarea>
+              </div>
+              <div className="mb-3">
+                <label><strong>Bảo hành (*)</strong></label>
+                <input type="text" value={product.warranty} name="warranty" onChange={handleChange} className="form-control" />
+              </div>
+              <div className="mb-3">
+                <label><strong>Thông số kỹ thuật (*)</strong></label>
+                <textarea name="specifications" rows="3" value={product.specifications} onChange={handleChange} className="form-control" placeholder="Nhập thông số kỹ thuật"></textarea>
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="box-container mt-4 bg-white">
+                <div className="box-header py-1 px-2 border-bottom">
+                  <strong>Đăng</strong>
+                </div>
+                <div className="box-body p-2 border-bottom">
+                  <select name="status" value={product.status} onChange={handleChange} className="form-select">
+                    <option value="1">Xuất bản</option>
+                    <option value="2">Chưa xuất bản</option>
+                  </select>
+                </div>
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Brand:</label>
+                <select
+                  className="form-select"
+                  name="brandId"
+                  value={product.brandId}
+                  onChange={handleChange}
+                >
+                  <option value="">Select Brand</option>
+                  {brands.map((brand) => (
+                    <option key={brand.id} value={brand.id}>
+                      {brand.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Category:</label>
+                <select
+                  className="form-select"
+                  name="categoryId"
+                  value={product.categoryId}
+                  onChange={handleChange}
+                >
+                  <option value="">Select Category</option>
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="box-container mt-2 bg-white">
+                <div className="box-header py-1 px-2 border-bottom">
+                  <strong>Giá và số lượng</strong>
+                </div>
+                <div className="box-body p-2 border-bottom">
+                  <div className="mb-3">
+                    <label><strong>Giá bán (*)</strong></label>
+                    <input type="number" value={product.price} min="10000" name="price" onChange={handleChange} className="form-control" />
+                  </div>
+                  <div className="mb-3">
+                    <label><strong>Số lượng (*)</strong></label>
+                    <input type="number" value={product.qty} min="1" name="qty" onChange={handleChange} className="form-control" />
+                  </div>
+                </div>
+              </div>
+              <div className="box-footer text-end px-2 py-2">
+                <button type="submit" className="btn btn-success btn-sm text-end">
+                  <i className="fa fa-save" aria-hidden="true"></i> Cập nhật
+                </button>
+              </div>
+            </div>
           </div>
-          <div className="col-md-3">
-             <div className="box-container mt-4 bg-white">
-                <div className="box-header py-1 px-2 border-bottom">
-                   <strong>Đăng</strong>
-                </div>
-                <div className="box-body p-2 border-bottom">
-                   <select name="status" className="form-select">
-                      <option value="1">Xuất bản</option>
-                      <option value="2">Chưa xuất bản</option>
-                   </select>
-                </div>
-                <div className="box-footer text-end px-2 py-2">
-                   <button type="submit" className="btn btn-success btn-sm text-end">
-                      <i className="fa fa-save" aria-hidden="true"></i> Cập nhật
-                   </button>
-                </div>
-             </div>
-             <div className="box-container mt-2 bg-white">
-                <div className="box-header py-1 px-2 border-bottom">
-                   <strong>Danh mục(*)</strong>
-                </div>
-                <div className="box-body p-2 border-bottom">
-                   <select name="category_id" className="form-select">
-                      <option value="">Chọn danh mục</option>
-                      <option value="1">Tên danh mục</option>
-                   </select>
-                </div>
-             </div>
-             <div className="box-container mt-2 bg-white">
-                <div className="box-header py-1 px-2 border-bottom">
-                   <strong>Thương hiệu(*)</strong>
-                </div>
-                <div className="box-body p-2 border-bottom">
-                   <select name="brand_id" className="form-select">
-                      <option value="">Chọn thương hiêu</option>
-                      <option value="1">Tên danh mục</option>
-                   </select>
-                </div>
-             </div>
-             <div className="box-container mt-2 bg-white">
-                <div className="box-header py-1 px-2 border-bottom">
-                   <strong>Giá và số lượng</strong>
-                </div>
-                <div className="box-body p-2 border-bottom">
-                   <div className="mb-3">
-                      <label><strong>Giá bán (*)</strong></label>
-                      <input type="number" value="10000" min="10000" name="price" className="form-control" />
-                   </div>
-                   <div className="mb-3">
-                      <label><strong>Giá khuyến mãi (*)</strong></label>
-                      <input type="number" value="10000" min="10000" name="pricesale"
-                         className="form-control" />
-                   </div>
-                   <div className="mb-3">
-                      <label><strong>Số lượng (*)</strong></label>
-                      <input type="number" value="1" min="1" name="qty" className="form-control" />
-                   </div>
-                </div>
-             </div>
-             <div className="box-container mt-2 bg-white">
-                <div className="box-header py-1 px-2 border-bottom">
-                   <strong>Hình đại diện(*)</strong>
-                </div>
-                <div className="box-body p-2 border-bottom">
-                   <input type="file" name="image" className="form-control" />
-                </div>
-             </div>
-          </div>
-       </div>
-
-    </section>
- </div> );
+        </form>
+      </section>
+    </div>
+  );
 }
 
 export default ProductEdit;

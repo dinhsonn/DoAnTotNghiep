@@ -36,9 +36,6 @@ public class ProductImage {
     private String name;
 
     @Column(nullable = false)
-    private String link;
-
-    @Column(nullable = false)
     private String image;
 
     @Column(name = "sort_order", nullable = false)

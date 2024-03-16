@@ -42,7 +42,6 @@ public class ProductImageServiceImpl implements ProductImageService {
         if (existingProductImage != null) {
             existingProductImage.setProductId(productImage.getProductId());
             existingProductImage.setName(productImage.getName());
-            existingProductImage.setLink(productImage.getLink());
             existingProductImage.setImage(productImage.getImage());
             existingProductImage.setSortOrder(productImage.getSortOrder());
             existingProductImage.setStatus(productImage.getStatus());
