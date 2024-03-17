@@ -22,6 +22,9 @@ function Sidebar() {
                                  <Link to={"/product"}>Tất cả sản phẩm</Link>
                               </li>
                               <li>
+                                 <Link to={"/image"}>Hình ảnh sản phẩm</Link>
+                              </li>
+                              <li>
                                  <Link to={"/product/import"}>Nhập hàng</Link>
                               </li>
                               <li>
@@ -31,7 +34,7 @@ function Sidebar() {
                                  <Link to={"/brand"}>Thương hiệu</Link>
                               </li>
                               <li>
-                                 <Link to={"/product/sale"}>Khuyễn mãi</Link>
+                                 <Link to={"/sale"}>Khuyễn mãi</Link>
                               </li>
                            </ul>
                         </li>

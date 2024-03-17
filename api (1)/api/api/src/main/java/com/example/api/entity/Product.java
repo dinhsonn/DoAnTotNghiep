@@ -29,10 +29,10 @@ public class Product {
     @Column(nullable = false)
     private String name;
 
-    @Column(name = "category_id",nullable = false)
+    @Column(name = "category_id", nullable = false)
     private Long categoryId;
 
-    @Column(name = "brand_id",nullable = false)
+    @Column(name = "brand_id", nullable = false)
     private Long brandId;
 
     @Column(nullable = false)
@@ -43,7 +43,7 @@ public class Product {
 
     @Column(nullable = false)
     private String content;
-    
+
     @Column(nullable = false)
     private int qty;
 
@@ -66,5 +66,11 @@ public class Product {
 
     public Product() {
         this.createdAt = new Date();
+    }
+
+    // Constructor có tham số
+    public Product(String id) {
+        this(); // Gọi constructor mặc định để khởi tạo createdAt
+        this.id = Long.parseLong(id);
     }
 }

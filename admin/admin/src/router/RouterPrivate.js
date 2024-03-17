@@ -11,7 +11,7 @@ import Category from '../pages/backend/Category/index';
  import ProductShow from '../pages/backend/Product/ProductShow';
  import ProductCreate from '../pages/backend/Product/ProductCreate';
  import ProductEdit from '../pages/backend/Product/ProductEdit';
- import ProductSale from '../pages/backend/Product/ProductSale';
+ import ProductSale from '../pages/backend/ProductSale/ProductSale';
 // import ContactList from '../pages/backend/Contact/ContactList';
 // import ContactShow from '../pages/backend/Contact/ContactShow';
 // import ContactUpdate from '../pages/backend/Contact/ContactUpdate';
@@ -61,6 +61,13 @@ import About from "../pages/backend/About";
 import AboutCreate from "../pages/backend/About/AboutCreate";
 import AboutShow from "../pages/backend/About/AboutShow";
 import AboutEdit from "../pages/backend/About/AboutEdit";
+import ProductImage from "../pages/backend/Image/ProductImage";
+import ImageCreate from "../pages/backend/Image/ImageCreate";
+import ImageEdit from "../pages/backend/Image/ImageEdit";
+import ImageShow from "../pages/backend/Image/ImageShow";
+import SaleCreate from "../pages/backend/ProductSale/SaleCreate";
+import SaleEdit from "../pages/backend/ProductSale/SaleEdit";
+import SaleShow from "../pages/backend/ProductSale/SaleShow";
 
 const RouterPrivate = [
  { path: "/", component: Dashboard },
@@ -80,7 +87,16 @@ const RouterPrivate = [
   { path: "/product/show/:id", component: ProductShow },
   { path: "/product/create", component: ProductCreate },
   { path: "/product/edit/:id", component: ProductEdit },
-  { path: "/product/sale", component: ProductSale },
+  
+  { path: "/sale", component: ProductSale },
+  { path: "/sale/create", component: SaleCreate },
+  { path: "/sale/edit/:id", component: SaleEdit },
+  { path: "/sale/show/:id", component: SaleShow },
+
+  { path: "/image", component: ProductImage },
+  { path: "/image/create", component: ImageCreate },
+  { path: "/image/edit/:id", component: ImageEdit },
+  { path: "/image/show/:id", component: ImageShow },
 
   // { path: "/admin/contact", component: ContactList },
   // { path: "/admin/contact/show/:id", component: ContactShow },

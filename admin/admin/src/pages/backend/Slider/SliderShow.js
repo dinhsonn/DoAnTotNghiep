@@ -38,7 +38,6 @@ function SliderShow() {
            </div>
         </section>
         <section className="content-body my-2">
-
            <table className="table table-bordered">
               <thead>
                  <tr>
