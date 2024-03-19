@@ -68,7 +68,7 @@ function SliderShow() {
                  </tr>
                  <tr>
                     <td>Vị trí</td>
-                    <td>{sliders.position}</td>
+                    <td>{sliders.sortOrder}</td>
                  </tr>
               </tbody>
            </table>

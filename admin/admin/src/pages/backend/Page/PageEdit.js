@@ -10,7 +10,6 @@ function PageEdit() {
            </div>
         </section>
         <section className="content-body my-2">
-
            <div className="row">
               <div className="col-md-9">
                  <div className="mb-3">

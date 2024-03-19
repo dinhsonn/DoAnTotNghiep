@@ -70,7 +70,7 @@ public class Product {
 
     // Constructor có tham số
     public Product(String id) {
-        this(); // Gọi constructor mặc định để khởi tạo createdAt
+        this();
         this.id = Long.parseLong(id);
     }
 }

@@ -1,90 +1,48 @@
+import React, { useState, useEffect } from "react";
+import BannerService from "../../../services/BannerServices";
+// làm cuộn như slider //
 function Banner() {
-    return ( 
-        <div className="col-lg-4">
-        <div className="intro-banners">
-          <div className="banner mb-lg-1 mb-xl-2">
-            <a href="#">
-              <img
-                src="assets/images/demos/demo-3/banners/banner-1.jpg"
-                alt="Banner"
-              />
+  const [banners, setBanners] = useState([]);
+  //api này gọi user 
+  useEffect(() => {
+    BannerService.getAll()
+      .then(response => {
+        setBanners(response.data.content);
+        console.log("data", response.data.content)
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
+  const getImgUrl = (imageName) => {
+    const endpoint = 'banners';
+    return `http://localhost:8082/api/${endpoint}/image/${imageName}`;
+  };
+  return (
+    <div className="col-lg-4">
+      <div>
+        {banners.map((banner, index) => (
+          <div className="banner mb-lg-1 mb-xl-2" key={banner.id}>
+            <a href={banner.link} >
+            <img src={getImgUrl(banner.image)} alt="Banner" />
             </a>
             <div className="banner-content">
               <h4 className="banner-subtitle d-lg-none d-xl-block">
-                <a href="#">Top Product</a>
+                <a href="#">{banner.name}</a>
               </h4>
-              {/* End .banner-subtitle */}
               <h3 className="banner-title">
-                <a href="#">
-                  Edifier <br />
-                  Stereo Bluetooth
-                </a>
+                <a href="#">{banner.type}</a>
               </h3>
-              {/* End .banner-title */}
               <a href="#" className="banner-link">
                 Shop Now
                 <i className="icon-long-arrow-right" />
               </a>
             </div>
-            {/* End .banner-content */}
           </div>
-          {/* End .banner */}
-          <div className="banner mb-lg-1 mb-xl-2">
-            <a href="#">
-              <img
-                src="assets/images/demos/demo-3/banners/banner-2.jpg"
-                alt="Banner"
-              />
-            </a>
-            <div className="banner-content">
-              <h4 className="banner-subtitle d-lg-none d-xl-block">
-                <a href="#">Clearance</a>
-              </h4>
-              {/* End .banner-subtitle */}
-              <h3 className="banner-title">
-                <a href="#">
-                  GoPro - Fusion 360 <span>Save $70</span>
-                </a>
-              </h3>
-              {/* End .banner-title */}
-              <a href="#" className="banner-link">
-                Shop Now
-                <i className="icon-long-arrow-right" />
-              </a>
-            </div>
-            {/* End .banner-content */}
-          </div>
-          {/* End .banner */}
-          <div className="banner mb-0">
-            <a href="#">
-              <img
-                src="assets/images/demos/demo-3/banners/banner-3.jpg"
-                alt="Banner"
-              />
-            </a>
-            <div className="banner-content">
-              <h4 className="banner-subtitle d-lg-none d-xl-block">
-                <a href="#">Nổi bật</a>
-              </h4>
-              {/* End .banner-subtitle */}
-              <h3 className="banner-title">
-                <a href="#">
-                  Apple Watch 4 <span>Our Hottest Deals</span>
-                </a>
-              </h3>
-              {/* End .banner-title */}
-              <a href="#" className="banner-link">
-                Shop Now
-                <i className="icon-long-arrow-right" />
-              </a>
-            </div>
-            {/* End .banner-content */}
-          </div>
-          {/* End .banner */}
-        </div>
-        {/* End .intro-banners */}
+        ))}
       </div>
-     );
+    </div>
+  );
 }
 
 export default Banner;

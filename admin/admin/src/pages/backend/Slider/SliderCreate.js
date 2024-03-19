@@ -6,8 +6,7 @@ function SliderCreate() {
   const [formData, setFormData] = useState({
     name: '',
     link: '',
-    position: '',
-    sort_order: '1',
+    sortOrder: '',
     image: "",
     status: '',
   });
@@ -115,6 +114,9 @@ function SliderCreate() {
                     <option value="2">Quảng cáo</option>
                   </select>
                   <p className="pt-2">Vị trí hiển thị banner</p>
+                </div>
+                <div className="box-body p-2 border-bottom">
+                <input type="text" name="sortOrder" className="form-control" placeholder="Nhập thứ tự" onChange={handleChange} value={formData.sortOrder}/>
                 </div>
               </div>
               <div className="box-container mt-4 bg-white">

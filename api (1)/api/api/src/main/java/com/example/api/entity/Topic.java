@@ -51,4 +51,9 @@ public class Topic {
     public Topic() {
         this.createdAt = new Date();
     }
+
+    public Topic(String id) {
+        this();
+        this.id = Long.parseLong(id);
+    }
 }

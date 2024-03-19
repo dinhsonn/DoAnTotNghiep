@@ -107,22 +107,19 @@ function Post() {
                       </a>
                    </div>
                    <div className="function_style">
-                      <a href="#" className="text-success mx-1">
-                         <i className="fa fa-toggle-on"></i>
-                      </a>
-                      <a href="post_edit.html" className="text-primary mx-1">
-                         <i className="fa fa-edit"></i>
-                      </a>
-                      <a href="post_show.html" className="text-info mx-1">
-                         <i className="fa fa-eye"></i>
-                      </a>
+                   <Link to={`/post/edit/${post.id}`} className="px-1 text-primary">
+                      <i className="fa fa-edit" />
+                    </Link>
+                    <Link to={`/post/show/${post.id}`} className="px-1 text-info">
+                      <i className="fa fa-eye" />
+                    </Link>
                       <Link to="#" className="text-danger mx-1" onClick={() => removePost(post.id)}>
                              <i className="fa fa-trash"></i>
                           </Link>
                    </div>
                 </td>
                 <td>{post.detail}</td>
-                <td>{post.topicId}</td>
+                <td>{post.topicId.name}</td>
                 <td>{post.status}</td>
                 <td className="text-center">{post.id}</td>
              </tr>

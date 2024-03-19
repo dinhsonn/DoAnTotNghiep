@@ -8,8 +8,7 @@ function SliderEdit() {
   const [formData, setFormData] = useState({
     name: '',
     link: '',
-    position: '',
-    sortOrder: '1',
+    sortOrder: '',
     image: "",
     status: '',
   });
@@ -142,12 +141,7 @@ function SliderEdit() {
                   <strong>Vị trí (*)</strong>
                 </div>
                 <div className="box-body p-2 border-bottom">
-                  <select name="position" className="form-select" onChange={handleChange} value={formData.position}>
-                    <option>Chọn vị trí</option>
-                    <option value="1">Slide Show</option>
-                    <option value="2">Quảng cáo</option>
-                  </select>
-                  <p className="pt-2">Vị trí hiển thị banner</p>
+                <input type="text" name="sortOrder" className="form-control" placeholder="Nhập thứ tự" onChange={handleChange} value={formData.sortOrder}/>
                 </div>
               </div>
               <div className="box-container mt-4 bg-white">

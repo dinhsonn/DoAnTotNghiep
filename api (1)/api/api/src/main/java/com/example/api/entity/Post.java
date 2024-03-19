@@ -7,6 +7,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -29,8 +31,9 @@ public class Post {
     @Column(nullable = false)
     private String name;
 
-    @Column(name = "topic_id", nullable = false)
-    private Long topicId;
+    @ManyToOne
+    @JoinColumn(name = "topic_id", nullable = false)
+    private Topic topicId;
 
     @Column(nullable = false)
     private String slug;

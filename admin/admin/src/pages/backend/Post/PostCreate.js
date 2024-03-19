@@ -6,18 +6,26 @@ import axios from "axios";
 function PostCreate() {
   const [topics, setTopics] = useState([]);
   const [formData, setFormData] = useState({
-    name: "",
-    slug: "",
-    detail: "",
-    image: "",
-    topicId: "",
-    type: "aa",
-    status: "0",
+    name: '',
+    slug: '',
+    detail: '',
+    image: '',
+    topicId: '',
+    type: '',
+    status: '',
   });
   const [file, setFile] = useState(null);
   const [imageName, setImageName] = useState("");
   const [message, setMessage] = useState("");
-
+  useEffect(() => {
+    TopicServices.getAll()
+      .then((response) => {
+        setTopics(response.data.content);
+      })
+      .catch((error) => {
+        console.error("Lỗi khi lấy topic:", error);
+      });
+  }, []);
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
@@ -67,15 +75,7 @@ function PostCreate() {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-  useEffect(() => {
-    TopicServices.getAll()
-      .then((response) => {
-        setTopics(response.data.content);
-      })
-      .catch((error) => {
-        console.error("Error fetching categories:", error);
-      });
-  }, []);
+
   return (
     <div className="content">
       <section className="content-header my-2">
@@ -129,17 +129,6 @@ function PostCreate() {
                   value={formData.detail}
                 ></textarea>
               </div>
-              <div className="mb-3">
-                <label>
-                  <strong>Mô tả (*)</strong>
-                </label>
-                <textarea
-                  name="description"
-                  rows="4"
-                  className="form-control"
-                  placeholder="Mô tả"
-                ></textarea>
-              </div>
             </div>
             <div className="col-md-3">
               <div className="box-container mt-4 bg-white">
@@ -165,11 +154,12 @@ function PostCreate() {
                 </div>
                 <div className="box-body p-2 border-bottom">
                   <select
-                    name="topic_id"
+                    name="topicId"
                     className="form-select"
                     onChange={handleChange}
                     value={formData.topicId}
                   >
+                    <option value="">Select Product</option>
                     {topics.map((topic) => (
                       <option key={topic.id} value={topic.id}>
                         {topic.name}

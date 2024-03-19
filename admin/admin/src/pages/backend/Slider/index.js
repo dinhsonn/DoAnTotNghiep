@@ -90,7 +90,7 @@ function Slider() {
                     </th>
                     <th className="text-center" style={{width: '130px'}}>Hình ảnh</th>
                     <th>Tên slider</th>
-                    <th>Vị trí</th>
+                    <th>Thứ tự</th>
                     <th>Liên kết</th>
                     <th className="text-center" style={{width: '30px'}}>ID</th>
                  </tr>
@@ -122,7 +122,7 @@ function Slider() {
                           </Link>
                        </div>
                     </td>
-                    <td>{slider.position}</td>
+                    <td>{slider.sortOrder}</td>
                     <td>{slider.link}</td>
                     <td className="text-center">{slider.id}</td>
                  </tr>
