@@ -34,9 +34,6 @@ public class Slider {
     @Column(name = "sort_order", nullable = false)
     private int sortOrder;
 
-    @Column(nullable = false)
-    private int position;
-
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false)
     private Date createdAt;
