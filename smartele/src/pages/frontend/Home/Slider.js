@@ -1,114 +1,72 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import SliderService from "../../../services/SliderServices";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+
 function Slider() {
-  const [sliders, setSliders] = useState([]);
-  //api này gọi user 
+  const [slider, setSlider] = useState(null);
+  const [currentSortOrder, setCurrentSortOrder] = useState(1);
+
   useEffect(() => {
-     SliderService.getAll()
+    const interval = setInterval(() => {
+      const nextSortOrder = currentSortOrder === 4 ? 1 : currentSortOrder + 1;
+      setCurrentSortOrder(nextSortOrder);
+    }, 5000); // 5000 milliseconds = 5 seconds
+
+    return () => clearInterval(interval);
+  }, [currentSortOrder]);
+
+  useEffect(() => {
+    fetchSlider(currentSortOrder);
+  }, [currentSortOrder]);
+
+  const fetchSlider = (sortOrder) => {
+    SliderService.getAll()
       .then(response => {
-        setSliders(response.data.content);
+        const sliders = response.data.content;
+        const currentSlider = sliders.find(slider => slider.sortOrder === sortOrder);
+        setSlider(currentSlider);
       })
       .catch(error => {
         console.error('Error fetching data:', error);
       });
-  }, []);
+  };
+
+  const handleNextSlide = () => {
+    const nextSortOrder = currentSortOrder === 4 ? 1 : currentSortOrder + 1;
+    setCurrentSortOrder(nextSortOrder);
+  };
+
+  const handlePreviousSlide = () => {
+    const previousSortOrder = currentSortOrder === 1 ? 4 : currentSortOrder - 1;
+    setCurrentSortOrder(previousSortOrder);
+  };
+
   return (
-    <div className="intro-slider-container slider-container-ratio mb-2 mb-lg-0">
-      <div
-        className="intro-slider owl-carousel owl-simple owl-dark owl-nav-inside"
-        data-toggle="owl"
-        data-owl-options='{
-                            "nav": false, 
-                            "dots": true,
-                            "responsive": {
-                                "768": {
-                                    "nav": true,
-                                    "dots": false
-                                }
-                            }
-                        }'
-      >
-   
-        <div className="intro-slide">
-          <figure className="slide-image">
-            <picture>
-              <source
-                media="(max-width: 480px)"
-                srcSet="assets/images/demos/demo-3/slider/slide-1-480w.jpg"
-              />
-              <img
-                src="assets/images/demos/demo-3/slider/slide-1.jpg"
-                alt="Image Desc"
-              />
-            </picture>
-          </figure>
-          {/* End .slide-image */}
-          <div className="intro-content">
-            <h3 className="intro-subtitle text-primary">Daily Deals</h3>
-            {/* End .h3 intro-subtitle */}
-            <h1 className="intro-title">
-              AirPods <br />
-              Earphones
-            </h1>
-            {/* End .intro-title */}
-            <div className="intro-price">
-              <sup>Today:</sup>
-              <span className="text-primary">
-                $247<sup>.99</sup>
-              </span>
+    <div style={{ position: "relative" }}>
+        {slider && (
+          <div>
+            <figure style={{ width: "100%", height: "400px", overflow: "hidden" }}>
+              <a href={slider.link}>
+                <picture style={{ width: "100%", height: "100%", objectFit: "cover" }}>
+                  <img src={`http://localhost:8082/api/sliders/image/${slider.image}`} alt={slider.alt} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                </picture>
+              </a>
+            </figure>
+            <div className="intro-content">
+              <h3 className="intro-subtitle text-primary">{slider.name}</h3>
+              <a href={slider.link} className="btn btn-primary btn-round">
+                <span>Click Here</span>
+              </a>
             </div>
-            {/* End .intro-price */}
-            <a href="category.html" className="btn btn-primary btn-round">
-              <span>Click Here</span>
-              <i className="icon-long-arrow-right" />
-            </a>
           </div>
-          {/* End .intro-content */}
+        )}
+        <div style={{ position: "absolute", left: "10px", top: "50%", cursor: "pointer" }} onClick={handlePreviousSlide}>
+          <FontAwesomeIcon icon={faChevronLeft} style={{ fontSize: "24px" }} />
         </div>
-        {/* End .intro-slide */}
-        <div className="intro-slide">
-          <figure className="slide-image">
-            <picture>
-              <source
-                media="(max-width: 480px)"
-                srcSet="assets/images/demos/demo-3/slider/slide-2-480w.jpg"
-              />
-              <img
-                src="assets/images/demos/demo-3/slider/slide-2.jpg"
-                alt="Image Desc"
-              />
-            </picture>
-          </figure>
-          {/* End .slide-image */}
-          <div className="intro-content">
-            <h3 className="intro-subtitle text-primary">
-              Deals and Promotions
-            </h3>
-            {/* End .h3 intro-subtitle */}
-            <h1 className="intro-title">
-              Echo Dot <br />
-              3rd Gen
-            </h1>
-            {/* End .intro-title */}
-            <div className="intro-price">
-              <sup className="intro-old-price">$49,99</sup>
-              <span className="text-primary">
-                $29<sup>.99</sup>
-              </span>
-            </div>
-            {/* End .intro-price */}
-            <a href="category.html" className="btn btn-primary btn-round">
-              <span>Click Here</span>
-              <i className="icon-long-arrow-right" />
-            </a>
-          </div>
-          {/* End .intro-content */}
+        <div style={{ position: "absolute", right: "10px", top: "50%", cursor: "pointer" }} onClick={handleNextSlide}>
+          <FontAwesomeIcon icon={faChevronRight} style={{ fontSize: "24px" }} />
         </div>
-        {/* End .intro-slide */}
-      </div>
-      {/* End .intro-slider owl-carousel owl-simple */}
-      <span className="slider-loader" />
-      {/* End .slider-loader */}
     </div>
   );
 }
