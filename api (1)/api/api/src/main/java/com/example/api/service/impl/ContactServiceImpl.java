@@ -41,9 +41,10 @@ public class ContactServiceImpl implements ContactService {
         Contact existingContact = contactRepository.findById(contact.getId()).orElse(null);
 
         if (existingContact != null) {
-            existingContact.setUserId(contact.getUserId());
-            existingContact.setTitle(contact.getTitle());
+            existingContact.setName(contact.getName());
+            existingContact.setEmail(contact.getEmail());
             existingContact.setContent(contact.getContent());
+            existingContact.setPhone(contact.getPhone());
             existingContact.setStatus(contact.getStatus());
             existingContact.setCreatedAt(contact.getCreatedAt());
             existingContact.setUpdatedAt(contact.getUpdatedAt());

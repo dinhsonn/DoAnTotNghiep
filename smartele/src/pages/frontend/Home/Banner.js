@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import BannerService from "../../../services/BannerServices";
-// làm cuộn như slider //
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 function Banner() {
   const [banners, setBanners] = useState([]);
   //api này gọi user 

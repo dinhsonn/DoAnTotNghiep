@@ -898,6 +898,11 @@ function Menu() {
                   </li>
                 </ul>
               </li>
+              <li>
+                <a href="/contact">
+                  Contact
+                </a>
+              </li>
             </ul>
             {/* End .menu */}
           </nav>

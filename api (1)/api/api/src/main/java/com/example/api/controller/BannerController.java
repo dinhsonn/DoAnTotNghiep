@@ -46,7 +46,7 @@ public class BannerController {
             File directory = new File(uploadDir);
             if (!directory.exists()) {
                 directory.mkdirs();
-            }
+            }   
             String fileName = customName + ".png"; 
 
             String filePath = uploadDir + File.separator + fileName;
