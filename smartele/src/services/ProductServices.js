@@ -23,7 +23,7 @@ function remove(id)
 }
 function getProductImage()
 { 
-    return httpAxios.get(`productimages`);
+    return httpAxios.get("productimages");
 }
 function getProductImageById(productId)
 {

@@ -61,6 +61,10 @@ import About from "../pages/backend/About";
 import AboutCreate from "../pages/backend/About/AboutCreate";
 import AboutShow from "../pages/backend/About/AboutShow";
 import AboutEdit from "../pages/backend/About/AboutEdit";
+import Menu from "../pages/backend/Menu/index";
+import MenuShow from "../pages/backend/Menu/MenuShow";
+import MenuEdit from "../pages/backend/Menu/MenuEdit";
+import MenuTrash from "../pages/backend/Menu/MenuTrash";
 import ProductImage from "../pages/backend/Image/ProductImage";
 import ImageCreate from "../pages/backend/Image/ImageCreate";
 import ImageEdit from "../pages/backend/Image/ImageEdit";
@@ -92,6 +96,11 @@ const RouterPrivate = [
   { path: "/sale/create", component: SaleCreate },
   { path: "/sale/edit/:id", component: SaleEdit },
   { path: "/sale/show/:id", component: SaleShow },
+
+  { path: "/menu", component: Menu },
+  { path: "/menu/show/:id", component: MenuShow },
+  { path: "/menu/edit/:id", component: MenuEdit },
+  { path: "/menu/trash/:id", component: MenuTrash },
 
   { path: "/image", component: ProductImage },
   { path: "/image/create", component: ImageCreate },

@@ -1,7 +1,42 @@
+import { useEffect, useState } from "react";
 import Banner from "./Banner";
 import Slider from "./Slider";
-
+import ProductServices from '../../../services/ProductServices';
+import ProductItem3 from "../Product/ProductItem3";
+import ProductItem1 from "../Product/ProductItem1";
 function Home() {
+  const [products, setProducts] = useState([]);
+  const [productImages, setProductImages] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [productsResponse,productImagesResponse] = await Promise.all([
+          ProductServices.getAll(),
+          ProductServices.getProductImage(),
+        ]);
+        const productsData = productsResponse.data.content;
+        const productImagesData = productImagesResponse.data.content;
+        setProducts(productsData);
+        setProductImages(productImagesData);
+
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+      const combinedData = products.map(product => {
+        const correspondingImages = productImages.filter(image => image.productId.id === product.id && image.sortOrder === 1);
+
+        const imageUrls = correspondingImages.map(image => image.image);
+
+        return {
+          ...product,
+          image: imageUrls.length > 0 ? imageUrls[0] : null,
+
+        };
+      });
   return ( 
 <>
   <main className="main">
@@ -75,368 +110,17 @@ function Home() {
         >
           <div
             className="owl-carousel owl-full carousel-equal-height carousel-with-shadow"
-            data-toggle="owl"
-            data-owl-options='{
-                          "nav": true, 
-                          "dots": true,
-                          "margin": 20,
-                          "loop": false,
-                          "responsive": {
-                              "0": {
-                                  "items":2
-                              },
-                              "600": {
-                                  "items":2
-                              },
-                              "992": {
-                                  "items":3
-                              },
-                              "1200": {
-                                  "items":4
-                              }
-                          }
-                      }'
+       
+            
           >
-              <div className="product product-2">
-                <figure className="product-media">
-                  <a href="product.html">
-                    <img
-                      src="assets/images/demos/demo-3/products/product-1.jpg"
-                      alt="Product image"
-                      className="product-image"
-                    />
-                  </a>
-                  <div className="product-action-vertical">
-                    <a
-                      href="#"
-                      className="btn-product-icon btn-wishlist btn-expandable"
-                    >
-                      <span>add to wishlist</span>
-                    </a>
-                  </div>
-                  {/* End .product-action */}
-                  <div className="product-action product-action-dark">
-                    <a
-                      href="#"
-                      className="btn-product btn-cart"
-                      title="Add to cart"
-                    >
-                      <span>add to cart</span>
-                    </a>
-                    <a
-                      href="popup/quickView.html"
-                      className="btn-product btn-quickview"
-                      title="Quick view"
-                    >
-                      <span>quick view</span>
-                    </a>
-                  </div>
-                  {/* End .product-action */}
-                </figure>
-                {/* End .product-media */}
-                <div className="product-body">
-                  <div className="product-cat">
-                    <a href="#">Cameras &amp; Camcorders</a>
-                  </div>
-                  {/* End .product-cat */}
-                  <h3 className="product-title">
-                    <a href="product.html">
-                      GoPro - HERO7 Black HD Waterproof Action
-                    </a>
-                  </h3>
-                  {/* End .product-title */}
-                  <div className="product-price">$349.99</div>
-                  {/* End .product-price */}
-                  <div className="ratings-container">
-                    <div className="ratings">
-                      <div className="ratings-val" style={{ width: "60%" }} />
-                      {/* End .ratings-val */}
-                    </div>
-                    {/* End .ratings */}
-                    <span className="ratings-text">( 2 Reviews )</span>
-                  </div>
-                  {/* End .rating-container */}
-                </div>
-                {/* End .product-body */}
-              </div>
-            {/* End .product */}
-            <div className="product product-2">
-              <figure className="product-media">
-                <span className="product-label label-circle label-new">
-                  New
-                </span>
-                <a href="product.html">
-                  <img
-                    src="assets/images/demos/demo-3/products/product-2.jpg"
-                    alt="Product image"
-                    className="product-image"
-                  />
-                  <img
-                    src="assets/images/demos/demo-3/products/product-2-2.jpg"
-                    alt="Product image"
-                    className="product-image-hover"
-                  />
-                </a>
-                <div className="product-action-vertical">
-                  <a
-                    href="#"
-                    className="btn-product-icon btn-wishlist btn-expandable"
-                  >
-                    <span>add to wishlist</span>
-                  </a>
-                </div>
-                {/* End .product-action */}
-                <div className="product-action product-action-dark">
-                  <a
-                    href="#"
-                    className="btn-product btn-cart"
-                    title="Add to cart"
-                  >
-                    <span>add to cart</span>
-                  </a>
-                  <a
-                    href="popup/quickView.html"
-                    className="btn-product btn-quickview"
-                    title="Quick view"
-                  >
-                    <span>quick view</span>
-                  </a>
-                </div>
-                {/* End .product-action */}
-              </figure>
-              {/* End .product-media */}
-              <div className="product-body">
-                <div className="product-cat">
-                  <a href="#">Smartwatches</a>
-                </div>
-                {/* End .product-cat */}
-                <h3 className="product-title">
-                  <a href="product.html">
-                    Apple - Apple Watch Series 3 with White Sport Band
-                  </a>
-                </h3>
-                {/* End .product-title */}
-                <div className="product-price">$214.99</div>
-                {/* End .product-price */}
-                <div className="ratings-container">
-                  <div className="ratings">
-                    <div className="ratings-val" style={{ width: "0%" }} />
-                    {/* End .ratings-val */}
-                  </div>
-                  {/* End .ratings */}
-                  <span className="ratings-text">( 0 Reviews )</span>
-                </div>
-                {/* End .rating-container */}
-                <div className="product-nav product-nav-dots">
-                  <a
-                    href="#"
-                    className="active"
-                    style={{ background: "#e2e2e2" }}
-                  >
-                    <span className="sr-only">Color name</span>
-                  </a>
-                  <a href="#" style={{ background: "#333333" }}>
-                    <span className="sr-only">Color name</span>
-                  </a>
-                  <a href="#" style={{ background: "#f2bc9e" }}>
-                    <span className="sr-only">Color name</span>
-                  </a>
-                </div>
-                {/* End .product-nav */}
-              </div>
-              {/* End .product-body */}
+             
+            <div className="row">
+                {combinedData.map((combinedItem, index) => (
+                  <ProductItem3 product={combinedItem} key={index} />
+                ))}
             </div>
-            {/* End .product */}
-            <div className="product product-2">
-              <figure className="product-media">
-                <a href="product.html">
-                  <img
-                    src="assets/images/demos/demo-3/products/product-3.jpg"
-                    alt="Product image"
-                    className="product-image"
-                  />
-                </a>
-                <div className="product-action-vertical">
-                  <a
-                    href="#"
-                    className="btn-product-icon btn-wishlist btn-expandable"
-                  >
-                    <span>add to wishlist</span>
-                  </a>
-                </div>
-                {/* End .product-action */}
-                <div className="product-action product-action-dark">
-                  <a
-                    href="#"
-                    className="btn-product btn-cart"
-                    title="Add to cart"
-                  >
-                    <span>add to cart</span>
-                  </a>
-                  <a
-                    href="popup/quickView.html"
-                    className="btn-product btn-quickview"
-                    title="Quick view"
-                  >
-                    <span>quick view</span>
-                  </a>
-                </div>
-                {/* End .product-action */}
-              </figure>
-              {/* End .product-media */}
-              <div className="product-body">
-                <div className="product-cat">
-                  <a href="#">Laptops</a>
-                </div>
-                {/* End .product-cat */}
-                <h3 className="product-title">
-                  <a href="product.html">Lenovo - 330-15IKBR 15.6"</a>
-                </h3>
-                {/* End .product-title */}
-                <div className="product-price">
-                  <span className="out-price">$339.99</span>
-                  <span className="out-text">Out of Stock</span>
-                </div>
-                {/* End .product-price */}
-                <div className="ratings-container">
-                  <div className="ratings">
-                    <div className="ratings-val" style={{ width: "60%" }} />
-                    {/* End .ratings-val */}
-                  </div>
-                  {/* End .ratings */}
-                  <span className="ratings-text">( 3 Reviews )</span>
-                </div>
-                {/* End .rating-container */}
-              </div>
-              {/* End .product-body */}
-            </div>
-            {/* End .product */}
-            <div className="product product-2">
-              <figure className="product-media">
-                <a href="product.html">
-                  <img
-                    src="assets/images/demos/demo-3/products/product-4.jpg"
-                    alt="Product image"
-                    className="product-image"
-                  />
-                </a>
-                <div className="product-action-vertical">
-                  <a
-                    href="#"
-                    className="btn-product-icon btn-wishlist btn-expandable"
-                  >
-                    <span>add to wishlist</span>
-                  </a>
-                </div>
-                {/* End .product-action */}
-                <div className="product-action product-action-dark">
-                  <a
-                    href="#"
-                    className="btn-product btn-cart"
-                    title="Add to cart"
-                  >
-                    <span>add to cart</span>
-                  </a>
-                  <a
-                    href="popup/quickView.html"
-                    className="btn-product btn-quickview"
-                    title="Quick view"
-                  >
-                    <span>quick view</span>
-                  </a>
-                </div>
-                {/* End .product-action */}
-              </figure>
-              {/* End .product-media */}
-              <div className="product-body">
-                <div className="product-cat">
-                  <a href="#">Digital Cameras</a>
-                </div>
-                {/* End .product-cat */}
-                <h3 className="product-title">
-                  <a href="product.html">
-                    Sony - Alpha a5100 Mirrorless Camera
-                  </a>
-                </h3>
-                {/* End .product-title */}
-                <div className="product-price">$499.99</div>
-                {/* End .product-price */}
-                <div className="ratings-container">
-                  <div className="ratings">
-                    <div className="ratings-val" style={{ width: "70%" }} />
-                    {/* End .ratings-val */}
-                  </div>
-                  {/* End .ratings */}
-                  <span className="ratings-text">( 11 Reviews )</span>
-                </div>
-                {/* End .rating-container */}
-              </div>
-              {/* End .product-body */}
-            </div>
-            {/* End .product */}
-            <div className="product product-2">
-              <figure className="product-media">
-                <a href="product.html">
-                  <img
-                    src="assets/images/demos/demo-3/products/product-1.jpg"
-                    alt="Product image"
-                    className="product-image"
-                  />
-                </a>
-                <div className="product-action-vertical">
-                  <a
-                    href="#"
-                    className="btn-product-icon btn-wishlist btn-expandable"
-                  >
-                    <span>add to wishlist</span>
-                  </a>
-                </div>
-                {/* End .product-action */}
-                <div className="product-action product-action-dark">
-                  <a
-                    href="#"
-                    className="btn-product btn-cart"
-                    title="Add to cart"
-                  >
-                    <span>add to cart</span>
-                  </a>
-                  <a
-                    href="popup/quickView.html"
-                    className="btn-product btn-quickview"
-                    title="Quick view"
-                  >
-                    <span>quick view</span>
-                  </a>
-                </div>
-                {/* End .product-action */}
-              </figure>
-              {/* End .product-media */}
-              <div className="product-body">
-                <div className="product-cat">
-                  <a href="#">Cameras &amp; Camcorders</a>
-                </div>
-                {/* End .product-cat */}
-                <h3 className="product-title">
-                  <a href="product.html">
-                    GoPro - HERO7 Black HD Waterproof Action
-                  </a>
-                </h3>
-                {/* End .product-title */}
-                <div className="product-price">$349.99</div>
-                {/* End .product-price */}
-                <div className="ratings-container">
-                  <div className="ratings">
-                    <div className="ratings-val" style={{ width: "60%" }} />
-                    {/* End .ratings-val */}
-                  </div>
-                  {/* End .ratings */}
-                  <span className="ratings-text">( 2 Reviews )</span>
-                </div>
-                {/* End .rating-container */}
-              </div>
-              {/* End .product-body */}
-            </div>
-            {/* End .product */}
+          
+   
           </div>
           {/* End .owl-carousel */}
         </div>
@@ -1595,6 +1279,7 @@ function Home() {
                                   }
                               }'
               >
+                
                 <div className="product product-2">
                   <figure className="product-media">
                     <span className="product-label label-circle label-top">

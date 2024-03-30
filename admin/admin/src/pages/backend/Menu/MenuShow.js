@@ -1,5 +1,22 @@
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import MenuServices from "../../../services/MenuServices";
+
 function MenuShow() {
-    return (     <div className="content">
+   let { id } = useParams();
+   const [menuData, setMenuData] = useState({});
+
+   useEffect(() => {
+      MenuServices.getById(id)
+           .then(response => {
+            setMenuData(response.data);
+           })
+           .catch(error => {
+               console.error('Error fetching banner data:', error);
+           });
+   }, [id]);
+    return (     
+    <div className="content">
     <section className="content-header my-2">
        <h1 className="d-inline">Chi tiết</h1>
        <div className="row mt-2 align-items-center">
@@ -28,7 +45,27 @@ function MenuShow() {
           <tbody>
              <tr>
                 <td>Id</td>
-                <td>1</td>
+                <td>{menuData.id}</td>
+             </tr>
+             <tr>
+                <td>Đường dẫn</td>
+                <td>{menuData.link}</td>
+             </tr>
+             <tr>
+                <td>Loại</td>
+                <td>{menuData.type ==="0" ?"MainMenu":"FooterMenu"}</td>
+             </tr>
+             <tr>
+                <td>Vị trí</td>
+                <td>{menuData.position}</td>
+             </tr>
+             <tr>
+                <td>Menu Cha</td>
+                <td>{menuData.parentId}</td>
+             </tr>
+             <tr>
+                <td>Trạng thái</td>
+                <td>{menuData.status}</td>
              </tr>
           </tbody>
        </table>

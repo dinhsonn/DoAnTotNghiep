@@ -23,9 +23,8 @@ public class Menu {
     @Column(nullable = false)
     private String link;
 
-    @ManyToOne
-    @JoinColumn(name = "parent_id")
-    private Menu parent;
+    @Column(name = "parent_id")
+    private Long parentId;
 
     @Column(nullable = false)
     private String type;

@@ -24,7 +24,7 @@ import com.example.api.service.ProductImageService;
 @RestController
 @AllArgsConstructor
 @RequestMapping("api/productimages")
-@CrossOrigin(origins = "http://localhost:3000", exposedHeaders = "Content-Range")
+@CrossOrigin(origins = "*", exposedHeaders = "Content-Range")
 public class ProductImageController {
 
     private ProductImageService productImageService;
@@ -40,7 +40,8 @@ public class ProductImageController {
     public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file,
             @RequestParam("customName") String customName) {
         try {
-            String uploadDir = "C:\\Users\\DELL\\Desktop\\New folder\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage";
+           // String uploadDir = "C:\\Users\\DELL\\Desktop\\New folder\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage";
+            String uploadDir = "C:\\Users\\MY-PC\\OneDrive\\Máy tính\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage";
 
             File directory = new File(uploadDir);
             if (!directory.exists()) {
@@ -64,7 +65,7 @@ public class ProductImageController {
 
     @GetMapping("/image/{imageName}")
     public ResponseEntity<byte[]> getImage(@PathVariable String imageName) throws IOException {
-        String imagePath = "C:\\Users\\DELL\\Desktop\\New folder\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage\\"
+        String imagePath = "C:\\Users\\MY-PC\\OneDrive\\Máy tính\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage\\"
                 + imageName;
 
         Resource resource = new FileSystemResource(imagePath);
@@ -109,7 +110,7 @@ public class ProductImageController {
         try {
             if (file != null && !file.isEmpty()) {
                 // Nếu có file ảnh được cung cấp, thì cập nhật ảnh
-                String uploadDir = "C:\\Users\\DELL\\Desktop\\New folder\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage";
+                String uploadDir = "C:\\Users\\MY-PC\\OneDrive\\Máy tính\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage";
 
                 String originalFilename = file.getOriginalFilename();
                 String fileName = originalFilename.substring(0, originalFilename.lastIndexOf('.')) + ".png";

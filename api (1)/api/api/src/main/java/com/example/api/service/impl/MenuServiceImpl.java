@@ -43,7 +43,7 @@ public class MenuServiceImpl implements MenuService {
         Menu existingMenu = menuRepository.findById(menu.getId()).get();
         existingMenu.setName(menu.getName());
         existingMenu.setLink(menu.getLink());
-        existingMenu.setParent(menu.getParent());
+        existingMenu.setParentId(menu.getParentId());
         existingMenu.setType(menu.getType());
         existingMenu.setCreatedAt(menu.getCreatedAt());
         existingMenu.setUpdatedAt(menu.getUpdatedAt());

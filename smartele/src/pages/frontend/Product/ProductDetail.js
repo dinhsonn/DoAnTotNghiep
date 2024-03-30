@@ -1,4 +1,43 @@
+import React, { useEffect, useState } from 'react';
+import { Link, useHistory, useLocation, useParams } from 'react-router-dom';
+import ProductServices from '../../../services/ProductServices';
 function ProductDetail() {
+  const [products, setProducts] = useState({});
+  const [productImages, setProductImages] = useState([]);
+  const { search } = useLocation();
+  const { id } = useParams();
+  const queryParams = new URLSearchParams(search);
+  const image = queryParams.get('image');
+  const [selectedImage, setSelectedImage] = useState('');
+
+  useEffect(() => {
+    ProductServices.getById(id)
+      .then(response => {
+        document.title = response.data.title;
+        setProducts(response.data);
+       
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+    ProductServices.getProductImageById(id)
+      .then(response => {
+        setProductImages(response.data.content);
+        if(response.data.content.length > 0) {
+          setSelectedImage(getImgUrl(response.data.content[0].image));
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching product images:', error);
+      });
+  }, [id]);
+  if (!products) {
+    return <p>Loading...</p>;
+  }
+  const getImgUrl = (imageName) => {
+    const endpoint = 'productimages'; 
+    return `http://localhost:8082/api/${endpoint}/image/${imageName}`;
+  };
     return ( <>
         <main className="main">
           <nav aria-label="breadcrumb" className="breadcrumb-nav border-0 mb-0">
@@ -52,7 +91,7 @@ function ProductDetail() {
                             <span className="product-label label-top">Top</span>
                             <img
                               id="product-zoom"
-                              src="assets/images/products/single/sidebar-gallery/1.jpg"
+                              src={selectedImage || getImgUrl(image)}
                               data-zoom-image="assets/images/products/single/sidebar-gallery/1-big.jpg"
                               alt="product image"
                             />
@@ -69,50 +108,21 @@ function ProductDetail() {
                             id="product-zoom-gallery"
                             className="product-image-gallery"
                           >
+                      {productImages.map((image, index) => (
                             <a
                               className="product-gallery-item active"
                               href="#"
+                              key={index}
                               data-image="assets/images/products/single/sidebar-gallery/1.jpg"
                               data-zoom-image="assets/images/products/single/sidebar-gallery/1-big.jpg"
+                              onClick={() => setSelectedImage(getImgUrl(image.image))}
                             >
                               <img
-                                src="assets/images/products/single/sidebar-gallery/1-small.jpg"
+                                 src={getImgUrl(image.image)}
                                 alt="product side"
                               />
                             </a>
-                            <a
-                              className="product-gallery-item"
-                              href="#"
-                              data-image="assets/images/products/single/sidebar-gallery/2.jpg"
-                              data-zoom-image="assets/images/products/single/sidebar-gallery/2-big.jpg"
-                            >
-                              <img
-                                src="assets/images/products/single/sidebar-gallery/2-small.jpg"
-                                alt="product cross"
-                              />
-                            </a>
-                            <a
-                              className="product-gallery-item"
-                              href="#"
-                              data-image="assets/images/products/single/sidebar-gallery/3.jpg"
-                              data-zoom-image="assets/images/products/single/sidebar-gallery/3-big.jpg"
-                            >
-                              <img
-                                src="assets/images/products/single/sidebar-gallery/3-small.jpg"
-                                alt="product with model"
-                              />
-                            </a>
-                            <a
-                              className="product-gallery-item"
-                              href="#"
-                              data-image="assets/images/products/single/sidebar-gallery/4.jpg"
-                              data-zoom-image="assets/images/products/single/sidebar-gallery/4-big.jpg"
-                            >
-                              <img
-                                src="assets/images/products/single/sidebar-gallery/4-small.jpg"
-                                alt="product back"
-                              />
-                            </a>
+                     ))}
                           </div>
                           {/* End .product-image-gallery */}
                         </div>
@@ -122,7 +132,7 @@ function ProductDetail() {
                       <div className="col-md-6">
                         <div className="product-details product-details-sidebar">
                           <h1 className="product-title">
-                            Black faux leather chain trim sandals
+                            {products.name}
                           </h1>
                           {/* End .product-title */}
                           <div className="ratings-container">
@@ -140,12 +150,11 @@ function ProductDetail() {
                             </a>
                           </div>
                           {/* End .rating-container */}
-                          <div className="product-price">$90.00</div>
+                          <div className="product-price">{products.price}đ</div>
                           {/* End .product-price */}
                           <div className="product-content">
                             <p>
-                              Sed egestas, ante et vulputate volutpat, eros semper
-                              est, vitae luctus metus libero eu augue.
+                              {products.description}
                             </p>
                           </div>
                           {/* End .product-content */}

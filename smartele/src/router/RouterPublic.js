@@ -24,7 +24,7 @@ const RouterPublic = [
     {path:'/faq',component:FAQ},
     // // {path:'/product/:page',component:Product},
      {path:'/contact',component:Contact},
-     {path:'/productdetail',component:ProductDetail},
+     {path:'/productdetail/:id',component:ProductDetail},
     // // {path:'/danh-muc-san-pham/:slug',component:ProductCategory},
     {path:'/post',component:Post},
     //  {path:'/brand',component:Brand},
