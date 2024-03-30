@@ -7,7 +7,7 @@ function Wishlist() {
       <div className="container">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
-            <a href="index.html">Trang chủ</a>
+            <a href="/">Trang chủ</a>
           </li>
           {/* <li className="breadcrumb-item">
             <a href="#">Shop</a>

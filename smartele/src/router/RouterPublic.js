@@ -30,7 +30,7 @@ const RouterPublic = [
     //  {path:'/brand',component:Brand},
     // // {path:'/chu-de-bai-viet/:slug',component:PostTopic},
     // // {path:'/thuong-hieu/:slug',component:ProductBrand},
-    {path:'/postdetail',component:PostDetail},
+    {path:'/postdetail/:id',component:PostDetail},
     // // {path:'/tim-kiem/:key',component:Search},
     {path:'/cart',component:Cart},
     {path:'/about',component:About},

@@ -63,7 +63,7 @@ function Menu_mobile() {
           <nav className="mobile-nav">
             <ul className="mobile-menu">
               <li className="active">
-                <a href="index.html">Home</a>
+                <a href="/">Home</a>
                 <ul>
                   <li>
                     <a href="index-1.html">01 - furniture store</a>

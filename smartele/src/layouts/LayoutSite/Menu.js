@@ -66,7 +66,7 @@ function Menu() {
           <nav className="main-nav">
             <ul className="menu sf-arrows">
               <li className="megamenu-container active">
-                <a href="index.html" className="sf-with-ul">
+                <a href="/" className="sf-with-ul">
                   Home
                 </a>
                 <div className="megamenu demo">
