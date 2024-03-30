@@ -1,4 +1,18 @@
+import AboutService from "../../../services/AboutServices";
+import { useEffect, useState } from "react";
+
 function About() {
+  const [abouts, setAbouts] = useState([]);
+
+  useEffect(() => {
+      AboutService.getAll()
+          .then(response => {
+              setAbouts(response.data.content);
+          })
+          .catch(error => {
+              console.error('Error fetching data:', error);
+          });
+  }, []);
     return (
         <>
   <main className="main">
@@ -6,7 +20,7 @@ function About() {
       <div className="container">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
-            <a href="index.html">Trang chủ</a>
+            <a href="/">Trang chủ</a>
           </li>
           {/* <li className="breadcrumb-item">
             <a href="#">Pages</a>
@@ -26,23 +40,21 @@ function About() {
       >
         <h1 className="page-title text-white">
           Về chúng tôi<span className="text-white">Who we are</span>
-        </h1>
+        </h1> 
       </div>
       {/* End .page-header */}
     </div>
     {/* End .container */}
+    {abouts.map((about, index) => (
+
     <div className="page-content pb-0">
       <div className="container">
         <div className="row">
           <div className="col-lg-6 mb-3 mb-lg-0">
-            <h2 className="title">Tầm nhìn của chúng tôi</h2>
+            <h2 className="title">{about.title}</h2>
             {/* End .title */}
             <p>
-              Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-              Phasellus hendrerit. Pellentesque aliquet nibh nec urna. In nisi
-              neque, aliquet vel, dapibus id, mattis vel, nisi. Sed pretium,
-              ligula sollicitudin laoreet viverra, tortor libero sodales leo,
-              eget blandit nunc tortor eu nibh.{" "}
+            {about.content}
             </p>
           </div>
           {/* End .col-lg-6 */}
@@ -433,6 +445,8 @@ function About() {
       </div>
       {/* End .bg-light-2 pt-5 pb-6 */}
     </div>
+                            ))}
+
     {/* End .page-content */}
   </main>
   {/* End .main */}

@@ -104,7 +104,7 @@ function Header() {
                 <span className="sr-only">Toggle mobile menu</span>
                 <i className="icon-bars" />
               </button>
-              <a href="index.html" className="logo">
+              <a href="/" className="logo">
                 <img
                   src="assets/images/demos/demo-3/logo.png"
                   alt="Molla Logo"

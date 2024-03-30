@@ -3,11 +3,10 @@ import { Link, useParams } from "react-router-dom";
 import PostServices from "../../../services/PostServices";
 
 function PostShow() {
-  const { id } = useParams(); // Lấy id của bài viết từ URL
+  const { id } = useParams();
   const [postData, setPostData] = useState(null);
 
   useEffect(() => {
-    // Gọi API để lấy thông tin chi tiết của bài viết
     PostServices.getById(id)
       .then((response) => {
         setPostData(response.data);
@@ -15,7 +14,7 @@ function PostShow() {
       .catch((error) => {
         console.error("Lỗi khi lấy thông tin bài viết:", error);
       });
-  }, [id]); // Thêm id vào dependency array để useEffect chạy lại khi id thay đổi
+  }, [id]); 
 
   if (!postData) {
     return <div>Loading...</div>;
