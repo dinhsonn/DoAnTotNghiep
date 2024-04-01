@@ -74,7 +74,6 @@ function MenuEdit() {
                 name="name"
                 id="name"
                 className="form-control"
-                
                 onChange={handleChange}
                 value={formData.name}
               />

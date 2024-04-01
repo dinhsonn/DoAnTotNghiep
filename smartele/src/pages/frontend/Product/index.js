@@ -34,6 +34,8 @@ function Product() {
 
         };
       });
+
+      
     return (  
         <>
   <main className="main">
@@ -94,8 +96,6 @@ function Product() {
           {combinedData.map((combinedItem, index) => (
                   <ProductItem3 product={combinedItem} key={index} />
                 ))}
-     
-           
           </div>
           {/* End .row */}
           <div className="load-more-container text-center">

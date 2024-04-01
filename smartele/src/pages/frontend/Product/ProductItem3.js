@@ -1,13 +1,45 @@
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import CartService from "../../../services/CartServices";
+import Swal from 'sweetalert2';
 
 function ProductItem3(props) {
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+    if (loggedInUser) {
+      setUserId(loggedInUser.id);
+    }
+  }, []);
+
+  const handleAddToCart = (productId, qty, price, image) => {
+    console.log("Adding to cart:", productId, qty, price, image);
+    if (!userId) {
+      console.error('User ID is not available.');
+      return;
+    }
+    CartService.addItemToCart(userId, productId, qty, price, image)
+      .then(() => {
+        Swal.fire(
+          "The product has been added to cart.",
+          "Your product has been added to the cart!",
+          "success"
+        );
+      })
+      .catch((error) => {
+        console.error("Error adding to cart: ", error);
+      });
+  };
+
   const getImgUrl = (imageName) => {
-    const endpoint = 'productimages'; 
+    const endpoint = "productimages";
     return `http://localhost:8082/api/${endpoint}/image/${imageName}`;
   };
-    return ( 
-      <div className="col-6 col-md-4 col-lg-4 col-xl-3">
-        <div className="product">
+
+  return (
+    <div className="col-6 col-md-4 col-lg-4 col-xl-3">
+      <div className="product">
         <figure className="product-media">
           <span className="product-label label-new">New</span>
           <Link to={`/productdetail/${props.product.id}`}>
@@ -25,9 +57,8 @@ function ProductItem3(props) {
               <span>add to wishlist</span>
             </a>
           </div>
-          {/* End .product-action */}
           <div className="product-action action-icon-top">
-            <a href="#" className="btn-product btn-cart">
+            <a href="#" className="btn-product btn-cart" onClick={() => handleAddToCart(props.product.id, 1, props.product.price, props.product.image)}>
               <span>add to cart</span>
             </a>
             <a
@@ -45,29 +76,21 @@ function ProductItem3(props) {
               <span>compare</span>
             </a>
           </div>
-          {/* End .product-action */}
         </figure>
-        {/* End .product-media */}
         <div className="product-body">
           <div className="product-cat">
             <a href="#">Women</a>
           </div>
-          {/* End .product-cat */}
           <h3 className="product-title">
             <a href="product.html">{props.product.name}</a>
           </h3>
-          {/* End .product-title */}
           <div className="product-price">{props.product.price}đ</div>
-          {/* End .product-price */}
           <div className="ratings-container">
             <div className="ratings">
               <div className="ratings-val" style={{ width: "0%" }} />
-              {/* End .ratings-val */}
             </div>
-            {/* End .ratings */}
             <span className="ratings-text">( 0 Reviews )</span>
           </div>
-          {/* End .rating-container */}
           <div className="product-nav product-nav-dots">
             <a href="#" style={{ background: "#cc9966" }}>
               <span className="sr-only">Color name</span>
@@ -80,12 +103,10 @@ function ProductItem3(props) {
               <span className="sr-only">Color name</span>
             </a>
           </div>
-          {/* End .product-nav */}
         </div>
-        {/* End .product-body */}
       </div>
-      </div>
-     );
+    </div>
+  );
 }
 
 export default ProductItem3;

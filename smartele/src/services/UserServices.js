@@ -11,8 +11,6 @@ function create(data) {
 function getById(id) {
     return httpAxios.get(`users/${id}`);
 }
-
-
 const UserService = {
     getAll: getAll,
     create: create,

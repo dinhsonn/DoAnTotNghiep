@@ -1,278 +1,230 @@
-function Cart() {
-    return ( <>
-        <main className="main">
+import React, { useEffect, useState } from "react";
+import Swal from "sweetalert2";
+import CartService from "../../../services/CartServices";
 
-          {/* End .page-header */}
-          <nav aria-label="breadcrumb" className="breadcrumb-nav">
-            <div className="container">
-              <ol className="breadcrumb">
-                <li className="breadcrumb-item">
-                  <a href="/">Trang chủ</a>
-                </li>
-                <li className="breadcrumb-item active" aria-current="page">
-                  Giỏ hàng
-                </li>
-              </ol>
-            </div>
-            {/* End .container */}
-          </nav>
-          {/* End .breadcrumb-nav */}
-          <div className="page-content">
-            <div className="cart">
-              <div className="container">
-                <div className="row">
-                  <div className="col-lg-9">
-                    <table className="table table-cart table-mobile">
-                      <thead>
-                        <tr>
-                          <th>Sản phẩm</th>
-                          <th>Giá</th>
-                          <th>Số lượng</th>
-                          <th>Tổng tiền</th>
-                          <th />
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td className="product-col">
-                            <div className="product">
-                              <figure className="product-media">
-                                <a href="#">
-                                  <img
-                                    src="assets/images/products/table/product-1.jpg"
-                                    alt="Product image"
-                                  />
-                                </a>
-                              </figure>
-                              <h3 className="product-title">
-                                <a href="#">Beige knitted elastic runner shoes</a>
-                              </h3>
-                              {/* End .product-title */}
-                            </div>
-                            {/* End .product */}
-                          </td>
-                          <td className="price-col">$84.00</td>
-                          <td className="quantity-col">
-                            <div className="cart-product-quantity">
-                              <input
-                                type="number"
-                                className="form-control"
-                                defaultValue={1}
-                                min={1}
-                                max={10}
-                                step={1}
-                                data-decimals={0}
-                                required=""
+function Cart() {
+  document.title = "Cart";
+  const [cartItems, setCartItems] = useState([]);
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+    if (loggedInUser) {
+      setUserId(loggedInUser.id);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!userId) {
+      console.error('User ID is not available.');
+      return;
+    }
+
+    CartService.getCarts()
+      .then((response) => {
+        const userCartItems = response.data.filter(item => item.user.id === userId);
+        setCartItems(userCartItems);
+        calculateTotal(userCartItems);
+      })
+      .catch((error) => {
+        console.error("Error fetching cart items:", error);
+      });
+  }, [userId]);
+
+  const removeItem = (cartId, productId) => {
+    CartService.removeFromCart(cartId, productId)
+      .then((response) => {
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setCartItems((prevCartItems) => prevCartItems.filter(item => item.product.id !== productId));
+            Swal.fire(
+              'Deleted!',
+              'Your file has been deleted.',
+              'success'
+            )
+          }
+        })
+      })
+      .catch((error) => {
+        console.error('Error removing item from cart:', error);
+      });
+  };
+
+
+  const calculateTotal = (items) => {
+    const total = items.reduce((accumulator, item) => {
+      return accumulator + item.price * item.qty;
+    }, 0);
+    setTotalAmount(total);
+  };
+
+  const handleChangeQuantity = (cartItemId, newQuantity) => {
+    const updatedCartItems = cartItems.map((item) => {
+      if (item.id === cartItemId) {
+        const quantity = parseInt(newQuantity, 10);
+        if (quantity < 1) return { ...item, qty: 1 };
+        return { ...item, qty: quantity };
+      }
+      return item;
+    });
+
+    setCartItems(updatedCartItems);
+    calculateTotal(updatedCartItems);
+
+    CartService.updateCartQuantity(cartItemId, newQuantity)
+      .then((response) => {
+        console.log("Updated quantity on the server:", response);
+      })
+      .catch((error) => {
+        console.error("Error updating quantity on the server:", error);
+      });
+  };
+
+  const getImgUrl = (imageName) => {
+    const endpoint = "productimages";
+    return `http://localhost:8082/api/${endpoint}/image/${imageName}`;
+  };
+
+  return (
+    <>
+      <div className="page-content">
+        <div className="cart">
+          <div className="container">
+            <div className="row">
+              <div className="col-lg-9">
+                <table className="table table-cart table-mobile">
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th>Price</th>
+                      <th>Quantity</th>
+                      <th>Total</th>
+                      <th />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {cartItems.map((item) => (
+                      <tr key={item.id}>
+                        <td className="product-col">
+                          <div className="product">
+                            <figure className="product-media">
+                              <img
+                                src={getImgUrl(item.image)}
+                                alt="Product image"
                               />
-                            </div>
-                            {/* End .cart-product-quantity */}
-                          </td>
-                          <td className="total-col">$84.00</td>
-                          <td className="remove-col">
-                            <button className="btn-remove">
-                              <i className="icon-close" />
-                            </button>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td className="product-col">
-                            <div className="product">
-                              <figure className="product-media">
-                                <a href="#">
-                                  <img
-                                    src="assets/images/products/table/product-2.jpg"
-                                    alt="Product image"
-                                  />
-                                </a>
-                              </figure>
-                              <h3 className="product-title">
-                                <a href="#">Blue utility pinafore denim dress</a>
-                              </h3>
-                              {/* End .product-title */}
-                            </div>
-                            {/* End .product */}
-                          </td>
-                          <td className="price-col">$76.00</td>
-                          <td className="quantity-col">
-                            <div className="cart-product-quantity">
-                              <input
-                                type="number"
-                                className="form-control"
-                                defaultValue={1}
-                                min={1}
-                                max={10}
-                                step={1}
-                                data-decimals={0}
-                                required=""
-                              />
-                            </div>
-                            {/* End .cart-product-quantity */}
-                          </td>
-                          <td className="total-col">$76.00</td>
-                          <td className="remove-col">
-                            <button className="btn-remove">
-                              <i className="icon-close" />
-                            </button>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                    {/* End .table table-wishlist */}
-                    <div className="cart-bottom">
-                      <div className="cart-discount">
-                        <form action="#">
-                          <div className="input-group">
-                            <input
-                              type="text"
-                              className="form-control"
-                              required=""
-                              placeholder="Mã giảm giá"
-                            />
-                            <div className="input-group-append">
-                              <button
-                                className="btn btn-outline-primary-2"
-                                type="submit"
-                              >
-                                <i className="icon-long-arrow-right" />
-                              </button>
-                            </div>
-                            {/* .End .input-group-append */}
+                            </figure>
+                            <h3 className="product-title">
+                              {item.product.name}
+                            </h3>
                           </div>
-                          {/* End .input-group */}
-                        </form>
+                        </td>
+                        <td className="price-col">${item.price}</td>
+                        <td className="quantity-col">
+                          <div className="cart-product-quantity">
+                            <input
+                              type="number"
+                              className="form-control"
+                              value={item.qty}
+                              min={1}
+                              step={1}
+                              onChange={(e) =>
+                                handleChangeQuantity(
+                                  item.id,
+                                  e.target.value
+                                )
+                              }
+                              required=""
+                            />
+                          </div>
+                        </td>
+                        <td className="total-col">
+                          ${item.price * item.qty}
+                        </td>
+                        <td className="remove-col">
+                          <button
+                            className="btn-remove"
+                            onClick={() => removeItem(item.id, item.product.id)}
+                          >
+                            <i className="icon-close" />
+                          </button>
+
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <div className="cart-bottom">
+                  <div className="cart-discount">
+                    <form action="#">
+                      <div className="input-group">
+                        <input
+                          type="text"
+                          className="form-control"
+                          required=""
+                          placeholder="Discount Code"
+                        />
+                        <div className="input-group-append">
+                          <button
+                            className="btn btn-outline-primary-2"
+                            type="submit"
+                          >
+                            <i className="icon-long-arrow-right" />
+                          </button>
+                        </div>
                       </div>
-                      {/* End .cart-discount */}
-                      <a href="#" className="btn btn-outline-dark-2">
-                        <span>CẬP NHẬT GIỎ HÀNG</span>
-                        <i className="icon-refresh" />
-                      </a>
-                    </div>
-                    {/* End .cart-bottom */}
+                    </form>
                   </div>
-                  {/* End .col-lg-9 */}
-                  <aside className="col-lg-3">
-                    <div className="summary summary-cart">
-                      <h3 className="summary-title">Tất cả giỏ hàng</h3>
-                      {/* End .summary-title */}
-                      <table className="table table-summary">
-                        <tbody>
-                          <tr className="summary-subtotal">
-                            <td>Tổng phụ:</td>
-                            <td>$160.00</td>
-                          </tr>
-                          {/* End .summary-subtotal */}
-                          <tr className="summary-shipping">
-                            <td>Phương thức vận chuyển:</td>
-                            <td>&nbsp;</td>
-                          </tr>
-                          <tr className="summary-shipping-row">
-                            <td>
-                              <div className="custom-control custom-radio">
-                                <input
-                                  type="radio"
-                                  id="free-shipping"
-                                  name="shipping"
-                                  className="custom-control-input"
-                                />
-                                <label
-                                  className="custom-control-label"
-                                  htmlFor="free-shipping"
-                                >
-                                  Miễn phí
-                                </label>
-                              </div>
-                              {/* End .custom-control */}
-                            </td>
-                            <td>$0.00</td>
-                          </tr>
-                          {/* End .summary-shipping-row */}
-                          <tr className="summary-shipping-row">
-                            <td>
-                              <div className="custom-control custom-radio">
-                                <input
-                                  type="radio"
-                                  id="standart-shipping"
-                                  name="shipping"
-                                  className="custom-control-input"
-                                />
-                                <label
-                                  className="custom-control-label"
-                                  htmlFor="standart-shipping"
-                                >
-                                  Tiêu chuẩn:
-                                </label>
-                              </div>
-                              {/* End .custom-control */}
-                            </td>
-                            <td>$10.00</td>
-                          </tr>
-                          {/* End .summary-shipping-row */}
-                          <tr className="summary-shipping-row">
-                            <td>
-                              <div className="custom-control custom-radio">
-                                <input
-                                  type="radio"
-                                  id="express-shipping"
-                                  name="shipping"
-                                  className="custom-control-input"
-                                />
-                                <label
-                                  className="custom-control-label"
-                                  htmlFor="express-shipping"
-                                >
-                                  Nhanh:
-                                </label>
-                              </div>
-                              {/* End .custom-control */}
-                            </td>
-                            <td>$20.00</td>
-                          </tr>
-                          {/* End .summary-shipping-row */}
-                          <tr className="summary-shipping-estimate">
-                            <td>
-                              Estimate for Your Country
-                              <br /> <a href="dashboard.html">Thay đổi địa chỉ</a>
-                            </td>
-                            <td>&nbsp;</td>
-                          </tr>
-                          {/* End .summary-shipping-estimate */}
-                          <tr className="summary-total">
-                            <td>Tổng cộng:</td>
-                            <td>$160.00</td>
-                          </tr>
-                          {/* End .summary-total */}
-                        </tbody>
-                      </table>
-                      {/* End .table table-summary */}
-                      <a
-                        href="checkout.html"
-                        className="btn btn-outline-primary-2 btn-order btn-block"
-                      >
-                        THỰC HIỆN THANH TOÁN
-                      </a>
-                    </div>
-                    {/* End .summary */}
-                    <a
-                      href="category.html"
-                      className="btn btn-outline-dark-2 btn-block mb-3"
-                    >
-                      <span>TIẾP TỤC MUA HÀNG</span>
-                      <i className="icon-refresh" />
-                    </a>
-                  </aside>
-                  {/* End .col-lg-3 */}
+                  <a href="#" className="btn btn-outline-dark-2">
+                    <span>UPDATE CART</span>
+                    <i className="icon-refresh" />
+                  </a>
                 </div>
-                {/* End .row */}
               </div>
-              {/* End .container */}
+              <aside className="col-lg-3">
+                <div className="summary summary-cart">
+                  <h3 className="summary-title">Cart Total</h3>
+                  <table className="table table-summary">
+                    <tbody>
+                      <tr className="summary-subtotal">
+                        <td>Subtotal:</td>
+                        <td>${totalAmount.toFixed(2)}</td>
+                      </tr>
+                      <tr className="summary-total">
+                        <td>Total:</td>
+                        <td>${totalAmount.toFixed(2)}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <a
+                    href="checkout.html"
+                    className="btn btn-outline-primary-2 btn-order btn-block"
+                  >
+                    PROCEED TO CHECKOUT
+                  </a>
+                </div>
+                <a
+                  href="category.html"
+                  className="btn btn-outline-dark-2 btn-block mb-3"
+                >
+                  <span>CONTINUE SHOPPING</span>
+                  <i className="icon-refresh" />
+                </a>
+              </aside>
             </div>
-            {/* End .cart */}
           </div>
-          {/* End .page-content */}
-        </main>
-        {/* End .main */}
-      </>
-       );
+        </div>
+      </div>
+    </>
+  );
 }
 
 export default Cart;

@@ -4,9 +4,12 @@ import Slider from "./Slider";
 import ProductServices from '../../../services/ProductServices';
 import ProductItem3 from "../Product/ProductItem3";
 import ProductItem1 from "../Product/ProductItem1";
+
+
 function Home() {
   const [products, setProducts] = useState([]);
   const [productImages, setProductImages] = useState([]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -37,6 +40,8 @@ function Home() {
 
         };
       });
+      
+      
   return ( 
 <>
   <main className="main">
@@ -116,8 +121,8 @@ function Home() {
              
             <div className="row">
                 {combinedData.map((combinedItem, index) => (
-                  <ProductItem3 product={combinedItem} key={index} />
-                ))}
+                    <ProductItem3 product={combinedItem} key={index} />
+                    ))}
             </div>
           
    

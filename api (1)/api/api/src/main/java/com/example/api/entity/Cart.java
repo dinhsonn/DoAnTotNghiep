@@ -33,16 +33,20 @@ public class Cart {
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
-    private Product productId;
+    private Product product;
 
     @Column(nullable = false)
     private int qty;
+
+    @Column(nullable = false)
+    private String image;
 
     @Column(nullable = false)
     private double price;
 
     @Column(nullable = false)
     private int status;
+
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false)
