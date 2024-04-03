@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import CartService from "../../services/CartServices";
 import Swal from "sweetalert2";
+import { Link } from "react-router-dom";
 
 function CartHeader() {
   const [cartItemCount, setCartItemCount] = useState(0);
@@ -114,9 +115,9 @@ function CartHeader() {
           <span className="cart-total-price">${totalAmount.toFixed(2)}</span>
         </div>
         <div className="dropdown-cart-action">
-          <a href="cart.html" className="btn btn-primary">
+          <Link to={"cart"} className="btn btn-primary">
             Xem
-          </a>
+          </Link>
           <a href="checkout.html" className="btn btn-outline-primary-2">
             <span>Thanh toán</span>
             <i className="icon-long-arrow-right" />

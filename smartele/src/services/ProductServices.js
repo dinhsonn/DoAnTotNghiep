@@ -33,7 +33,26 @@ function getProductSale()
 {
     return httpAxios.get("productsale");
 }
+//product option
+function productOption()
+{
+    return httpAxios.get(`productoption`);
+}
+function productOptionById(productid) 
+{
+    return httpAxios.get(`productoption/product/${productid}`);
+}
 
+
+//product option value
+function productOptionValue()
+{
+    return httpAxios.get(`productoptionvalue`);
+}
+function productOptionValueByOption(option) 
+{
+    return httpAxios.get(`productoptionvalue/option/${option}`);
+}
 const ProductService = {
     getAll:getAll,
     getById:getById,
@@ -42,6 +61,10 @@ const ProductService = {
     remove:remove,
     getProductImage:getProductImage,
     getProductImageById:getProductImageById,
-    getProductSale:getProductSale
+    getProductSale:getProductSale,
+    productOption:productOption,
+    productOptionById:productOptionById,
+    productOptionValue:productOptionValue,
+    productOptionValueByOption:productOptionValueByOption,
 }
 export default ProductService;

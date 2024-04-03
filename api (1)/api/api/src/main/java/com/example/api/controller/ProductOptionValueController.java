@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import com.example.api.entity.ProductOptionValue; 
 import com.example.api.service.ProductOptionValueService;
 
@@ -56,5 +57,12 @@ public class ProductOptionValueController {
     public ResponseEntity<String> deleteProductOptionValue(@PathVariable("id") Long productOptionValueId) {
         productOptionValueService.deleteProductOptionValue(productOptionValueId);
         return new ResponseEntity<>("ProductOptionValue successfully deleted!", HttpStatus.OK);
+    }
+
+     @GetMapping("/option/{option}")
+    public ResponseEntity<Page<ProductOptionValue>> getOptionValuesByOption(@PathVariable Long option,
+            Pageable pageable) {
+        Page<ProductOptionValue> productOptionValues = productOptionValueService.getOptionValuesByOption(option, pageable);
+        return new ResponseEntity<>(productOptionValues, HttpStatus.OK);
     }
 }

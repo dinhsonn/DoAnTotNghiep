@@ -23,9 +23,9 @@ function Banner() {
     <div className="col-lg-4">
       <div>
         {banners.map((banner, index) => (
-          <div className="banner mb-lg-1 mb-xl-2" key={banner.id}>
+          <div className="banner mb-lg-1 mb-xl-2" key={banner.id} >
             <a href={banner.link} >
-            <img src={getImgUrl(banner.image)} alt="Banner" />
+            <img  src={getImgUrl(banner.image)} alt="Banner" />
             </a>
             <div className="banner-content">
               <h4 className="banner-subtitle d-lg-none d-xl-block">

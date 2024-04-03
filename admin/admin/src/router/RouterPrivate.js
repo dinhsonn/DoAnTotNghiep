@@ -12,6 +12,15 @@ import Category from '../pages/backend/Category/index';
  import ProductCreate from '../pages/backend/Product/ProductCreate';
  import ProductEdit from '../pages/backend/Product/ProductEdit';
  import ProductSale from '../pages/backend/ProductSale/ProductSale';
+ import ProductOption from '../pages/backend/ProductOption/index';
+ import ProductOptionShow from '../pages/backend/ProductOption/ProductOptionShow';
+ import ProductOptionEdit from '../pages/backend/ProductOption/ProductOptionEdit';
+ import ProductOptionTrash from '../pages/backend/ProductOption/ProductOptionTrash';
+ import ProductOptionValue from '../pages/backend/ProductOptionValue/index';
+ import ProductOptionValueShow from '../pages/backend/ProductOptionValue/ProductOptionValueShow';
+ import ProductOptionValueEdit from '../pages/backend/ProductOptionValue/ProductOptionValueEdit';
+ import ProductOptionValueTrash from '../pages/backend/ProductOptionValue/ProductOptionValueTrash';
+
 // import ContactList from '../pages/backend/Contact/ContactList';
 // import ContactShow from '../pages/backend/Contact/ContactShow';
 // import ContactUpdate from '../pages/backend/Contact/ContactUpdate';
@@ -154,6 +163,16 @@ const RouterPrivate = [
   { path: "/topic/show/:id", component: TopicShow },
   { path: "/topic/trash", component: TopicTrash},
   { path: "/topic/edit/:id", component: TopicEdit },
+
+  { path: "/productoption", component: ProductOption },
+  { path: "/productoption/show/:id", component: ProductOptionShow },
+  { path: "/productoption/trash", component: ProductOptionTrash},
+  { path: "/productoption/edit/:id", component: ProductOptionEdit },
+
+  { path: "/productoptionvalue", component: ProductOptionValue },
+  { path: "/productoptionvalue/show/:id", component: ProductOptionValueShow },
+  { path: "/productoptionvalue/trash", component: ProductOptionValueTrash},
+  { path: "/productoptionvalue/edit/:id", component: ProductOptionValueEdit },
 
   { path: "/admin", component: Admin },
   { path: "/admin/show/:id", component: AdminShow },

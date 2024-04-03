@@ -43,7 +43,7 @@ function Banner() {
       <section className="content-body my-2">
       <div className="row">
 
-      <div className="col-md-8">
+      <div className="col-md-12">
       <div className="row mt-3 align-items-center">
               <div className="col-12">
                 <ul className="manager">

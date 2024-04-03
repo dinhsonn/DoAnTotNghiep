@@ -1,4 +1,20 @@
+import { useEffect } from "react";
+import { useState } from "react";
+import MenuServices from "../../services/MenuServices";
+import { Link } from "react-router-dom";
 function Footer() {
+  const [fmenus, setFmenus] = useState([]);
+  useEffect(() => {
+    MenuServices.getAll()
+      .then((response) => {
+        const filteredMenus = response.data.content.filter(menu => menu.type === "1");
+        const sortedMenus = filteredMenus.sort((a, b) => a.position - b.position);
+        setFmenus(sortedMenus);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []);
     return ( 
 <>
   <footer className="footer">
@@ -33,21 +49,11 @@ function Footer() {
               <h4 className="widget-title">Liên kết hữu ích</h4>
               {/* End .widget-title */}
               <ul className="widget-list">
-                <li>
-                  <a href="about.html">About Molla</a>
+              {fmenus.filter(fmenu => fmenu.position === 0).map((fmenu, index) => (
+                <li key={index}>
+                  <Link to={fmenu.link}>{fmenu.name}</Link>
                 </li>
-                <li>
-                  <a href="#">Our Services</a>
-                </li>
-                <li>
-                  <a href="#">How to shop on Molla</a>
-                </li>
-                <li>
-                  <a href="faq.html">FAQ</a>
-                </li>
-                <li>
-                  <a href="contact.html">Contact us</a>
-                </li>
+              ))}
               </ul>
               {/* End .widget-list */}
             </div>
@@ -59,24 +65,11 @@ function Footer() {
               <h4 className="widget-title">Dịch vụ khách hàng</h4>
               {/* End .widget-title */}
               <ul className="widget-list">
-                <li>
-                  <a href="#">Payment Methods</a>
+              {fmenus.filter(fmenu => fmenu.position === 1).map((fmenu, index) => (
+                <li key={index}>
+                  <Link to={fmenu.link}>{fmenu.name}</Link>
                 </li>
-                <li>
-                  <a href="#">Money-back guarantee!</a>
-                </li>
-                <li>
-                  <a href="#">Returns</a>
-                </li>
-                <li>
-                  <a href="#">Shipping</a>
-                </li>
-                <li>
-                  <a href="#">Terms and conditions</a>
-                </li>
-                <li>
-                  <a href="#">Privacy Policy</a>
-                </li>
+              ))}
               </ul>
               {/* End .widget-list */}
             </div>
@@ -88,21 +81,11 @@ function Footer() {
               <h4 className="widget-title">Tài khoản của tôi</h4>
               {/* End .widget-title */}
               <ul className="widget-list">
-                <li>
-                  <a href="#">Sign In</a>
+              {fmenus.filter(fmenu => fmenu.position === 2).map((fmenu, index) => (
+                <li key={index}>
+                  <Link to={fmenu.link}>{fmenu.name}</Link>
                 </li>
-                <li>
-                  <a href="cart.html">View Cart</a>
-                </li>
-                <li>
-                  <a href="#">My Wishlist</a>
-                </li>
-                <li>
-                  <a href="#">Track My Order</a>
-                </li>
-                <li>
-                  <a href="#">Help</a>
-                </li>
+              ))}
               </ul>
               {/* End .widget-list */}
             </div>
