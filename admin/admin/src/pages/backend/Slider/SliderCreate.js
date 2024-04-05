@@ -85,10 +85,6 @@ function SliderCreate() {
                 <label><strong>Liên kết</strong></label>
                 <input type="text" name="link" className="form-control" placeholder="Nhập liên kết" onChange={handleChange} value={formData.link}/>
               </div>
-              <div className="mb-3">
-                <label><strong>Mô tả (*)</strong></label>
-                <textarea name="description" rows="5" className="form-control" placeholder="Nhập mô tả"></textarea>
-              </div>
             </div>
             <div className="col-md-3">
               <div className="box-container mt-4 bg-white">
@@ -106,14 +102,6 @@ function SliderCreate() {
               <div className="box-container mt-4 bg-white">
                 <div className="box-header py-1 px-2 border-bottom">
                   <strong>Vị trí (*)</strong>
-                </div>
-                <div className="box-body p-2 border-bottom">
-                  <select name="position" className="form-select" onChange={handleChange} value={formData.position}>
-                    <option>Chọn vị trí</option>
-                    <option value="1">Slide Show</option>
-                    <option value="2">Quảng cáo</option>
-                  </select>
-                  <p className="pt-2">Vị trí hiển thị banner</p>
                 </div>
                 <div className="box-body p-2 border-bottom">
                 <input type="text" name="sortOrder" className="form-control" placeholder="Nhập thứ tự" onChange={handleChange} value={formData.sortOrder}/>

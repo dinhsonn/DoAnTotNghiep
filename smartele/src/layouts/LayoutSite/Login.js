@@ -117,7 +117,7 @@ function Login() {
       } else {
         console.error("Invalid Google Login response:", credentialResponse);
       }
-    } catch (error) {
+    } catch (error) { 
       console.error("Error handling Google Login:", error);
     }
   };

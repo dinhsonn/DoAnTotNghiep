@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import CartService from "../../../services/CartServices";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 
 function Cart() {
   document.title = "Cart";
@@ -8,6 +9,11 @@ function Cart() {
   const [totalAmount, setTotalAmount] = useState(0);
   const [userId, setUserId] = useState(null);
 
+  const navigate = useNavigate(); // Sử dụng hook useNavigate
+
+  const handleProceedToCheckout = () => {
+    navigate('/checkout', { state: { cartItems: cartItems, totalAmount: totalAmount } });
+  };
   useEffect(() => {
     const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
     if (loggedInUser) {
@@ -82,10 +88,10 @@ function Cart() {
 
     CartService.updateCartQuantity(cartItemId, newQuantity)
       .then((response) => {
-        console.log("Updated quantity on the server:", response);
+        console.log("Updated:", response);
       })
       .catch((error) => {
-        console.error("Error updating quantity on the server:", error);
+        console.error("Error:", error);
       });
   };
 
@@ -205,7 +211,7 @@ function Cart() {
                     </tbody>
                   </table>
                   <a
-                    href="checkout.html"
+                    onClick={handleProceedToCheckout}
                     className="btn btn-outline-primary-2 btn-order btn-block"
                   >
                     PROCEED TO CHECKOUT
