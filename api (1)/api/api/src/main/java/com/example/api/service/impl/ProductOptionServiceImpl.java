@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.example.api.entity.Product;
 import com.example.api.entity.ProductOption;
 import com.example.api.service.ProductOptionService;
 import com.example.api.repository.ProductOptionRepository;
@@ -53,5 +54,10 @@ public class ProductOptionServiceImpl implements ProductOptionService {
     @Override
     public void deleteProductOption(Long productOptionId) {
         productOptionRepository.deleteById(productOptionId);
+    }
+
+    @Override
+    public Page<ProductOption> getProductOptionsByProductId(Product productId, Pageable pageable) {
+        return productOptionRepository.findByProductId(productId, pageable);
     }
 }

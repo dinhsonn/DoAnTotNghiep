@@ -67,7 +67,7 @@ function Login() {
           setTimeout(() => {
             navigate('/');
             window.location.reload()
-          }, 1000);
+          }, 10000);
         } else {
           Swal.fire({
             title: "Lỗi!",

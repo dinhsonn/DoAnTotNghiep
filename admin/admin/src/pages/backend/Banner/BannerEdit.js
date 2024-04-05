@@ -120,6 +120,10 @@ function BannerEdit() {
                 <label><strong>Liên kết</strong></label>
                 <input type="text" name="link" className="form-control" placeholder="Nhập liên kết" onChange={handleChange} value={formData.link} />
               </div>
+              <div className="mb-3">
+                <label><strong>Type</strong></label>
+                <input type="text" name="type" className="form-control" placeholder="Nhập type" onChange={handleChange} value={formData.type} />
+              </div>
             </div>
             <div className="col-md-3">
               <div className="box-container mt-4 bg-white">

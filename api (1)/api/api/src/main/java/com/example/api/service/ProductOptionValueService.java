@@ -3,6 +3,7 @@ package com.example.api.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+
 import com.example.api.entity.ProductOptionValue;
 
 public interface ProductOptionValueService {
@@ -16,5 +17,9 @@ public interface ProductOptionValueService {
     public ProductOptionValue updateProductOptionValue(ProductOptionValue productOptionValue);
 
     public void deleteProductOptionValue(Long productOptionValueId);
+
+    Page<ProductOptionValue> getOptionValuesByOption(Long option, Pageable pageable);
+
+
     
 }

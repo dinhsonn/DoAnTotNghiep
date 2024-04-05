@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+
 import com.example.api.entity.ProductOptionValue;
 import com.example.api.service.ProductOptionValueService;
 import com.example.api.repository.ProductOptionValueRepository;
@@ -41,7 +42,6 @@ public class ProductOptionValueServiceImpl implements ProductOptionValueService 
         ProductOptionValue existingProductOptionValue = productOptionValueRepository.findById(productOptionValue.getId()).orElse(null);
 
         if (existingProductOptionValue != null) {
-            existingProductOptionValue.setProductId(productOptionValue.getProductId());
             existingProductOptionValue.setOption(productOptionValue.getOption());
             existingProductOptionValue.setValue(productOptionValue.getValue());
             existingProductOptionValue.setCreatedAt(productOptionValue.getCreatedAt());
@@ -58,4 +58,10 @@ public class ProductOptionValueServiceImpl implements ProductOptionValueService 
     public void deleteProductOptionValue(Long productOptionValueId) {
         productOptionValueRepository.deleteById(productOptionValueId);
     }
+
+     @Override
+    public Page<ProductOptionValue> getOptionValuesByOption(Long option, Pageable pageable) {
+        return productOptionValueRepository.findByOptionId(option, pageable);
+    }
+
 }

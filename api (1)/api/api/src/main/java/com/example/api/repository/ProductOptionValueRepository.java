@@ -9,4 +9,5 @@ import org.springframework.data.domain.Pageable;
 
 public interface ProductOptionValueRepository extends JpaRepository<ProductOptionValue, Long> {
     Page<ProductOptionValue> findAll(Pageable pageable);
+    Page<ProductOptionValue> findByOptionId(Long option, Pageable pageable);
 }

@@ -21,7 +21,12 @@ function Menu() {
   useEffect(() => {
     MenuServices.getAll()
       .then((response) => {
-        const sortedMenus = response.data.content.sort((a, b) => a.position - b.position);
+        const filteredMenus = response.data.content.filter(
+          (menu) => menu.type === "0"
+        );
+        const sortedMenus = filteredMenus.sort(
+          (a, b) => a.position - b.position
+        );
         setMenus(sortedMenus);
       })
       .catch((error) => {
@@ -51,33 +56,39 @@ function Menu() {
                 <ul className="menu-vertical sf-arrows">
                   {categories.map((parentCategory, index) => {
                     if (!parentCategory.parentId) {
+                      const hasChildren = categories.some(
+                        (childCategory) =>
+                          childCategory.parentId === parentCategory.id
+                      );
+
                       return (
                         <li className="item-lead" key={parentCategory.id}>
                           <a href="#">{parentCategory.name}</a>
-
-                          {categories.map((childCategory) => {
-                            if (childCategory.parentId === parentCategory.id) {
-                              return (
-                                <ul className="sub-menu">
-                                  <li key={childCategory.id}>
-                                    <a href="#">{childCategory.name}</a>
-                                  </li>
-                                </ul>
-                              );
-                            }
-                            return null;
-                          })}
+                          {hasChildren && (
+                            <ul className="sub-menu">
+                              {categories.map((childCategory) => {
+                                if (
+                                  childCategory.parentId === parentCategory.id
+                                ) {
+                                  return (
+                                    <li key={childCategory.id}>
+                                      <a href="#">{childCategory.name}</a>
+                                    </li>
+                                  );
+                                }
+                                return null;
+                              })}
+                            </ul>
+                          )}
                         </li>
                       );
                     }
                     return null;
                   })}
                 </ul>
-
-                {/* End .menu-vertical */}
               </nav>
-              {/* End .side-nav */}
             </div>
+
             {/* End .dropdown-menu */}
           </div>
           {/* End .category-dropdown */}
@@ -87,36 +98,36 @@ function Menu() {
           <nav className="main-nav">
             <ul className="menu sf-arrows">
               {menus.map((parentMenu, index) => {
-              if (!parentMenu.parentId) {
-                return (
-                <li key={parentMenu.id}>
-                  <Link to={parentMenu.link} className="sf-with-ul">
-                    {parentMenu.name}
-                  </Link>
-                  {menus.map((childMenu) => {
-                    if (childMenu.parentId === parentMenu.id) {
-                      return (
-                        <ul key={childMenu.id}>
-                          <li>
-                            <a href="about.html" className="sf-with-ul">
-                              {childMenu.name}
-                            </a>
-                            {/* <ul>
+                if (!parentMenu.parentId) {
+                  return (
+                    <li key={parentMenu.id}>
+                      <Link to={parentMenu.link} className="sf-with-ul">
+                        {parentMenu.name}
+                      </Link>
+                      {menus.map((childMenu) => {
+                        if (childMenu.parentId === parentMenu.id) {
+                          return (
+                            <ul key={childMenu.id}>
+                              <li>
+                                <a href="about.html" className="sf-with-ul">
+                                  {childMenu.name}
+                                </a>
+                                {/* <ul>
                               <li>
                                 <a href="about.html">About 01</a>
                               </li>
                             </ul> */}
-                          </li>
-                        </ul>
-                      );
-                    }
-                    return null;
-                  })}
-                </li>
-                );
-              };
-              return null;
-            })}
+                              </li>
+                            </ul>
+                          );
+                        }
+                        return null;
+                      })}
+                    </li>
+                  );
+                }
+                return null;
+              })}
             </ul>
             {/* End .menu */}
           </nav>

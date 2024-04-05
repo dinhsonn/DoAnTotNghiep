@@ -25,6 +25,12 @@ function Sidebar() {
                                  <Link to={"/image"}>Hình ảnh sản phẩm</Link>
                               </li>
                               <li>
+                                 <Link to={"/productoption"}>Option sản phẩm</Link>
+                              </li>
+                              <li>
+                                 <Link to={"/productoptionvalue"}>Giá trị option sản phẩm</Link>
+                              </li>
+                              <li>
                                  <Link to={"/product/import"}>Nhập hàng</Link>
                               </li>
                               <li>
