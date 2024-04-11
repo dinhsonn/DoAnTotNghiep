@@ -32,3 +32,14 @@
 .dropdown.compare-dropdown li {
   font-weight: bold;
 }
+.categoryoption{
+  width: 893px;
+}
+.titleoptioncte{
+  font-weight: 600;
+  font-size: 15px;
+}
+.valuecte{
+  font-size: 13px;
+  padding-top: 10px;
+}

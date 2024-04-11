@@ -3,7 +3,8 @@ import Banner from "./Banner";
 import Slider from "./Slider";
 import ProductServices from '../../../services/ProductServices';
 import ProductItem3 from "../Product/ProductItem3";
-import ProductItem1 from "../Product/ProductItem1";
+import Brand from "./Brand";
+
 
 
 function Home() {
@@ -1090,55 +1091,7 @@ function Home() {
       {/* End .container */}
     </div>
     {/* End .deal-container */}
-    <div className="container">
-      <div
-        className="owl-carousel mt-5 mb-5 owl-simple"
-        data-toggle="owl"
-        data-owl-options='{
-                      "nav": false, 
-                      "dots": false,
-                      "margin": 30,
-                      "loop": false,
-                      "responsive": {
-                          "0": {
-                              "items":2
-                          },
-                          "420": {
-                              "items":3
-                          },
-                          "600": {
-                              "items":4
-                          },
-                          "900": {
-                              "items":5
-                          },
-                          "1024": {
-                              "items":6
-                          }
-                      }
-                  }'
-      >
-        <a href="#" className="brand">
-          <img src="assets/images/brands/1.png" alt="Brand Name" />
-        </a>
-        <a href="#" className="brand">
-          <img src="assets/images/brands/2.png" alt="Brand Name" />
-        </a>
-        <a href="#" className="brand">
-          <img src="assets/images/brands/3.png" alt="Brand Name" />
-        </a>
-        <a href="#" className="brand">
-          <img src="assets/images/brands/4.png" alt="Brand Name" />
-        </a>
-        <a href="#" className="brand">
-          <img src="assets/images/brands/5.png" alt="Brand Name" />
-        </a>
-        <a href="#" className="brand">
-          <img src="assets/images/brands/6.png" alt="Brand Name" />
-        </a>
-      </div>
-      {/* End .owl-carousel */}
-    </div>
+      <Brand/>
     {/* End .container */}
     <div className="container">
       <hr className="mt-3 mb-6" />

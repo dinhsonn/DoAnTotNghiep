@@ -18,17 +18,22 @@ function ProductCreate() {
       brandId: "",
       specifications: "",
       status: "1",
+      categoryOption: "",
+      categoryOptionValue: "",
    });
 
    const [categories, setCategories] = useState([]);
+   const [categoryOptions, setCategoryOptions] = useState([]);
+   const [categoryOptionValues, setCategoryOptionValues] = useState([]);
    const [brands, setBrands] = useState([]);
+   
 
    useEffect(() => {
       const fetchCategoriesAndBrands = async () => {
          try {
             const categoriesResponse = await CategoryService.getAll();
             setCategories(categoriesResponse.data.content);
-
+            
             const brandsResponse = await BrandServices.getAll();
             setBrands(brandsResponse.data.content);
          } catch (error) {
@@ -39,22 +44,59 @@ function ProductCreate() {
       fetchCategoriesAndBrands();
    }, []);
 
+   const fetchCategoryOptionsByCategoryId = async (categoryId) => {
+      try {
+         const categoryOptionResponse = await CategoryService.categoryOptionByCategoryId(categoryId);
+         setCategoryOptions(categoryOptionResponse.data.content);
+      } catch (error) {
+         console.error("Error fetching category options:", error);
+      }
+   };
+
+   const fetchCategoryOptionValuesByOption = async (option) => {
+      try {
+         const categoryOptionValueResponse = await CategoryService.categoryOptionValueByOption(option);
+         setCategoryOptionValues(categoryOptionValueResponse.data.content);
+      } catch (error) {
+         console.error("Error fetching category option values:", error);
+      }
+   };
    const handleChange = (e) => {
       const { name, value } = e.target;
+      if (name === 'categoryId') {
+         fetchCategoryOptionsByCategoryId(value);
+      } else if (name === 'categoryOption') {
+         fetchCategoryOptionValuesByOption(value);
+      }
       setProduct({ ...product, [name]: value });
    };
 
    const handleSubmit = async (e) => {
       e.preventDefault();
-      ProductService.create(product)
-      .then(response => {
-          console.log("Tạo sản phẩm thành công:", response.data);
-          alert('Thêm sản phẩm thành công!')
- })
- .catch(error => {
-     console.error('Lỗi khi tạo mới:', error);
- });
-};
+   
+      const categoryIdObject = categories.find(category => category.id ===  parseInt(product.categoryId));
+      const brandIdObject = brands.find(brand => brand.id === parseInt(product.brandId));
+      const cateOptionIdObject = categoryOptions.find(categoryOption => categoryOption.id === categoryOption.id);
+      const cateOptionValueIdObject = categoryOptionValues.find(categoryOptionValue => categoryOptionValue.id === categoryOptionValue.id);
+     
+      const updatedProduct = {
+         ...product,
+         categoryId: categoryIdObject,
+         brandId: brandIdObject,
+         categoryOption: cateOptionIdObject,
+         categoryOptionValue: cateOptionValueIdObject,
+      };
+
+      ProductService.create(updatedProduct)
+         .then(response => {
+            console.log("Tạo sản phẩm thành công:", response.data);
+            alert('Thêm sản phẩm thành công!');
+         })
+         .catch(error => {
+            console.error('Lỗi khi tạo mới:', error);
+         });
+   };
+   
 
    const handleInputChange = (e) => {
       const { name, value } = e.target;
@@ -109,14 +151,14 @@ function ProductCreate() {
 
                      </div>
                      <div className="mb-3">
-                        <label className="form-label">Brand:</label>
+                        <label className="form-label">Thương hiệu:</label>
                         <select
                            className="form-select"
                            name="brandId"
                            value={product.brandId}
                            onChange={handleChange}
                         >
-                           <option value="">Select Brand</option>
+                           <option value="">Chọn thương hiệu</option>
                            {brands.map((brand) => (
                               <option key={brand.id} value={brand.id}>
                                  {brand.name}
@@ -125,17 +167,49 @@ function ProductCreate() {
                         </select>
                      </div>
                      <div className="mb-3">
-                        <label className="form-label">Category:</label>
+                        <label className="form-label">Danh mục:</label>
                         <select
                            className="form-select"
                            name="categoryId"
                            value={product.categoryId}
                            onChange={handleChange}
                         >
-                           <option value="">Select Category</option>
+                           <option value="">Chọn danh mục</option>
                            {categories.map((category) => (
                               <option key={category.id} value={category.id}>
                                  {category.name}
+                              </option>
+                           ))}
+                        </select>
+                     </div>
+                     <div className="mb-3">
+                        <label className="form-label">Option danh mục:</label>
+                        <select
+                           className="form-select"
+                           name="categoryOption"
+                           value={product.categoryOption}
+                           onChange={handleChange}
+                        >
+                           <option value="">Chọn option danh mục</option>
+                           {categoryOptions.map((categoryOption) => (
+                              <option key={categoryOption.id} value={categoryOption.id}>
+                                 {categoryOption.name}
+                              </option>
+                           ))}
+                        </select>
+                     </div>
+                     <div className="mb-3">
+                        <label className="form-label">Giá trị Option danh mục:</label>
+                        <select
+                           className="form-select"
+                           name="categoryOptionValue"
+                           value={product.categoryOptionValue}
+                           onChange={handleChange}
+                        >
+                           <option value="">Chọn giá trị option danh mục</option>
+                           {categoryOptionValues.map((categoryOptionValue) => (
+                              <option key={categoryOptionValue.id} value={categoryOptionValue.id}>
+                                 {categoryOptionValue.value}
                               </option>
                            ))}
                         </select>

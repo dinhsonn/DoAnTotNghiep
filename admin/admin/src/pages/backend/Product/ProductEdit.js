@@ -19,10 +19,14 @@ function ProductEdit() {
     brandId: "",
     specifications: "",
     status: "1",
+    categoryOption: "",
+    categoryOptionValue: "",
   });
 
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
+  const [categoryOptions, setCategoryOptions] = useState([]);
+  const [categoryOptionValues, setCategoryOptionValues] = useState([]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -42,9 +46,30 @@ function ProductEdit() {
 
     fetchProduct();
   }, [id]);
+    const fetchCategoryOptionsByCategoryId = async (categoryId) => {
+      try {
+        const categoryOptionResponse = await CategoryService.categoryOptionByCategoryId(categoryId);
+        setCategoryOptions(categoryOptionResponse.data.content);
+      } catch (error) {
+        console.error("Error fetching category options:", error);
+      }
+  };
 
+  const fetchCategoryOptionValuesByOption = async (option) => {
+    try {
+       const categoryOptionValueResponse = await CategoryService.categoryOptionValueByOption(option);
+       setCategoryOptionValues(categoryOptionValueResponse.data.content);
+    } catch (error) {
+       console.error("Error fetching category option values:", error);
+    }
+ };
   const handleChange = (e) => {
    const { name, value } = e.target;
+   if (name === 'categoryId') {
+    fetchCategoryOptionsByCategoryId(value);
+    } else if (name === 'categoryOption') {
+        fetchCategoryOptionValuesByOption(value);
+    }
    setProduct(prevState => ({
        ...prevState,
        [name]: value
@@ -53,6 +78,20 @@ function ProductEdit() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const categoryIdObject = categories.find(category => category.id ===  category.id);
+    const brandIdObject = brands.find(brand => brand.id === brand.id);
+    const cateOptionIdObject = categoryOptions.find(categoryOption => categoryOption.id === categoryOption.id);
+    const cateOptionValueIdObject = categoryOptionValues.find(categoryOptionValue => categoryOptionValue.id === categoryOptionValue.id);
+    
+    const updatedProduct = {
+       ...product,
+       categoryId: categoryIdObject,
+       brandId: brandIdObject,
+       categoryOption: cateOptionIdObject,
+       categoryOptionValue: cateOptionValueIdObject,
+    };
+
     ProductService.update(product,id)
       .then((response) => {
         console.log("Updated product:", response.data);
@@ -107,7 +146,7 @@ function ProductEdit() {
                 </div>
               </div>
               <div className="mb-3">
-                <label className="form-label">Brand:</label>
+                <label className="form-label">Thương hiệu:</label>
                 <select
                   className="form-select"
                   name="brandId"
@@ -123,7 +162,7 @@ function ProductEdit() {
                 </select>
               </div>
               <div className="mb-3">
-                <label className="form-label">Category:</label>
+                <label className="form-label">Danh mục:</label>
                 <select
                   className="form-select"
                   name="categoryId"
@@ -134,6 +173,38 @@ function ProductEdit() {
                   {categories.map((category) => (
                     <option key={category.id} value={category.id}>
                       {category.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Option danh mục:</label>
+                <select
+                  className="form-select"
+                  name="categoryOption"
+                  value={product.categoryOption}
+                  onChange={handleChange}
+                >
+                  <option value="">Select Category</option>
+                  {categoryOptions.map((categoryOption) => (
+                    <option key={categoryOption.id} value={categoryOption.id}>
+                      {categoryOption.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Giá trị option danh mục:</label>
+                <select
+                  className="form-select"
+                  name="categoryOptionValue"
+                  value={product.categoryOptionValue}
+                  onChange={handleChange}
+                >
+                  <option value="">Select Category</option>
+                  {categoryOptionValues.map((categoryOptionValue) => (
+                    <option key={categoryOptionValue.id} value={categoryOptionValue.id}>
+                      {categoryOptionValue.value}
                     </option>
                   ))}
                 </select>

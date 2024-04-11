@@ -1,12 +1,15 @@
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import "./Header.css";
 import CategoryServices from "../../services/CategoryServices";
 import MenuServices from "../../services/MenuServices";
 import { Link } from "react-router-dom";
+
 function Menu() {
   const [categories, setCategories] = useState([]);
+  const [categoryoptions, setCategoryoptions] = useState([]);
+  const [optionValues, setOptionValues] = useState({});
   const [menus, setMenus] = useState([]);
-
+  const [hoveredCategoryId, setHoveredCategoryId] = useState(null); 
   useEffect(() => {
     CategoryServices.getAll()
       .then((response) => {
@@ -17,6 +20,35 @@ function Menu() {
         console.error("Error fetching data:", error);
       });
   }, []);
+
+  function getCategoryOptions(categoryId) {
+    if (hoveredCategoryId !== categoryId) { // Kiểm tra xem đã hover category đó chưa
+      CategoryServices.categoryOptionByCategoryId(categoryId)
+        .then((response) => {
+          setCategoryoptions(response.data.content);
+          response.data.content.forEach((option) => {
+            getOptionValues(option.id);
+          });
+        })
+        .catch((error) => {
+          console.error("Error fetching category options:", error);
+        });
+      setHoveredCategoryId(categoryId); // Đánh dấu đã hover category này
+    }
+  }
+
+  function getOptionValues(option) {
+    CategoryServices.categoryOptionValueByOption(option)
+      .then((response) => {
+        setOptionValues((prevOptionValues) => ({
+          ...prevOptionValues,
+          [option]: response.data.content,
+        }));
+      })
+      .catch((error) => {
+        console.error("Error fetching option values:", error);
+      });
+  }
 
   useEffect(() => {
     MenuServices.getAll()
@@ -54,41 +86,47 @@ function Menu() {
             <div className="dropdown-menu">
               <nav className="side-nav">
                 <ul className="menu-vertical sf-arrows">
-                  {categories.map((parentCategory, index) => {
-                    if (!parentCategory.parentId) {
-                      const hasChildren = categories.some(
-                        (childCategory) =>
-                          childCategory.parentId === parentCategory.id
-                      );
-
-                      return (
-                        <li className="item-lead" key={parentCategory.id}>
-                          <a href="#">{parentCategory.name}</a>
-                          {hasChildren && (
-                            <ul className="sub-menu">
-                              {categories.map((childCategory) => {
-                                if (
-                                  childCategory.parentId === parentCategory.id
-                                ) {
-                                  return (
-                                    <li key={childCategory.id}>
-                                      <a href="#">{childCategory.name}</a>
-                                    </li>
-                                  );
-                                }
-                                return null;
-                              })}
-                            </ul>
-                          )}
-                        </li>
-                      );
-                    }
-                    return null;
+                  {categories.map((category, index) => {
+                    return (
+                      <li
+                        className="item-lead"
+                        key={category.id}
+                        onMouseEnter={() => {
+                          getCategoryOptions(category.id);
+                        }}
+                      >
+                        <a href="#">{category.name}</a>
+                        {categoryoptions.length > 0 && hoveredCategoryId === category.id && (
+                          <ul className="categoryoption">
+                            <div className="row">
+                              {categoryoptions.map((option, index) => (
+                                <div className="col mx-4" key={index}>
+                                  <p className="titleoptioncte">
+                                    {option.name}
+                                  </p>
+                                  {optionValues[option.id] &&
+                                    optionValues[option.id].map(
+                                      (value, index) => (
+                                        <a
+                                          className="valuecte"
+                                          href=""
+                                          key={index}
+                                        >
+                                          {value.value}
+                                        </a>
+                                      )
+                                    )}
+                                </div>
+                              ))}
+                            </div>
+                          </ul>
+                        )}
+                      </li>
+                    );
                   })}
                 </ul>
               </nav>
             </div>
-
             {/* End .dropdown-menu */}
           </div>
           {/* End .category-dropdown */}
@@ -112,11 +150,6 @@ function Menu() {
                                 <a href="about.html" className="sf-with-ul">
                                   {childMenu.name}
                                 </a>
-                                {/* <ul>
-                              <li>
-                                <a href="about.html">About 01</a>
-                              </li>
-                            </ul> */}
                               </li>
                             </ul>
                           );

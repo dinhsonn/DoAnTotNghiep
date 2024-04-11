@@ -20,6 +20,15 @@ import Category from '../pages/backend/Category/index';
  import ProductOptionValueShow from '../pages/backend/ProductOptionValue/ProductOptionValueShow';
  import ProductOptionValueEdit from '../pages/backend/ProductOptionValue/ProductOptionValueEdit';
  import ProductOptionValueTrash from '../pages/backend/ProductOptionValue/ProductOptionValueTrash';
+ ////
+ import CategoryOption from '../pages/backend/CategoryOption/index';
+ import CategoryOptionShow from '../pages/backend/CategoryOption/CategoryOptionShow';
+ import CategoryOptionEdit from '../pages/backend/CategoryOption/CategoryOptionEdit';
+ import CategoryOptionTrash from '../pages/backend/CategoryOption/CategoryOptionTrash';
+ import CategoryOptionValue from '../pages/backend/CategoryOptionValue/index';
+ import CategoryOptionValueShow from '../pages/backend/CategoryOptionValue/CategoryOptionValueShow';
+ import CategoryOptionValueEdit from '../pages/backend/CategoryOptionValue/CategoryOptionValueEdit';
+ import CategoryOptionValueTrash from '../pages/backend/CategoryOptionValue/CategoryOptionValueTrash';
 
 // import ContactList from '../pages/backend/Contact/ContactList';
 // import ContactShow from '../pages/backend/Contact/ContactShow';
@@ -173,6 +182,16 @@ const RouterPrivate = [
   { path: "/productoptionvalue/show/:id", component: ProductOptionValueShow },
   { path: "/productoptionvalue/trash", component: ProductOptionValueTrash},
   { path: "/productoptionvalue/edit/:id", component: ProductOptionValueEdit },
+
+  { path: "/categoryoption", component: CategoryOption },
+  { path: "/categoryoption/show/:id", component: CategoryOptionShow },
+  { path: "/categoryoption/trash", component: CategoryOptionTrash},
+  { path: "/categoryoption/edit/:id", component: CategoryOptionEdit },
+
+  { path: "/categoryoptionvalue", component: CategoryOptionValue },
+  { path: "/categoryoptionvalue/show/:id", component: CategoryOptionValueShow },
+  { path: "/categoryoptionvalue/trash", component: CategoryOptionValueTrash},
+  { path: "/categoryoptionvalue/edit/:id", component: CategoryOptionValueEdit },
 
   { path: "/admin", component: Admin },
   { path: "/admin/show/:id", component: AdminShow },

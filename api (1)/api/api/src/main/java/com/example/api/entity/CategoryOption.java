@@ -16,54 +16,23 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
-@AllArgsConstructor
-@Table(name = "products")
+
 @Getter
 @Setter
-
-public class Product {
-
+@AllArgsConstructor
+@Entity
+@Table(name = "category_options")
+public class CategoryOption {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
-    private String name;
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category categoryId;
 
-    @ManyToOne
-    @JoinColumn(name = "brand_id", nullable = false)
-    private Brand brandId;
-
-    @ManyToOne
-    @JoinColumn(name = "category_option", nullable = false)
-    private CategoryOption categoryOption;
-
-    @ManyToOne
-    @JoinColumn(name = "category_option_value", nullable = false)
-    private CategoryOptionValue categoryOptionValue;
-
     @Column(nullable = false)
-    private double price;
-
-    @Column(nullable = false)
-    private String description;
-
-    @Column(nullable = false)
-    private String content;
-
-    @Column(nullable = false)
-    private int qty;
-
-    @Column(nullable = false)
-    private String warranty;
-
-    @Column(nullable = false)
-    private String specifications;
+    private String name;
 
     @Column(nullable = false)
     private int status;
@@ -76,12 +45,8 @@ public class Product {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    public Product() {
-        this.createdAt = new Date();
-    }
 
-    public Product(String id) {
-        this();
-        this.id = Long.parseLong(id);
+    public CategoryOption() {
+        this.createdAt = new Date();
     }
 }

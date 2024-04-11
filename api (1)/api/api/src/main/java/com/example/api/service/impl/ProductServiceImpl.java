@@ -43,6 +43,8 @@ public class ProductServiceImpl implements ProductService {
         if (existingProduct != null) {
             existingProduct.setName(product.getName());
             existingProduct.setCategoryId(product.getCategoryId());
+            existingProduct.setCategoryOption(product.getCategoryOption());
+            existingProduct.setCategoryOptionValue(product.getCategoryOptionValue());
             existingProduct.setBrandId(product.getBrandId());
             existingProduct.setPrice(product.getPrice());
             existingProduct.setQty(product.getQty());

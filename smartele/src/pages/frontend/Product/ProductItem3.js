@@ -79,7 +79,7 @@ function ProductItem3(props) {
         </figure>
         <div className="product-body">
           <div className="product-cat">
-            <a href="#">Women</a>
+            <a href="#">{props.product.categoryId.name}</a>
           </div>
           <h3 className="product-title">
             <a href="product.html">{props.product.name}</a>
