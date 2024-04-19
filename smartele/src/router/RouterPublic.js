@@ -15,6 +15,10 @@ import PostDetail from "../pages/frontend/Blog/PostDetail";
 // // import Search from "../layouts/LayoutSite/Search";
 import Cart from "../pages/frontend/Cart";
 import About from "../pages/frontend/About";
+import PaypalPayment from "../pages/frontend/Checkout/test";
+import Profile from "../pages/frontend/Profile/Profile";
+import EditProfile from "../pages/frontend/Profile/EditProfile";
+import Order from "../pages/frontend/Profile/Order";
 
 const RouterPublic = [
     {path:'/',component:Home},
@@ -34,6 +38,10 @@ const RouterPublic = [
     // // {path:'/tim-kiem/:key',component:Search},
     {path:'/cart',component:Cart},
     {path:'/about',component:About},
+    {path:'/test',component:PaypalPayment},
+    {path:'/profile',component:Profile},
+    {path:'/edit',component:EditProfile},
+    {path:'/order',component:Order},
     // {path:'/login',component:Login},
 ]
 export default RouterPublic;

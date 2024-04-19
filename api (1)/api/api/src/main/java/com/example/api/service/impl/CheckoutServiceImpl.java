@@ -53,4 +53,9 @@ public class CheckoutServiceImpl implements CheckoutService {
     public void deleteCheckout(Long checkoutId) {
         checkoutRepository.deleteById(checkoutId);
     }
+
+    @Override
+    public Checkout getCheckoutByUserIdAndCartId(Long userId, Long cartId) {
+        throw new UnsupportedOperationException("Unimplemented method 'getCheckoutByUserIdAndCartId'");
+    }
 }

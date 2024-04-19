@@ -2,12 +2,14 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LayoutSite from './layouts/LayoutSite';
 import RouterPublic from "./router/RouterPublic";
 import { UserProvider } from "./services/UserContext";
+import { CartProvider } from "./pages/frontend/Cart/Context";
 
 
 function App() {
 
   return (
     <>
+    <CartProvider>
       <UserProvider>
         <BrowserRouter>
           <Routes>
@@ -22,7 +24,7 @@ function App() {
           </Routes>
         </BrowserRouter>
       </UserProvider>
-
+      </CartProvider>
     </>
   );
 }

@@ -10,7 +10,6 @@ import { useUser } from '../../services/UserContext';
 function Login() {
   const navigate = useNavigate();
   const { login } = useUser();
-
   //dang ky
   const [formData, setFormData] = useState({
     name: '',
@@ -66,8 +65,8 @@ function Login() {
           console.log("user", user)
           setTimeout(() => {
             navigate('/');
-            window.location.reload()
-          }, 10000);
+            window.location.reload();
+          }, 1000);
         } else {
           Swal.fire({
             title: "Lỗi!",
@@ -81,46 +80,52 @@ function Login() {
       });
   };
   //dang nhap google
-  const handleGoogleLogin = async (credentialResponse) => {
-    try {
-      if (credentialResponse && credentialResponse.credential) {
-        const decodedToken = jwtDecode(credentialResponse.credential);
-        console.log("API:", decodedToken);
-        const { email, name } = decodedToken;
+const handleGoogleLogin = async (credentialResponse) => {
+  try {
+    if (credentialResponse && credentialResponse.credential) {
+      const decodedToken = jwtDecode(credentialResponse.credential);
+      console.log("API:", decodedToken);
+      const { email, name } = decodedToken;
 
-        const userData = {
-          name: name,
-          email: email,
-          phone: '',
-          username: '',
-          password: '',
-          address: '',
-          sex: '',
-          birthday: '',
-          roles: '1',
-          status: '0'
-        };
-        localStorage.setItem('loggedInUser', JSON.stringify(userData));
+      const userData = {
+        name: name,
+        email: email,
+        phone: '',
+        username: '',
+        password: '',
+        address: '',
+        sex: '',
+        birthday: '',
+        roles: '1',
+        status: '0'
+      };
 
-        const response = await UserServices.create(userData);
+      const response = await UserServices.create(userData);
+      const userId = response.data.id; // Lấy userId từ phản hồi
 
-        console.log("Google Login successful", response);
-        Swal.fire("Logged In Successfully!", "You have successfully logged into your account!", "success");
-        const closeButton = document.querySelector(".close");
-        if (closeButton) {
-          closeButton.click();
-        }
-        setTimeout(() => {
-          navigate('/');
-          window.location.reload()
-        }, 1000);
-      } else {
-        console.error("Invalid Google Login response:", credentialResponse);
+      // Lưu userId vào localStorage
+      localStorage.setItem('loggedInUser', JSON.stringify({
+        ...userData,
+        id: userId
+      }));
+
+      console.log("Google Login successful", response);
+      Swal.fire("Logged In Successfully!", "You have successfully logged into your account!", "success");
+      const closeButton = document.querySelector(".close");
+      if (closeButton) {
+        closeButton.click();
       }
-    } catch (error) { 
-      console.error("Error handling Google Login:", error);
+      setTimeout(() => {
+        navigate('/');
+        window.location.reload()
+      }, 1000);
+    } else {
+      console.error("Invalid Google Login response:", credentialResponse);
     }
-  };
+  } catch (error) { 
+    console.error("Error handling Google Login:", error);
+  }
+};
 
 
   return (
@@ -246,7 +251,7 @@ function Login() {
                         <div className="row">
                           <div className="col-sm-6">
 
-                            <GoogleOAuthProvider clientId="63487271461-8saii2i38r6dlbbfeqh2rjs54grh3vj9.apps.googleusercontent.com">
+                            <GoogleOAuthProvider clientId="596128456614-9p85u5suisisqptve10k94haa8tmul8s.apps.googleusercontent.com">
                               <GoogleLogin
                                 onSuccess={handleGoogleLogin}
                                 onError={() => {

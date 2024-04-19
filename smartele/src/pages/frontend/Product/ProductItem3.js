@@ -11,15 +11,15 @@ function ProductItem3(props) {
     if (loggedInUser) {
       setUserId(loggedInUser.id);
     }
-  }, []);
+  }, []); 
 
-  const handleAddToCart = (productId, qty, price, image) => {
-    console.log("Adding to cart:", productId, qty, price, image);
+  const handleAddToCart = (productId, qty, price, image,paymentMethod) => {
+    console.log("Adding to cart:", productId, qty, price, image,paymentMethod);
     if (!userId) {
       console.error('User ID is not available.');
       return;
     }
-    CartService.addItemToCart(userId, productId, qty, price, image)
+    CartService.addItemToCart(userId, productId, qty, price, image,paymentMethod)
       .then(() => {
         Swal.fire(
           "The product has been added to cart.",
@@ -58,7 +58,8 @@ function ProductItem3(props) {
             </a>
           </div>
           <div className="product-action action-icon-top">
-            <a href="#" className="btn-product btn-cart" onClick={() => handleAddToCart(props.product.id, 1, props.product.price, props.product.image)}>
+            <a href="#" className="btn-product btn-cart" onClick={() => handleAddToCart(props.product.id, 1, props.product.price, props.product.image, 'Thanh toán trực tiếp')}
+>
               <span>add to cart</span>
             </a>
             <a

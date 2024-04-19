@@ -2,6 +2,7 @@ package com.example.api.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
 import com.example.api.entity.Checkout;
 
 public interface CheckoutService {
@@ -15,4 +16,7 @@ public interface CheckoutService {
     Checkout updateCheckout(Long checkoutId, Checkout updatedCheckout);
 
     void deleteCheckout(Long checkoutId);
+
+    Checkout getCheckoutByUserIdAndCartId(Long userId, Long cartId);
 }
+

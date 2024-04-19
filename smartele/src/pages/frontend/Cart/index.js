@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import CartService from "../../../services/CartServices";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 function Cart() {
   document.title = "Cart";
@@ -9,37 +9,9 @@ function Cart() {
   const [totalAmount, setTotalAmount] = useState(0);
   const [userId, setUserId] = useState(null);
 
-  const navigate = useNavigate(); // Sử dụng hook useNavigate
-
-  const handleProceedToCheckout = () => {
-    navigate('/checkout', { state: { cartItems: cartItems, totalAmount: totalAmount } });
-  };
-  useEffect(() => {
-    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-    if (loggedInUser) {
-      setUserId(loggedInUser.id);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!userId) {
-      console.error('User ID is not available.');
-      return;
-    }
-
-    CartService.getCarts()
-      .then((response) => {
-        const userCartItems = response.data.filter(item => item.user.id === userId);
-        setCartItems(userCartItems);
-        calculateTotal(userCartItems);
-      })
-      .catch((error) => {
-        console.error("Error fetching cart items:", error);
-      });
-  }, [userId]);
 
   const removeItem = (cartId, productId) => {
-    CartService.removeFromCart(cartId, productId)
+    CartService.removeItemFromCart(cartId, productId)
       .then((response) => {
         Swal.fire({
           title: 'Are you sure?',
@@ -65,34 +37,58 @@ function Cart() {
       });
   };
 
+  const updateCartItemQuantity = (cartId, productId, newQuantity) => {
+    CartService.updateCartItemQuantity(cartId, productId, newQuantity)
+      .then((response) => {
+        console.log("Updated:", response);
+        // Cập nhật số lượng mới cho sản phẩm trong giỏ hàng
+        setCartItems(prevCartItems => {
+          const updatedItems = prevCartItems.map(item => {
+            if (item.product.id === productId) {
+              return { ...item, qty: newQuantity };
+            }
+            return item;
+          });
+          // Tính lại tổng số tiền sau khi cập nhật giỏ hàng
+          calculateTotal(updatedItems);
+          return updatedItems;
+        });
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
+
+  useEffect(() => {
+    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+    if (loggedInUser) {
+      setUserId(loggedInUser.id);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!userId) {
+      console.error('User ID is not available.');
+      return;
+    }
+
+    CartService.getCarts()
+      .then((response) => {
+        const userCartItems = response.data.filter(item => item.user.id === userId);
+        setCartItems(userCartItems);
+        calculateTotal(userCartItems);
+      })
+      .catch((error) => {
+        console.error("Error fetching cart items:", error);
+      });
+  }, [userId]);
 
   const calculateTotal = (items) => {
     const total = items.reduce((accumulator, item) => {
       return accumulator + item.price * item.qty;
     }, 0);
     setTotalAmount(total);
-  };
-
-  const handleChangeQuantity = (cartItemId, newQuantity) => {
-    const updatedCartItems = cartItems.map((item) => {
-      if (item.id === cartItemId) {
-        const quantity = parseInt(newQuantity, 10);
-        if (quantity < 1) return { ...item, qty: 1 };
-        return { ...item, qty: quantity };
-      }
-      return item;
-    });
-
-    setCartItems(updatedCartItems);
-    calculateTotal(updatedCartItems);
-
-    CartService.updateCartQuantity(cartItemId, newQuantity)
-      .then((response) => {
-        console.log("Updated:", response);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
   };
 
   const getImgUrl = (imageName) => {
@@ -142,14 +138,10 @@ function Cart() {
                               value={item.qty}
                               min={1}
                               step={1}
-                              onChange={(e) =>
-                                handleChangeQuantity(
-                                  item.id,
-                                  e.target.value
-                                )
-                              }
+                              onChange={(e) => updateCartItemQuantity(item.id, item.product.id, parseInt(e.target.value))}
                               required=""
                             />
+
                           </div>
                         </td>
                         <td className="total-col">
@@ -162,7 +154,6 @@ function Cart() {
                           >
                             <i className="icon-close" />
                           </button>
-
                         </td>
                       </tr>
                     ))}
@@ -210,12 +201,12 @@ function Cart() {
                       </tr>
                     </tbody>
                   </table>
-                  <a
-                    onClick={handleProceedToCheckout}
+                  <Link
                     className="btn btn-outline-primary-2 btn-order btn-block"
+                    to={`/checkout`}
                   >
                     PROCEED TO CHECKOUT
-                  </a>
+                  </Link>
                 </div>
                 <a
                   href="category.html"

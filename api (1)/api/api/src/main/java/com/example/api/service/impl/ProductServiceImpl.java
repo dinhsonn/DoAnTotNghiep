@@ -11,6 +11,7 @@ import com.example.api.service.ProductService;
 import com.example.api.repository.ProductRepository;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -62,4 +63,9 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProduct(Long productId) {
         productRepository.deleteById(productId);
     }
+    @Override
+    public List<Product> getProductsByIds(List<Long> productIds) {
+        return productRepository.findAllById(productIds);
+    }
+
 }

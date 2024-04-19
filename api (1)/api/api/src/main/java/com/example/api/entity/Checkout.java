@@ -53,6 +53,7 @@ public class Checkout {
     @Column(name = "updated_at")
     private Date updatedAt;
 
+    // Constructors
     public Checkout() {
         this.createdAt = new Date();
     }

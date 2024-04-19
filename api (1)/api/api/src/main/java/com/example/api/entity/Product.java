@@ -7,6 +7,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -19,7 +21,6 @@ import lombok.Setter;
 @Table(name = "products")
 @Getter
 @Setter
-
 public class Product {
 
     @Id
@@ -29,11 +30,13 @@ public class Product {
     @Column(nullable = false)
     private String name;
 
-    @Column(name = "category_id", nullable = false)
-    private Long categoryId;
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category categoryId;
 
-    @Column(name = "brand_id", nullable = false)
-    private Long brandId;
+    @ManyToOne
+    @JoinColumn(name = "brand_id", nullable = false)
+    private Brand brandId;
 
     @Column(nullable = false)
     private double price;
@@ -68,9 +71,14 @@ public class Product {
         this.createdAt = new Date();
     }
 
-    // Constructor có tham số
     public Product(String id) {
         this();
         this.id = Long.parseLong(id);
+    }
+
+    // Constructor to set the status field
+    public Product(int status) {
+        this.status = status;
+        this.createdAt = new Date();
     }
 }

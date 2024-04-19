@@ -1,6 +1,6 @@
 package com.example.api.repository;
 
-import com.example.api.entity.Cart;
+import com.example.api.entity.Order;
 import com.example.api.entity.Product;
 import com.example.api.entity.User;
 
@@ -12,11 +12,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CartRepository extends JpaRepository<Cart, Long> {
-    Page<Cart> findAll(Pageable pageable);
-    List<Cart> findAllByProduct(Product product);
+public interface OrderRepository extends JpaRepository<Order, Long> {
+    Page<Order> findAll(Pageable pageable);
+    List<Order> findAllByProduct(Product product);
     void deleteByProductAndId(Product product, Long id);
-    Cart findByUserAndProduct(User user, Product product);
-    List<Cart> findByUserId(Long userId);
-
+    Order findByUserAndProduct(User user, Product product);
+    List<Order> findByUserId(Long userId);
 }

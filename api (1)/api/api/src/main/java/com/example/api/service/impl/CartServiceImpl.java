@@ -1,7 +1,6 @@
 package com.example.api.service.impl;
 
 import com.example.api.entity.Cart;
-import com.example.api.entity.Product;
 import com.example.api.entity.User;
 import com.example.api.repository.CartRepository;
 import com.example.api.service.CartService;
@@ -12,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,24 +31,31 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void addItemToCart(Long userId, Long productId, int qty, double price,String image) {
-        // Lấy thông tin user từ userId
+    public void addItemToCart(Long userId, Long productId, int qty, double price, String image,String paymentMethod) {
         User user = userService.findById(userId);
-
-        // Kiểm tra xem user có tồn tại hay không
         if (user == null) {
             throw new RuntimeException("User not found with id: " + userId);
         }
 
-        Cart cart = new Cart();
-        cart.setUser(user);
-        cart.setProduct(productService.getProductById(productId));
-        cart.setQty(qty);
-        cart.setPrice(price);
-        cart.setStatus(1); 
-        cart.setImage(image);
-        cartRepository.save(cart);
+        Cart existingCartItem = cartRepository.findByUserAndProduct(user, productService.getProductById(productId));
+        if (existingCartItem != null) {
+            existingCartItem.setQty(existingCartItem.getQty() + qty);
+            existingCartItem.setUpdatedAt(new Date()); // Update updatedAt time
+            cartRepository.save(existingCartItem);
+        } else {
+            Cart newCartItem = new Cart();
+            newCartItem.setUser(user);
+            newCartItem.setProduct(productService.getProductById(productId));
+            newCartItem.setQty(qty);
+            newCartItem.setPrice(price);
+            newCartItem.setStatus(1);
+            newCartItem.setImage(image);
+            newCartItem.setCreatedAt(new Date()); // Set createdAt time
+            newCartItem.setPaymentMethod(paymentMethod);
+            cartRepository.save(newCartItem);
+        }
     }
+
 
     @Override
     public void removeItemFromCart(Long cartId, Long productId) {
@@ -60,7 +67,6 @@ public class CartServiceImpl implements CartService {
             }
         }
     }
-    
 
     @Override
     public List<Cart> getCarts() {
@@ -79,13 +85,56 @@ public class CartServiceImpl implements CartService {
 
     @Transactional
     @Override
-    public void updateCartQuantity(Long productId, int newQuantity) {
-        Product product = productService.getProductById(productId);
-        if (product != null) {
-            Cart cart = cartRepository.findByProduct(product);
+    public void updateCartQuantity(Long cartId, Long productId, int qty) {
+        try {
+            Cart cart = cartRepository.findById(cartId).orElse(null);
             if (cart != null) {
-                cart.setQty(newQuantity);
-                cartRepository.save(cart);
+                // Kiểm tra xem cart có chứa productId không
+                if (cart.getProduct().getId().equals(productId)) {
+                    cart.setQty(qty);
+                    cartRepository.save(cart);
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error updating cart quantity", e);
+        }
+    }
+    @Override
+    public Cart getCartById(Long cartId) {
+        Optional<Cart> optionalBrand = cartRepository.findById(cartId);
+        return optionalBrand.orElse(null);
+    }
+    @Override
+    public List<Cart> getCartsByUserId(Long userId) {
+        return cartRepository.findByUserId(userId);
+    }
+
+    @Override
+    public void updatepaymentMethod(Long cartId, String paymentMethod) {
+        Optional<Cart> optionalCart = cartRepository.findById(cartId);
+        if (optionalCart.isPresent()) {
+            Cart cart = optionalCart.get();
+            cart.setPaymentMethod(paymentMethod);
+            cartRepository.save(cart);
+        } else {
+            throw new RuntimeException("Cart not found with id: " + cartId);
+        }
+    }
+    @Override
+    public void deleteCartItems(List<Long> cartItemIds) {
+        for (Long cartItemId : cartItemIds) {
+            cartRepository.deleteById(cartItemId);
+        }
+    }
+    @Override
+    public void removeItemsFromCarts(List<Long> cartIds, Long productId) {
+        for (Long cartId : cartIds) {
+            Optional<Cart> optionalCart = cartRepository.findById(cartId);
+            if (optionalCart.isPresent()) {
+                Cart cart = optionalCart.get();
+                if (cart.getProduct().getId().equals(productId)) {
+                    cartRepository.deleteById(cartId);
+                }
             }
         }
     }

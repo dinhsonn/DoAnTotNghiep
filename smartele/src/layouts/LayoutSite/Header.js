@@ -6,28 +6,29 @@ import CartHeader from "./CartHeader";
 
 function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [name, setName] = useState("");
+  const [name, setName] = useState(""); // Khai báo biến state 'name'
+
   const handleLoginSuccess = (user) => {
     setIsLoggedIn(true);
-    setName(user.name);
+    setName(user.name); 
   };
+
   const handleLogout = () => {
     localStorage.removeItem('loggedInUser');
     setIsLoggedIn(false);
-    setName("");
+    setName(""); // Xóa 'name' khi đăng xuất
     window.location.href = '/';
-
   };
+
   useEffect(() => {
     const storedUser = localStorage.getItem('loggedInUser');
-  
+
     if (storedUser) {
       const user = JSON.parse(storedUser);
       setIsLoggedIn(true);
-      setName(user.name);
+      setName(user.name); // Gán 'name' từ thông tin người dùng vào state
     } else {
       setIsLoggedIn(false);
-      setName("");
     }
   }, []);
   return (
@@ -72,7 +73,7 @@ function Header() {
                           <li className="icon-user" style={{ cursor: 'pointer', fontSize: '1.4em' }}>{name} </li>
                           <ul className="dropdown-menu">
                             <h4 className="compare-product-title">
-                              <a href="product.html">Thông tin tài khoản</a>
+                              <a href="/profile">Thông tin tài khoản</a>
                             </h4>
                             <h4 className="compare-product-title">
                               <a href="#" onClick={handleLogout}>Đăng xuất</a>
@@ -82,11 +83,10 @@ function Header() {
                       ) : (
                         <li>
                           <a href="#signin-modal" data-toggle="modal">
-                            Đăng nhập / Đăng ký
+                            {isLoggedIn ? name : 'Đăng nhập / Đăng ký'}
                           </a>
                         </li>
                       )}
-
                     </li>
                   </ul>
                 </li>
@@ -202,7 +202,7 @@ function Header() {
                 </a>
               </div>
               {/* End .compare-dropdown */}
-<CartHeader/>
+              <CartHeader />
               {/* End .cart-dropdown */}
             </div>
             {/* End .header-right */}
