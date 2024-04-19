@@ -4,3 +4,8 @@ listitem.forEach((hdlitem) => {
         hdlitem.classList.toggle("active");
     });
 });
+$(document).ready(function(){
+    $('.mainmenu .item-sub').click(function(){
+        $(this).find('.submenu').toggle();
+    });
+});

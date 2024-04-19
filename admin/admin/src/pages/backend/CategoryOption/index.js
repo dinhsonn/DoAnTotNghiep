@@ -1,23 +1,24 @@
 import { useEffect, useState } from "react";
-import ProductServices from "../../../services/ProductServices";
+import CategoryServices from "../../../services/CategoryServices";
 import { Link } from "react-router-dom";
 
-function ProductOptionValue() {
-  const [productoptionvalues, setProductOptionValues] = useState([]);
-  const [productoptions, setProductoptions] = useState([]);
+function CategoryOption() {
+  const [categoryoptions, setCategoryOptions] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [formData, setFormData] = useState({
-    value: "",
-    option: "",
+    name: "",
+    categoryId: "",
+    status: "0",
   });
 
   useEffect(() => {
-    loadProductOptionvalues();
+    loadCategoryOptions();
   }, [formData]);
 
-  const loadProductOptionvalues = () => {
-    ProductServices.productOptionValue()
+  const loadCategoryOptions = () => {
+    CategoryServices.categoryOption()
       .then((response) => {
-        setProductOptionValues(response.data.content);
+        setCategoryOptions(response.data.content);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -25,61 +26,63 @@ function ProductOptionValue() {
   };
 
   useEffect(() => {
-    ProductServices.productOption()
+    CategoryServices.getAll()
       .then((response) => {
-        setProductoptions(response.data.content);
+        setCategories(response.data.content);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
   }, []);
 
-  const removeProductOptionValue = (id) => {
-    ProductServices.removeProductOptionValue(id)
+  const removeCategoryOption = (id) => {
+    CategoryServices.removeCategoryOption(id)
       .then(() => {
-        setProductOptionValues(productoptionvalues.filter((productoptionvalue) => productoptionvalue.id !== id));
-        console.log("Product Option deleted successfully");
-        alert("Giá trị Option đã được xóa!");
+        setCategoryOptions(
+          categoryoptions.filter((categoryoption) => categoryoption.id !== id)
+        );
+        console.log("Category Option deleted successfully");
+        alert("Category Option đã được xóa!");
       })
       .catch((error) => {
         console.error("Error deleting Product Option:", error);
       });
   };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
-  
-    if (name === "option") {
-      const selectedOption = productoptions.find(option => option.id === parseInt(value));
-      setFormData({
-        ...formData,
-        [name]: selectedOption,
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
-    }
+
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
-  
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    ProductServices.createProductOptionValue(formData)
+    const categoryIdObject = categories.find(
+      (category) => category.id === parseInt(formData.categoryId)
+    );
+    console.log("gg", categoryIdObject);
+    const updatedProduct = {
+      ...formData,
+      categoryId: categoryIdObject,
+    };
+    CategoryServices.createCategoryOption(updatedProduct)
       .then((response) => {
-        console.log("Tạo product option thành công:", response.data);
-        alert("Thêm giá trị option thành công!");
-        loadProductOptionvalues();
+        console.log("Tạo category option thành công:", response.data);
+        alert("Thêm danh mục option thành công!");
+        loadCategoryOptions();
       })
       .catch((error) => {
-        console.error("Lỗi khi tạo mới option value:", error);
+        console.error("Lỗi khi tạo mới người dùng:", error);
       });
   };
+
 
   return (
     <div className="content">
       <section className="content-header my-2">
-        <h1 className="d-inline">Giá trị option sản phẩm</h1>
+        <h1 className="d-inline">Option danh mục</h1>
         <hr style={{ border: "none" }} />
       </section>
       <section className="content-body my-2">
@@ -88,35 +91,50 @@ function ProductOptionValue() {
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
                 <label>
-                  <strong>Tên giá option (*)</strong>
+                  <strong>Tên option (*)</strong>
                 </label>
                 <input
                   type="text"
-                  name="value"
+                  name="name"
                   className="form-control"
                   placeholder="Tên option"
-                  value={formData.value}
+                  value={formData.name}
                   onChange={handleChange}
                 />
               </div>
               <div className="mb-3">
                 <label>
-                  <strong>ID Option</strong>
+                  <strong>ID danh mục</strong>
                 </label>
                 <select
-                  name="option"
+                  name="categoryId"
                   className="form-control"
-                  value={formData.option.id}
+                  value={formData.categoryId}
                   onChange={handleChange}
                 >
-                  {productoptions.map((productoption) => (
-                    <option key={productoption.id} value={productoption.id}>
-                      {productoption.name}
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
                     </option>
                   ))}
                 </select>
               </div>
-          
+
+              <div className="mb-3">
+                <label>
+                  <strong>Trạng thái</strong>
+                </label>
+                <select
+                  name="status"
+                  className="form-control"
+                  value={formData.status}
+                  onChange={handleChange}
+                >
+                  <option value="0">Xuất bản</option>
+                  <option value="1">Chưa xuất bản</option>
+                </select>
+              </div>
+
               <div className="mb-3 text-end">
                 <button
                   className="btn btn-sm btn-success"
@@ -164,37 +182,37 @@ function ProductOptionValue() {
                     <input type="checkbox" id="checkboxAll" />
                   </th>
                   <th>Tên option</th>
-                
-                  <th>ID Option sản phẩm</th>
-              
-               
+
+                  <th>ID sản phẩm</th>
+
+                  <th>Trạng thái</th>
                   <th className="text-center" style={{ width: "30px" }}>
                     ID
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {productoptionvalues.map((productoptionvalue, index) => (
+                {categoryoptions.map((categoryoption, index) => (
                   <tr className="datarow">
                     <td>
                       <input type="checkbox" id="checkId" />
                     </td>
                     <td>
                       <div className="name">
-                        <a>{productoptionvalue.value}</a>
+                        <a>{categoryoption.name}</a>
                       </div>
                       <div className="function_style">
                         <a href="#" className="px-1 text-success">
                           <i className="fa fa-toggle-on"></i>
                         </a>
                         <Link
-                          to={`/productoptionvalue/edit/${productoptionvalue.id}`}
+                          to={`/categoryoption/edit/${categoryoption.id}`}
                           className="px-1 text-primary"
                         >
                           <i className="fa fa-edit"></i>
                         </Link>
                         <Link
-                          to={`/productoptionvalue/show/${productoptionvalue.id}`}
+                          to={`/categoryoption/show/${categoryoption.id}`}
                           className="px-1 text-info"
                         >
                           <i className="fa fa-eye"></i>
@@ -202,14 +220,21 @@ function ProductOptionValue() {
                         <a
                           href="#"
                           className="px-1 text-danger"
-                          onClick={() => removeProductOptionValue(productoptionvalue.id)}
+                          onClick={() =>
+                            removeCategoryOption(categoryoption.id)
+                          }
                         >
                           <i className="fa fa-trash"></i>
                         </a>
                       </div>
                     </td>
-                    <td>{productoptionvalue.option.name} - {productoptionvalue.option.productId.name}</td>
-                    <td className="text-center">{productoptionvalue.id}</td>
+                    <td>{categoryoption.categoryId.name}</td>
+                    <td>
+                      {categoryoption.status === 0
+                        ? "Xuất bản"
+                        : "Chưa xuất bản"}
+                    </td>
+                    <td className="text-center">{categoryoption.id}</td>
                   </tr>
                 ))}
               </tbody>
@@ -221,4 +246,4 @@ function ProductOptionValue() {
   );
 }
 
-export default ProductOptionValue;
+export default CategoryOption;

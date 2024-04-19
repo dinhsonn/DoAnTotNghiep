@@ -129,6 +129,10 @@ button.btnfilter {
    visibility: visible;
    opacity: 1;
 }
+.submenu {
+   display: none;
+}
+
 
 .mainmenu ul li.hdlitem {
    position: relative;

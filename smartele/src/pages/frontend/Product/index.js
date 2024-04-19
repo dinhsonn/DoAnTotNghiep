@@ -13,6 +13,7 @@ function Product() {
         ]);
         const productsData = productsResponse.data.content;
         const productImagesData = productImagesResponse.data.content;
+        console.log("sp",productsData);
         setProducts(productsData);
         setProductImages(productImagesData);
 

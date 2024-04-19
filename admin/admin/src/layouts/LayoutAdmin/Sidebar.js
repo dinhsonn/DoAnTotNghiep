@@ -33,15 +33,33 @@ function Sidebar() {
                               <li>
                                  <Link to={"/product/import"}>Nhập hàng</Link>
                               </li>
+                        
+                              <li>
+                                 <Link to={"/sale"}>Khuyễn mãi</Link>
+                              </li>
+                           </ul>
+                        </li>
+                        <li className="hdlitem item-sub">
+                           <i className="fa-brands fa-product-hunt icon-left"></i>
+                           <a to="#">Danh mục & thương hiệu</a>
+                           <i className="fa-solid fa-plus icon-right"></i>
+                           <ul className="submenu">
+                        
+                          
+                              <li>
+                                 <Link to={"/categoryoption"}>Option danh mục</Link>
+                              </li>
+                              <li>
+                                 <Link to={"/categoryoptionvalue"}>Giá trị option danh mục</Link>
+                              </li>
+                           
                               <li>
                                  <Link to={"/category"}>Danh mục</Link>
                               </li>
                               <li>
                                  <Link to={"/brand"}>Thương hiệu</Link>
                               </li>
-                              <li>
-                                 <Link to={"/sale"}>Khuyễn mãi</Link>
-                              </li>
+                           
                            </ul>
                         </li>
                         <li className="hdlitem item-sub">

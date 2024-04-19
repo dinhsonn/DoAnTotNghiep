@@ -37,6 +37,17 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "brand_id", nullable = false)
     private Brand brandId;
+<<<<<<< HEAD
+=======
+
+    @ManyToOne
+    @JoinColumn(name = "category_option", nullable = false)
+    private CategoryOption categoryOption;
+
+    @ManyToOne
+    @JoinColumn(name = "category_option_value", nullable = false)
+    private CategoryOptionValue categoryOptionValue;
+>>>>>>> 4de585e38a472555b37c82d77ba2a2813d4c7c2c
 
     @Column(nullable = false)
     private double price;

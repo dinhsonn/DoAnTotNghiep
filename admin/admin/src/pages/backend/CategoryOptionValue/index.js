@@ -1,23 +1,23 @@
 import { useEffect, useState } from "react";
-import ProductServices from "../../../services/ProductServices";
+import CategoryServices from "../../../services/CategoryServices";
 import { Link } from "react-router-dom";
 
-function ProductOptionValue() {
-  const [productoptionvalues, setProductOptionValues] = useState([]);
-  const [productoptions, setProductoptions] = useState([]);
+function CategoryOptionValue() {
+  const [categoryoptionvalues, setCategoryOptionValues] = useState([]);
+  const [categoryoptions, setCategoryoptions] = useState([]);
   const [formData, setFormData] = useState({
     value: "",
     option: "",
   });
 
   useEffect(() => {
-    loadProductOptionvalues();
+    loadCategoryOptionvalues();
   }, [formData]);
 
-  const loadProductOptionvalues = () => {
-    ProductServices.productOptionValue()
+  const loadCategoryOptionvalues = () => {
+    CategoryServices.categoryOptionValue()
       .then((response) => {
-        setProductOptionValues(response.data.content);
+        setCategoryOptionValues(response.data.content);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -25,21 +25,21 @@ function ProductOptionValue() {
   };
 
   useEffect(() => {
-    ProductServices.productOption()
+    CategoryServices.categoryOption()
       .then((response) => {
-        setProductoptions(response.data.content);
+        setCategoryoptions(response.data.content);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
   }, []);
 
-  const removeProductOptionValue = (id) => {
-    ProductServices.removeProductOptionValue(id)
+  const removeCategoryOptionValue = (id) => {
+    CategoryServices.removeCategoryOptionValue(id)
       .then(() => {
-        setProductOptionValues(productoptionvalues.filter((productoptionvalue) => productoptionvalue.id !== id));
+        setCategoryOptionValues(categoryoptionvalues.filter((categoryoptionvalue) => categoryoptionvalue.id !== id));
         console.log("Product Option deleted successfully");
-        alert("Giá trị Option đã được xóa!");
+        alert("Giá trị Option danh mục đã được xóa!");
       })
       .catch((error) => {
         console.error("Error deleting Product Option:", error);
@@ -48,28 +48,28 @@ function ProductOptionValue() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-  
-    if (name === "option") {
-      const selectedOption = productoptions.find(option => option.id === parseInt(value));
-      setFormData({
-        ...formData,
-        [name]: selectedOption,
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
-    }
+
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
   
   const handleSubmit = (e) => {
     e.preventDefault();
-    ProductServices.createProductOptionValue(formData)
+    const categoryoptIdObject = categoryoptions.find(
+      (categoryoption) => categoryoption.id === parseInt(formData.option)
+    );
+    console.log("gg", categoryoptIdObject);
+    const updatedProduct = {
+      ...formData,
+      option: categoryoptIdObject,
+    };
+    CategoryServices.createCategoryOptionValue(updatedProduct)
       .then((response) => {
         console.log("Tạo product option thành công:", response.data);
-        alert("Thêm giá trị option thành công!");
-        loadProductOptionvalues();
+        alert("Thêm giá trị option danh mục  thành công!");
+        loadCategoryOptionvalues();
       })
       .catch((error) => {
         console.error("Lỗi khi tạo mới option value:", error);
@@ -79,7 +79,7 @@ function ProductOptionValue() {
   return (
     <div className="content">
       <section className="content-header my-2">
-        <h1 className="d-inline">Giá trị option sản phẩm</h1>
+        <h1 className="d-inline">Giá trị option danh mục</h1>
         <hr style={{ border: "none" }} />
       </section>
       <section className="content-body my-2">
@@ -106,12 +106,12 @@ function ProductOptionValue() {
                 <select
                   name="option"
                   className="form-control"
-                  value={formData.option.id}
+                  value={formData.option}
                   onChange={handleChange}
                 >
-                  {productoptions.map((productoption) => (
-                    <option key={productoption.id} value={productoption.id}>
-                      {productoption.name}
+                  {categoryoptions.map((categoryoption) => (
+                    <option key={categoryoption.id} value={categoryoption.id}>
+                      {categoryoption.name}
                     </option>
                   ))}
                 </select>
@@ -174,27 +174,27 @@ function ProductOptionValue() {
                 </tr>
               </thead>
               <tbody>
-                {productoptionvalues.map((productoptionvalue, index) => (
+                {categoryoptionvalues.map((categoryoptionvalue, index) => (
                   <tr className="datarow">
                     <td>
                       <input type="checkbox" id="checkId" />
                     </td>
                     <td>
                       <div className="name">
-                        <a>{productoptionvalue.value}</a>
+                        <a>{categoryoptionvalue.value}</a>
                       </div>
                       <div className="function_style">
                         <a href="#" className="px-1 text-success">
                           <i className="fa fa-toggle-on"></i>
                         </a>
                         <Link
-                          to={`/productoptionvalue/edit/${productoptionvalue.id}`}
+                          to={`/categoryoptionvalue/edit/${categoryoptionvalue.id}`}
                           className="px-1 text-primary"
                         >
                           <i className="fa fa-edit"></i>
                         </Link>
                         <Link
-                          to={`/productoptionvalue/show/${productoptionvalue.id}`}
+                          to={`/categoryoptionvalue/show/${categoryoptionvalue.id}`}
                           className="px-1 text-info"
                         >
                           <i className="fa fa-eye"></i>
@@ -202,14 +202,14 @@ function ProductOptionValue() {
                         <a
                           href="#"
                           className="px-1 text-danger"
-                          onClick={() => removeProductOptionValue(productoptionvalue.id)}
+                          onClick={() => removeCategoryOptionValue(categoryoptionvalue.id)}
                         >
                           <i className="fa fa-trash"></i>
                         </a>
                       </div>
                     </td>
-                    <td>{productoptionvalue.option.name} - {productoptionvalue.option.productId.name}</td>
-                    <td className="text-center">{productoptionvalue.id}</td>
+                    <td>{categoryoptionvalue.option.name} - {categoryoptionvalue.option.categoryId.name}</td>
+                    <td className="text-center">{categoryoptionvalue.id}</td>
                   </tr>
                 ))}
               </tbody>
@@ -221,4 +221,4 @@ function ProductOptionValue() {
   );
 }
 
-export default ProductOptionValue;
+export default CategoryOptionValue;

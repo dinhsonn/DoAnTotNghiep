@@ -7,18 +7,23 @@ import BrandServices from "../../../services/BrandServices";
 function ProductList() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [categoryOption, setCategoryOption] = useState([]);
+  const [categoryOptionValue, setCategoryOptionvalue] = useState([]);
   const [brands, setBrands] = useState([]);
 
   useEffect(() => {
     loadProducts();
     loadCategories();
     loadBrands();
+    loadCategoryOption();
+    loadCategoryOptionValue();
   }, []);
 
   const loadProducts = async () => {
     try {
       const response = await ProductService.getAll();
       setProducts(response.data.content);
+      console.log("day ne",response.data.content);
     } catch (error) {
       console.error("Error loading products:", error);
     }
@@ -28,6 +33,22 @@ function ProductList() {
     try {
       const response = await CategoryService.getAll();
       setCategories(response.data.content);
+    } catch (error) {
+      console.error("Error loading categories:", error);
+    }
+  };
+  const loadCategoryOption = async () => {
+    try {
+      const response = await CategoryService.categoryOption();
+      setCategoryOption(response.data.content);
+    } catch (error) {
+      console.error("Error loading categories:", error);
+    }
+  };
+  const loadCategoryOptionValue = async () => {
+    try {
+      const response = await CategoryService.categoryOptionValue();
+      setCategoryOptionvalue(response.data.content);
     } catch (error) {
       console.error("Error loading categories:", error);
     }
@@ -54,15 +75,7 @@ function ProductList() {
   };
   
 
-  const getCategoryName = (categoryId) => {
-    const category = categories.find((c) => c.id === categoryId);
-    return category ? category.name : "";
-  };
 
-  const getBrandName = (brandId) => {
-    const brand = brands.find((b) => b.id === brandId);
-    return brand ? brand.name : "";
-  };
 
   return (
     <div className="content">
@@ -147,10 +160,12 @@ function ProductList() {
               <th>Tên sản phẩm</th>
               <th>Giá</th>
               <th>Số lượng</th>
-              <th>Mô tả</th>
-              <th>Bảo hành</th>
-              <th>Thông số kỹ thuật</th>
+
+            
+
               <th>Tên danh mục</th>
+              <th>Tên option danh mục</th>
+              <th>Tên giá trị danh mục</th>
               <th>Tên thương hiệu</th>
               <th>ID</th>
             </tr>
@@ -183,11 +198,13 @@ function ProductList() {
                 </td>
                 <td>{product.price}</td>
                 <td>{product.qty}</td>
-                <td>{product.description}</td>
-                <td>{product.warranty}</td>
-                <td>{product.specifications}</td>
-                <td>{getCategoryName(product.categoryId)}</td>
-                <td>{getBrandName(product.brandId)}</td>
+               
+     
+
+                <td>{product.categoryId.name}</td>
+                <td>{product.categoryOption.name}</td>
+                <td>{product.categoryOptionValue.value}</td>
+                <td>{product.brandId.name}</td>
                 <td>{product.id}</td>
               </tr>
             ))}
