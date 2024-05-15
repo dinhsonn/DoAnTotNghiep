@@ -90,17 +90,22 @@ import ImageShow from "../pages/backend/Image/ImageShow";
 import SaleCreate from "../pages/backend/ProductSale/SaleCreate";
 import SaleEdit from "../pages/backend/ProductSale/SaleEdit";
 import SaleShow from "../pages/backend/ProductSale/SaleShow";
+import Login from "../layouts/LayoutAdmin/Login";
+import ProductTrash from "../pages/backend/Product/ProductTrash.";
 
 const RouterPrivate = [
+
  { path: "/", component: Dashboard },
+ { path: "/login", component: Login },
+
   { path: "/brand", component: Brand },
   { path: "/brand/show/:id", component: BrandShow },
   { path: "/brand/trash", component: BrandTrash },
   { path: "/brand/edit/:id", component: BrandEdit },
 
   { path: "/category", component: Category },
-{ path: "/category/show/:id", component: CategoryShow },
-{ path: "/category/edit/:id", component: CategoryEdit },
+  { path: "/category/show/:id", component: CategoryShow },
+  { path: "/category/edit/:id", component: CategoryEdit },
 
 //{ path: "/admin/category/update/:id", component: CategoryUpdate },
 
@@ -109,7 +114,8 @@ const RouterPrivate = [
   { path: "/product/show/:id", component: ProductShow },
   { path: "/product/create", component: ProductCreate },
   { path: "/product/edit/:id", component: ProductEdit },
-  
+  { path: "/product/trash", component: ProductTrash },
+
   { path: "/sale", component: ProductSale },
   { path: "/sale/create", component: SaleCreate },
   { path: "/sale/edit/:id", component: SaleEdit },
@@ -204,6 +210,6 @@ const RouterPrivate = [
   { path: "/customer/create", component: CustomerCreate},
   { path: "/customer/edit/:id", component: CustomerEdit },
   { path: "/customer/trash", component: CustomerTrash },
-  
+   
 ];
 export default RouterPrivate;

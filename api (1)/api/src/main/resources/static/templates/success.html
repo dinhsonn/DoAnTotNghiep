@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html >
+<html>
 <head>
+    <meta charset="UTF-8">
     <style>
         * {
             margin: 0;
@@ -26,7 +27,6 @@
 
         .success-icon {
             font-size: 100px;
-           
         }
 
         .success-message {
@@ -56,38 +56,35 @@
     <div class="container">
         <div class="success">
             <span class="success-icon">&#10004;</span>
-           
             <p class="success-message">Thanh toán thành công </p>
-            <p class="success-order">Mã số đơn hàng của bạn là <span th:text="${paymentId}"></span></p>
-
             <p class="success-order">Bạn có thể chờ đợi trong thời gian dự kiến giao hàng.</p>
-            <button  onclick="redirectToShopping()" class="success-button">Tiếp tục mua hàng</button>
+            <button onclick="redirectToShopping()" class="success-button">Tiếp tục mua hàng</button>
         </div>
     </div>
 
-
     <script>
         function redirectToShopping() {
-            // Thêm bất kỳ logic nào để chuyển hướng đến trang mua sắm tiếp theo
-            // Ví dụ, bạn có thể sử dụng window.location.href
-            // window.location.href = 'http://localhost:3001/#/api';
-
-
-
-             // Thông báo giá trị returnUrl cho ứng dụng React Native
-    window.ReactNativeWebView.postMessage(JSON.stringify({ returnUrl: 'http://localhost:3001/#/shopping' }));
+            // Chuyển hướng người dùng về trang thanh toán
+            window.location.href = 'http://localhost:3000/checkout';
         }
 
-        // Add this function to show an alert after successful payment
-        function showSuccessAlert() {
+        // Hàm này có thể được gọi từ backend sau khi thanh toán thành công
+        function handlePaymentSuccess() {
+            // Hiển thị cửa sổ cảnh báo cho người dùng
             alert('Thanh toán thành công!');
+
+            // Gọi hàm xóa dữ liệu giỏ hàng và chuyển hướng người dùng
+            removeItemsFromCart();
         }
 
-        // Call the function to show the alert when the page loads
+        function removeItemsFromCart() {
+            redirectToShopping();
+        }
+
+        // Gọi hàm xử lý thanh toán thành công khi trang được tải
         window.onload = function() {
-            showSuccessAlert();
+            handlePaymentSuccess();
         };
     </script>
-
 </body>
 </html>

@@ -8,6 +8,11 @@ function Admin() {
       UserServices.getAll()
        .then(response => {
          const filteredAdmins = (response.data.content);
+         const sortedAdmins = filteredAdmins.sort((a, b) => {
+            if (a.roles === 2 && b.roles !== 2) return -1;
+            if (a.roles !== 2 && b.roles === 2) return 1;
+            return 0;
+         });
          setAdmins(filteredAdmins );
        })
        .catch(error => {
@@ -16,16 +21,22 @@ function Admin() {
    }, []);
    //xóa admin
    const removeAdmin = (id) => {
-      UserServices.remove(id)
-        .then(() => {
-         setAdmins(admins.filter(admin => admin.id !== id));
-          console.log("Admin deleted successfully");
-          alert("Thành viên đã được xóa!")
-        })
-        .catch(error => {
-          console.error('Error deleting product:', error);
-        });
-    };
+      const adminToRemove = admins.find(admin => admin.id === id);
+      if (adminToRemove && adminToRemove.roles !== 2) {
+         UserServices.remove(id)
+            .then(() => {
+               setAdmins(admins.filter(admin => admin.id !== id));
+               console.log("Admin deleted successfully");
+               alert("Thành viên đã được xóa!")
+            })
+            .catch(error => {
+               console.error('Error deleting product:', error);
+            });
+      } else {
+         alert("Không thể xóa Admin");
+      }
+   };
+   
     return (   
     <div className="content">
     <section className="content-header my-2">
@@ -120,7 +131,7 @@ function Admin() {
                 <td>{admin.phone}</td>
                 <td>{admin.email}</td>
                 <td>{admin.address}</td>
-                <td>{admin.roles === 0 ? "Admin" : "Người dùng"}</td>
+                <td>{admin.roles === 2 ? "Admin" : "Người dùng"}</td>
                 <td className="text-center">{admin.id}</td>
              </tr>
              ))}

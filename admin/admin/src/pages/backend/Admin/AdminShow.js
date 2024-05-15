@@ -22,7 +22,7 @@ function AdminShow() {
          <h1 className="d-inline">Chi tiết</h1>
          <div className="row mt-2 align-items-center">
             <div className="col-md-12 text-end">
-               <Link to={'/admins'} className="btn btn-primary btn-sm m-1">
+               <Link to={'/admin'} className="btn btn-primary btn-sm m-1">
                   <i className="fa fa-arrow-left"></i> Về danh sách
                </Link>
                <Link to="user_edit.html" className="btn btn-success btn-sm m-1">
@@ -75,7 +75,7 @@ function AdminShow() {
                </tr>
                <tr>
                   <td>Vai trò</td>
-                  <td>{admins.roles===0? "Admin":"Customer"}</td>
+                  <td>{admins.roles===1? "Admin" : "Người dùng"}</td>
                </tr>
                <tr>
                   <td>Trạng thái</td>

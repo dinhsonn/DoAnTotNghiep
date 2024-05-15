@@ -60,7 +60,7 @@ public class MenuController {
 
   
     @PutMapping("{id}")
- 
+
     public ResponseEntity<Menu> updateMenu(@PathVariable("id") Long menuId,
             @RequestBody Menu Menu) {
         Menu.setId(menuId);

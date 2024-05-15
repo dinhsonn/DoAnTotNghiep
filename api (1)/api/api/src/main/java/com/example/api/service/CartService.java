@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface CartService {
     
-    void addItemToCart(Long userId, Long productId, int qty, double price,String image,String paymentMethod);
+    void addItemToCart(Long userId, Long productId, int qty, double price,String image);
     
     void removeItemFromCart(Long cartId, Long productId);
 
@@ -21,6 +21,5 @@ public interface CartService {
     void removeItemsFromCarts(List<Long> cartIds, Long productId);
 
     void updateCartQuantity(Long cartId,Long productId, int qty);
-    void updatepaymentMethod(Long cartId,String paymentMethod);
 
 }

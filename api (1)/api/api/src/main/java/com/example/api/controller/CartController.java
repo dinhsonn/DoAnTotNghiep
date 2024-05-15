@@ -27,11 +27,11 @@ public class CartController {
         this.cartService = cartService;
     }
 
-    @PostMapping("/add/{userId}/{productId}/{qty}/{price}/{image}/{paymentMethod}")
+    @PostMapping("/add/{userId}/{productId}/{qty}/{price}/{image}")
     public void addItemToCart(@PathVariable Long userId, @PathVariable Long productId,
                               @PathVariable int qty, @PathVariable double price,
-                              @PathVariable String image, @PathVariable String paymentMethod) {
-        cartService.addItemToCart(userId, productId, qty, price, image, paymentMethod);
+                              @PathVariable String image) {
+        cartService.addItemToCart(userId, productId, qty, price, image);
     }
     
     @DeleteMapping("/{cartId}/items/{productId}")
@@ -70,12 +70,7 @@ public class CartController {
     @PutMapping("/update/{cartId}/items/{productId}/{qty}")
     public void updateCartQuantity(@PathVariable Long cartId,@PathVariable Long productId, @PathVariable int qty) {
         cartService.updateCartQuantity(cartId,productId, qty);
-    }
-    @PutMapping("/update/{cartId}/items/{paymentMethod}")
-    public void updatepaymentMethod(@PathVariable Long cartId,@PathVariable String paymentMethod) {
-        cartService.updatepaymentMethod(cartId,paymentMethod);
-    }
-    
+    } 
 
 }
 

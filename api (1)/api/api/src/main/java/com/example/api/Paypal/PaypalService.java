@@ -39,7 +39,7 @@ public class PaypalService {
         Item item = new Item();
         item.setName(payment.getIdProduct());
         item.setCurrency(payment.getCurrency());
-        item.setPrice(totalBigDecimal.toString());
+        item.setPrice(totalBigDecimal.toString());  
         item.setQuantity(payment.getQuantity());
         item.setDescription(payment.getDescription());
         items.add(item);

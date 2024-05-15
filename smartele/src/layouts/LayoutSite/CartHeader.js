@@ -22,13 +22,13 @@ function CartHeader() {
       return;
     }
 
-    fetchCartItems(); // Gọi hàm cập nhật giỏ hàng lần đầu khi component được load
+    fetchCartItems(); 
 
     const interval = setInterval(() => {
-      fetchCartItems(); // Gọi hàm cập nhật giỏ hàng sau mỗi khoảng thời gian nhất định (nếu cần)
-    }, 1000); // Ví dụ: cập nhật giỏ hàng mỗi 5 giây
+      fetchCartItems();
+    }, 1000);
 
-    return () => clearInterval(interval); // Clear interval để tránh rò rỉ bộ nhớ
+    return () => clearInterval(interval);
   }, [userId]);
 
   const fetchCartItems = async () => {

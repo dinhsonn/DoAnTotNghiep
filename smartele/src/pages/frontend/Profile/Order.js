@@ -89,7 +89,9 @@ const Order = () => {
                   <td className="total-col">
                     ${item.price * item.qty}
                   </td>
-                  <td className="status-col">{item.status}</td>
+                  <td className="status-col">
+  {item.status === 1 ? 'Chờ xác nhận' : ''}
+</td>
 
                 </tr>
               ))}

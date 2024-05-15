@@ -1,99 +1,222 @@
+import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import ProductService from "../../../services/ProductServices";
+import CategoryService from "../../../services/CategoryServices";
+import BrandServices from "../../../services/BrandServices";
+import TrashProServices from "../../../services/TrashProServices";
+
 function ProductTrash() {
+   const [products, setProducts] = useState([]);
+   const [categories, setCategories] = useState([]);
+   const [categoryOption, setCategoryOption] = useState([]);
+   const [categoryOptionValue, setCategoryOptionvalue] = useState([]);
+   const [brands, setBrands] = useState([]);
+ 
+   useEffect(() => {
+     loadProducts();
+     loadCategories();
+     loadBrands();
+     loadCategoryOption();
+     loadCategoryOptionValue();
+   }, []);
+ 
+   const loadProducts = async () => {
+     try {
+       const response = await TrashProServices.getAll();
+       setProducts(response.data.content);
+       console.log("day ne",response.data.content);
+     } catch (error) {
+       console.error("Error loading products:", error);
+     }
+   };
+   
+   const loadCategories = async () => {
+     try {
+       const response = await CategoryService.getAll();
+       setCategories(response.data.content);
+     } catch (error) {
+       console.error("Error loading categories:", error);
+     }
+   };
+   const loadCategoryOption = async () => {
+     try {
+       const response = await CategoryService.categoryOption();
+       setCategoryOption(response.data.content);
+     } catch (error) {
+       console.error("Error loading categories:", error);
+     }
+   };
+   const loadCategoryOptionValue = async () => {
+     try {
+       const response = await CategoryService.categoryOptionValue();
+       setCategoryOptionvalue(response.data.content);
+     } catch (error) {
+       console.error("Error loading categories:", error);
+     }
+   };
+   
+   const loadBrands = async () => {
+     try {
+       const response = await BrandServices.getAll();
+       setBrands(response.data.content);
+     } catch (error) {
+       console.error("Error loading brands:", error);
+     }
+   };
+   
+   const removeProduct = async (id) => {
+     try {
+       await TrashProServices.remove(id); 
+       setProducts(products.filter((product) => product.id !== id));
+       console.log("Product deleted successfully");
+       alert("Sản phẩm đã được xóa!");
+     } catch (error) {
+       console.error("Error deleting product:", error);
+     }
+   };
+   const backProduct = async (id) => {
+      try {
+        await TrashProServices.remove(id); 
+        // Thêm sản phẩm vào TrashProServices
+        await ProductService.create(products.find(product => product.id === id));
+        // Cập nhật danh sách sản phẩm, loại bỏ sản phẩm đã xóa
+        setProducts(products.filter((product) => product.id !== id));
+        console.log("Product deleted successfully");
+        alert("Thành công!");
+      } catch (error) {
+        console.error("Error deleting product:", error);
+      }
+    };
+ 
     return ( 
    <div className="content">
-    <section className="content-header my-2">
-       <h1 className="d-inline">Thùng rác sản phẩm</h1>
-       <div className="row mt-3 align-items-center">
+<section className="content-header my-2">
+        <h1 className="d-inline">Sản phẩm</h1>
+        <Link to={"/product/create"} className="btn-add">
+          Thêm mới
+        </Link>
+        <div className="row mt-3 align-items-center">
           <div className="col-6">
-             <ul className="manager">
-                <li><a href="product_index.html">Tất cả (123)</a></li>
-                <li><a href="#">Xuất bản (12)</a></li>
-                <li><a href="product_trash.html">Rác (12)</a></li>
-             </ul>
+            <ul className="manager">
+              <li>
+                <a href="product_index.html">Tất cả (123)</a>
+              </li>
+              <li>
+                <a href="#">Xuất bản (12)</a>
+              </li>
+              <li><Link to={"/product/trash"}>Rác (12)</Link></li>
+            </ul>
           </div>
           <div className="col-6 text-end">
-             <input type="text" className="search d-inline" />
-             <button className="d-inline btnsearch">Tìm kiếm</button>
+            <input type="text" className="search d-inline" />
+            <button className="d-inline btnsearch">Tìm kiếm</button>
           </div>
-       </div>
-       <div className="row mt-1 align-items-center">
+        </div>
+        <div className="row mt-1 align-items-center">
           <div className="col-md-8">
-             <select name="" className="d-inline me-1">
-                <option value="">Hành động</option>
-                <option value="">Bỏ vào thùng rác</option>
-             </select>
-             <button className="btnapply">Áp dụng</button>
-             <select name="" className="d-inline me-1">
-                <option value="">Tất cả danh mục</option>
-             </select>
-             <select name="" className="d-inline me-1">
-                <option value="">Tất cả thương hiệu</option>
-             </select>
-             <button className="btnfilter">Lọc</button>
+            <select name="" className="d-inline me-1">
+              <option value="">Hành động</option>
+              <option value="">Bỏ vào thùng rác</option>
+            </select>
+            <button className="btnapply">Áp dụng</button>
+            <select name="" className="d-inline me-1">
+              <option value="">Tất cả danh mục</option>
+            </select>
+            <select name="" className="d-inline me-1">
+              <option value="">Tất cả thương hiệu</option>
+            </select>
+            <button className="btnfilter">Lọc</button>
           </div>
           <div className="col-md-4 text-end">
-             <nav aria-label="Page navigation example">
-                <ul className="pagination pagination-sm justify-content-end">
-                   <li className="page-item disabled">
-                      <a className="page-link">&laquo;</a>
-                   </li>
-                   <li className="page-item"><a className="page-link" href="#">1</a></li>
-                   <li className="page-item"><a className="page-link" href="#">2</a></li>
-                   <li className="page-item"><a className="page-link" href="#">3</a></li>
-                   <li className="page-item">
-                      <a className="page-link" href="#">&raquo;</a>
-                   </li>
-                </ul>
-             </nav>
+            <nav aria-label="Page navigation example">
+              <ul className="pagination pagination-sm justify-content-end">
+                <li className="page-item disabled">
+                  <a className="page-link">«</a>
+                </li>
+                <li className="page-item">
+                  <a className="page-link" href="#">
+                    1
+                  </a>
+                </li>
+                <li className="page-item">
+                  <a className="page-link" href="#">
+                    2
+                  </a>
+                </li>
+                <li className="page-item">
+                  <a className="page-link" href="#">
+                    3
+                  </a>
+                </li>
+                <li className="page-item">
+                  <a className="page-link" href="#">
+                    »
+                  </a>
+                </li>
+              </ul>
+            </nav>
           </div>
-       </div>
-    </section>
-    <section className="content-body my-2">
-
-       <table className="table table-bordered">
+        </div>
+      </section>
+      <section className="content-body my-2">
+        {/* Phần hiển thị danh sách sản phẩm */}
+        <table className="table table-bordered">
           <thead>
-             <tr>
-                <th className="text-center" style={{width: '30px'}}>
-                   <input type="checkbox" id="checkboxAll" />
-                </th>
-                <th className="text-center" style={{width: '130px'}}>Hình ảnh</th>
-                <th>Tên sản phẩm</th>
-                <th>Tên danh mục</th>
-                <th>Tên thương hiệu</th>
-                <th className="text-center" style={{width: '30px'}}>ID</th>
-             </tr>
+            <tr>
+              <th className="text-center" style={{ width: 30 }}>
+                <input type="checkbox" id="checkboxAll" />
+              </th>
+              <th>Tên sản phẩm</th>
+              <th>Giá</th>
+              <th>Số lượng</th>
+              <th>Tên danh mục</th>
+              <th>Tên option danh mục</th>
+              <th>Tên giá trị danh mục</th>
+              <th>Tên thương hiệu</th>
+              <th>Hành động</th>
+            </tr>
           </thead>
           <tbody>
-             <tr className="datarow">
+            {products.map((product, index) => (
+              <tr key={index} className="datarow">
+                {/* Thêm các cột dữ liệu */}
                 <td>
-                   <input type="checkbox" id="checkId" />
+                  <input type="checkbox" id={`checkId${index}`} />
                 </td>
                 <td>
-                   <img className="img-fluid" src="public/images/product.jpg" alt="product.jpg"/>
+                  <div className="name">
+                    <Link to={`/product/edit/${product.id}`}>{product.name}</Link>
+                  </div>
+                  <div className="function_style">
+                    <Link to="#" className="px-1 text-success">
+                      <i className="fa fa-toggle-on" />
+                    </Link>
+                    <Link to={`/product/edit/${product.id}`} className="px-1 text-primary">
+                      <i className="fa fa-edit" />
+                    </Link>
+                    <Link to={`/product/show/${product.id}`} className="px-1 text-info">
+                      <i className="fa fa-eye" />
+                    </Link>
+                    <Link to="#" className="text-danger mx-1" onClick={() => removeProduct(product.id)}>
+                             <i className="fa fa-trash"></i>
+                     </Link>
+                  </div>
                 </td>
-                <td>
-                   <div className="name">
-                      <a href="product_edit.html">
-                         Tên sản phẩm
-                      </a>
-                   </div>
-                   <div className="function_style">
-                      <a href="#" className="btn btn-primary btn-sm">
-                         <i className="fa fa-undo"></i>
-                      </a>
-                      <a href="#" className="btn btn-danger btn-sm">
-                         <i className="fa fa-trash"></i>
-                      </a>
-                   </div>
-                </td>
-                <td>Tên danh mục</td>
-                <td>Tên Thuong hiệu</td>
-                <td className="text-center">1</td>
-             </tr>
+                <td>{product.price}</td>
+                <td>{product.qty}</td>
+                <td>{product.categoryId.name}</td>
+                <td>{product.categoryOption.name}</td>
+                <td>{product.categoryOptionValue.value}</td>
+                <td>{product.brandId.name}</td>
+                <td><Link to="#" className="text-danger mx-1" onClick={() => backProduct(product.id)}>
+                             <a>BACK</a>
+                     </Link>
+                     </td>
+              </tr>
+            ))}
           </tbody>
-       </table>
-
-    </section>
+        </table>
+      </section>
  </div> );
 }
 

@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import ProductService from "../../../services/ProductServices";
 import CategoryService from "../../../services/CategoryServices";
 import BrandServices from "../../../services/BrandServices";
+import TrashProServices from "../../../services/TrashProServices";
+import ImageService from "../../../services/ImageServices";
 
 function ProductList() {
   const [products, setProducts] = useState([]);
@@ -17,6 +19,7 @@ function ProductList() {
     loadBrands();
     loadCategoryOption();
     loadCategoryOptionValue();
+
   }, []);
 
   const loadProducts = async () => {
@@ -66,6 +69,9 @@ function ProductList() {
   const removeProduct = async (id) => {
     try {
       await ProductService.remove(id); 
+      // Thêm sản phẩm vào TrashProServices
+      await TrashProServices.create(products.find(product => product.id === id));
+      // Cập nhật danh sách sản phẩm, loại bỏ sản phẩm đã xóa
       setProducts(products.filter((product) => product.id !== id));
       console.log("Product deleted successfully");
       alert("Sản phẩm đã được xóa!");
@@ -73,10 +79,6 @@ function ProductList() {
       console.error("Error deleting product:", error);
     }
   };
-  
-
-
-
   return (
     <div className="content">
 <section className="content-header my-2">
@@ -93,9 +95,7 @@ function ProductList() {
               <li>
                 <a href="#">Xuất bản (12)</a>
               </li>
-              <li>
-                <a href="product_trash.html">Rác (12)</a>
-              </li>
+              <li><Link to={"/product/trash"}>Rác (12)</Link></li>
             </ul>
           </div>
           <div className="col-6 text-end">
@@ -157,12 +157,10 @@ function ProductList() {
               <th className="text-center" style={{ width: 30 }}>
                 <input type="checkbox" id="checkboxAll" />
               </th>
+              <th>Ảnh</th>
               <th>Tên sản phẩm</th>
               <th>Giá</th>
               <th>Số lượng</th>
-
-            
-
               <th>Tên danh mục</th>
               <th>Tên option danh mục</th>
               <th>Tên giá trị danh mục</th>
@@ -174,9 +172,11 @@ function ProductList() {
             {products.map((product, index) => (
               <tr key={index} className="datarow">
                 {/* Thêm các cột dữ liệu */}
+
                 <td>
                   <input type="checkbox" id={`checkId${index}`} />
                 </td>
+
                 <td>
                   <div className="name">
                     <Link to={`/product/edit/${product.id}`}>{product.name}</Link>
@@ -198,9 +198,6 @@ function ProductList() {
                 </td>
                 <td>{product.price}</td>
                 <td>{product.qty}</td>
-               
-     
-
                 <td>{product.categoryId.name}</td>
                 <td>{product.categoryOption.name}</td>
                 <td>{product.categoryOptionValue.value}</td>

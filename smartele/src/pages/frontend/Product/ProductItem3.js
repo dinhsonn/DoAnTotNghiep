@@ -13,13 +13,13 @@ function ProductItem3(props) {
     }
   }, []); 
 
-  const handleAddToCart = (productId, qty, price, image,paymentMethod) => {
-    console.log("Adding to cart:", productId, qty, price, image,paymentMethod);
+  const handleAddToCart = (productId, qty, price, image) => {
+    console.log("Adding to cart:", productId, qty, price, image);
     if (!userId) {
       console.error('User ID is not available.');
       return;
     }
-    CartService.addItemToCart(userId, productId, qty, price, image,paymentMethod)
+    CartService.addItemToCart(userId, productId, qty, price, image)
       .then(() => {
         Swal.fire(
           "The product has been added to cart.",
@@ -58,17 +58,16 @@ function ProductItem3(props) {
             </a>
           </div>
           <div className="product-action action-icon-top">
-            <a href="#" className="btn-product btn-cart" onClick={() => handleAddToCart(props.product.id, 1, props.product.price, props.product.image, 'Thanh toán trực tiếp')}
+            <a href="#" className="btn-product btn-cart" onClick={() => handleAddToCart(props.product.id, 1, props.product.price, props.product.image)}
 >
               <span>add to cart</span>
             </a>
-            <a
-              href="popup/quickView.html"
+            <Link to={`/productdetail/${props.product.id}`}
               className="btn-product btn-quickview"
               title="Quick view"
             >
               <span>quick view</span>
-            </a>
+              </Link>
             <a
               href="#"
               className="btn-product btn-compare"

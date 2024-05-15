@@ -6,9 +6,12 @@ import java.util.List;
 
 
 public interface OrderService {
+    Order updateOrder(Order order);
 
-    void addItemToOrder(Long userId, Long productId, int qty, double price,String image,String paymentMethod);
-    
+    void addItemToOrder(Long userId, Long productId, String name, String email,
+    String phone, String address, int qty, double price,
+    String image, String paymentMethod);
+
     void removeItemFromOrder(Long OrderId, Long productId);
 
     List<Order> getOrders();
@@ -20,6 +23,10 @@ public interface OrderService {
     List<Order> getOrByUserId(Long userId);
     
     void updateOrderQuantity(Long OrderId,Long productId, int qty);
+
+    void updatepaymentMethod(Long OrderId,String paymentMethod);
+
+    public void deleteOrder(Long userId);
 
 }
 

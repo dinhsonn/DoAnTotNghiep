@@ -1,8 +1,8 @@
 import httpAxios from "../httpAxios";
 
 const CartService = {
-  addItemToCart: (userId, productId, qty, price, image, paymentMethod) => {
-    return httpAxios.post(`/carts/add/${userId}/${productId}/${qty}/${price}/${image}/${paymentMethod}`)
+  addItemToCart: (userId, productId, qty, price, image) => {
+    return httpAxios.post(`/carts/add/${userId}/${productId}/${qty}/${price}/${image}`)
       .then(() => {
         console.log("Product added to cart successfully.");
       })
@@ -29,9 +29,7 @@ const CartService = {
   updateCartItemQuantity: (cartId,productId, qty) => {
     return httpAxios.put(`/carts/update/${cartId}/items/${productId}/${qty}`);
   },
-  updatePaymentMethod: (cartId, paymentMethod) => {
-    return httpAxios.put(`/carts/update/${cartId}/items/${paymentMethod}`);
-  },
+
   getCartById: (userId) => {
     return httpAxios.get(`/carts/${userId}`);
   },

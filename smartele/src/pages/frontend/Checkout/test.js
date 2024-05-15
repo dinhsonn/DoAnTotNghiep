@@ -1,36 +1,13 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+// success.js
+import React from 'react';
 
-const PaypalPayment = () => {
-    const [paymentUrl, setPaymentUrl] = useState('');
+const SuccessPage = () => {
+  return (
+    <div>
+      <h1>Thanh toán thành công!</h1>
+      <p>Cảm ơn bạn đã thanh toán. Đơn hàng của bạn đã được xử lý thành công.</p>
+    </div>
+  );
+}
 
-    const initiatePayment = async () => {
-        try {
-            const response = await axios.post('http://localhost:8082/api/add', {
-                "idProduct": "SampleProduct",
-                "amount": "10.00",
-                "quantity": "1",
-                "currency": "USD",
-                "method": "paypal",
-                "intent": "sale",
-                "idUser": "SampleUser"
-            });
-    
-            if (response.data.approvalUrl) {
-                window.location.href = response.data.approvalUrl;
-            }
-        } catch (error) {
-            console.error('Error initiating payment:', error);
-        }
-    };
-    
-
-    return (
-        <div>
-            <h2>Pay with PayPal</h2>
-            <button onClick={initiatePayment}>Proceed to PayPal</button>
-        </div>
-    );
-};
-
-export default PaypalPayment;
+export default SuccessPage;

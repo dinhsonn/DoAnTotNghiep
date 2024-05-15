@@ -29,26 +29,33 @@ public class OrderServiceImpl implements OrderService {
         this.productService = productService;
         this.userService = userService;
     }
-
     @Override
-    public void addItemToOrder(Long userId, Long productId, int qty, double price, String image, String paymentMethod) {
+    public void addItemToOrder(Long userId, Long productId, String name, String email,
+                                String phone, String address, int qty, double price,
+                                String image, String paymentMethod) {
+        // Lấy thông tin user từ id
         User user = userService.findById(userId);
         if (user == null) {
             throw new RuntimeException("User not found with id: " + userId);
         }
     
-        // Tạo một đơn hàng mới mỗi khi thêm sản phẩm
+        // Tạo một đối tượng Order mới và gán các thông tin đã được truyền vào
         Order newOrderItem = new Order();
         newOrderItem.setUser(user);
         newOrderItem.setProduct(productService.getProductById(productId));
+        newOrderItem.setName(name);
+        newOrderItem.setEmail(email);
+        newOrderItem.setPhone(phone);
+        newOrderItem.setAddress(address);
         newOrderItem.setQty(qty);
         newOrderItem.setPrice(price);
         newOrderItem.setStatus(1);
         newOrderItem.setImage(image);
         newOrderItem.setPaymentMethod(paymentMethod);
-        newOrderItem.setCreatedAt(new Date()); // Set createdAt time
+        newOrderItem.setCreatedAt(new Date());
         orderRepository.save(newOrderItem);
     }
+    
     
     
 
@@ -103,5 +110,30 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> getOrByUserId(Long userId) {
         return orderRepository.findByUserId(userId);
     }
+    @Override
+    public void updatepaymentMethod(Long OrderId, String paymentMethod) {
+        Optional<Order> optionalOrder = orderRepository.findById(OrderId);
+        if (optionalOrder.isPresent()) {
+            Order order = optionalOrder.get();
+            order.setPaymentMethod(paymentMethod);
+            orderRepository.save(order);
+        } else {
+            throw new RuntimeException("Cart not found with id: " + OrderId);
+        }
+    }
     
+        @Override
+    public Order updateOrder(Order order) {
+        Order existingOrder = orderRepository.findById(order.getId()).orElse(null);
+        if (existingOrder != null) {
+            existingOrder.setStatus(order.getStatus());
+            existingOrder.setUpdatedAt(new Date());
+            return orderRepository.save(existingOrder);
+        }
+        return null;
+    }
+    @Override
+    public void deleteOrder(Long userId) {
+        orderRepository.deleteById(userId);
+    }
 }

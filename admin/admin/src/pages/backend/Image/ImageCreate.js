@@ -18,7 +18,6 @@ function ImageCreate() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    // Lấy danh sách sản phẩm khi component được mount
     ProductService.getAll()
       .then(response => {
         setProducts(response.data.content);
@@ -42,10 +41,8 @@ function ImageCreate() {
       setMessage('Please fill in all fields.');
       return;
     }
-
     const formDataImage = { ...formData };
     formDataImage.image = imageName;
-
     const formDataUpload = new FormData();
     formDataUpload.append('file', file);
     formDataUpload.append('customName', imageName);

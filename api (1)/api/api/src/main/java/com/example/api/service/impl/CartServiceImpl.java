@@ -31,7 +31,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void addItemToCart(Long userId, Long productId, int qty, double price, String image,String paymentMethod) {
+    public void addItemToCart(Long userId, Long productId, int qty, double price, String image ) {
         User user = userService.findById(userId);
         if (user == null) {
             throw new RuntimeException("User not found with id: " + userId);
@@ -50,8 +50,7 @@ public class CartServiceImpl implements CartService {
             newCartItem.setPrice(price);
             newCartItem.setStatus(1);
             newCartItem.setImage(image);
-            newCartItem.setCreatedAt(new Date()); // Set createdAt time
-            newCartItem.setPaymentMethod(paymentMethod);
+            newCartItem.setCreatedAt(new Date());
             cartRepository.save(newCartItem);
         }
     }
@@ -89,7 +88,6 @@ public class CartServiceImpl implements CartService {
         try {
             Cart cart = cartRepository.findById(cartId).orElse(null);
             if (cart != null) {
-                // Kiểm tra xem cart có chứa productId không
                 if (cart.getProduct().getId().equals(productId)) {
                     cart.setQty(qty);
                     cartRepository.save(cart);
@@ -109,17 +107,7 @@ public class CartServiceImpl implements CartService {
         return cartRepository.findByUserId(userId);
     }
 
-    @Override
-    public void updatepaymentMethod(Long cartId, String paymentMethod) {
-        Optional<Cart> optionalCart = cartRepository.findById(cartId);
-        if (optionalCart.isPresent()) {
-            Cart cart = optionalCart.get();
-            cart.setPaymentMethod(paymentMethod);
-            cartRepository.save(cart);
-        } else {
-            throw new RuntimeException("Cart not found with id: " + cartId);
-        }
-    }
+
     @Override
     public void deleteCartItems(List<Long> cartItemIds) {
         for (Long cartItemId : cartItemIds) {

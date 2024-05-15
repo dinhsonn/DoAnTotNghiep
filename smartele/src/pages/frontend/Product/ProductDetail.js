@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Link, useHistory, useLocation, useParams } from "react-router-dom";
 import ProductServices from "../../../services/ProductServices";
+import Swal from 'sweetalert2';
 import ProductRelated from "./ProductRelated";
+import CartService from "../../../services/CartServices";
+
 function ProductDetail() {
+  const [qty, setQty] = useState(1);
   const [products, setProducts] = useState({});
+  const [userId, setUserId] = useState(null);
   const [productImages, setProductImages] = useState([]);
   const { search } = useLocation();
   const { id } = useParams();
@@ -12,6 +17,31 @@ function ProductDetail() {
   const [selectedImage, setSelectedImage] = useState("");
   const [productoptions, setProductOptions] = useState([]);
   const [productoptionvalues, setProductOptionValues] = useState([]);
+  useEffect(() => {
+    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+    if (loggedInUser) {
+      setUserId(loggedInUser.id);
+    }
+  }, []); 
+
+  const handleAddToCart = (productId, qty, price, image,paymentMethod) => {
+    console.log("Adding to cart:", productId, qty, price, image,paymentMethod);
+    if (!userId) {
+      console.error('User ID is not available.');
+      return;
+    }
+    CartService.addItemToCart(userId, productId, qty, price, image,paymentMethod)
+      .then(() => {
+        Swal.fire(
+          "The product has been added to cart.",
+          "Your product has been added to the cart!",
+          "success"
+        );
+      })
+      .catch((error) => {
+        console.error("Error adding to cart: ", error);
+      });
+  };
   useEffect(() => {
     ProductServices.getById(id)
       .then((response) => {
@@ -63,6 +93,9 @@ function ProductDetail() {
   if (!products) {
     return <p>Loading...</p>;
   }
+
+
+
   const getImgUrl = (imageName) => {
     const endpoint = "productimages";
     return `http://localhost:8082/api/${endpoint}/image/${imageName}`;
@@ -212,20 +245,24 @@ function ProductDetail() {
                           <div className="details-action-col">
                             <label htmlFor="qty">Số lượng:</label>
                             <div className="product-details-quantity">
-                              <input
-                                type="number"
-                                id="qty"
-                                className="form-control"
-                                defaultValue={1}
-                                min={1}
-                                max={10}
-                                step={1}
-                                data-decimals={0}
-                                required=""
-                              />
+                            <input
+  type="number"
+  id="qty"
+  className="form-control"
+  defaultValue={1}
+  value={qty}
+  min={1}
+  max={10}
+  step={1}
+  onChange={(e) => setQty(e.target.value)}
+  required=""
+/>
+
+
                             </div>
                             {/* End .product-details-quantity */}
-                            <a href="#" className="btn-product btn-cart">
+                            <a href="#" className="btn-product btn-cart"
+                            onClick={() => handleAddToCart(products.id, qty, products.price, products.image, 'Thanh toán trực tiếp')}>
                               <span>THÊM VÀO GIỎ HÀNG</span>
                             </a>
                           </div>
@@ -242,6 +279,7 @@ function ProductDetail() {
                               href="#"
                               className="btn-product btn-compare"
                               title="Compare"
+                              
                             >
                               <span>Thêm vào so sánh</span>
                             </a>

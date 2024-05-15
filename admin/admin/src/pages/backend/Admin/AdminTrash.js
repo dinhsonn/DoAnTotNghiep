@@ -2,21 +2,7 @@ import React, { useEffect, useState } from 'react';
 import UserServices from '../../../services/UserServices';
 
 function AdminTrash() {
-    const [deletedUsers, setDeletedUsers] = useState([]);
 
-    useEffect(() => {
-        fetchDeletedUsers();
-    }, []);
-
-    const fetchDeletedUsers = () => {
-        UserServices.getAllDeleted()
-            .then(response => {
-                setDeletedUsers(response.data);
-            })
-            .catch(error => {
-                console.error('Error fetching deleted users:', error);
-            });
-    };
 
     return (
         <div className="content">
@@ -54,19 +40,17 @@ function AdminTrash() {
                         </tr>
                     </thead>
                     <tbody>
-                        {deletedUsers.map(user => (
-                            <tr key={user.id} className="datarow">
-                                <td>
-                                    <input type="checkbox" id={`checkId-${user.id}`} />
+                            <tr className="datarow">
+                                <td>    
+                                    <input type="checkbox" />
                                 </td>
                                 <td>
-                                    <img className="img-fluid" src={user.avatar} alt={user.name} />
+                                    <img className="img-fluid"  />
                                 </td>
                                 <td>
                                     <div className="name">
-                                        <a href={`user_edit.html?id=${user.id}`}>
-                                            {user.name}
-                                        </a>
+                                        <a href>
+aaa                                        </a>
                                     </div>
                                     <div className="function_style">
                                         <a href="#" className="text-primary mx-1">
@@ -77,11 +61,10 @@ function AdminTrash() {
                                         </a>
                                     </div>
                                 </td>
-                                <td>{user.phone}</td>
-                                <td>{user.email}</td>
-                                <td className="text-center">{user.id}</td>
+                                <td>1111</td>
+                                <td>aaaa</td>
+                                <td className="text-center">1</td>
                             </tr>
-                        ))}
                     </tbody>
                 </table>
             </section>

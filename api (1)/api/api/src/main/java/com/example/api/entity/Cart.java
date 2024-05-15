@@ -46,9 +46,6 @@ import jakarta.persistence.Table;
 
         @Column(nullable = false)
         private int status;
-
-        @Column(name = "payment_method", nullable = false)
-        private String paymentMethod;
         
         @Temporal(TemporalType.TIMESTAMP)
         @Column(name = "created_at", nullable = false)
