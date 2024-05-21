@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import CartService from "../../../services/CartServices";
 import Swal from 'sweetalert2';
 
-function ProductItem3(props) {
+function ProductItemSale(props) {
   const [userId, setUserId] = useState(null);
 
   useEffect(() => {
@@ -41,8 +41,8 @@ function ProductItem3(props) {
     <div className="col-6 col-md-4 col-lg-4 col-xl-3">
       <div className="product">
         <figure className="product-media">
-          <span className="product-label label-new">New</span>
-          <Link to={`/productdetail/${props.product.id}`}>
+          <span className="product-label label-new" style={{backgroundColor:"red"}}>Giảm giá</span>
+          <Link to={`/productdetail/${props.product.productId.id}`}>
             <img
               src={getImgUrl(props.product.image)}
               alt="Product image"
@@ -79,12 +79,19 @@ function ProductItem3(props) {
         </figure>
         <div className="product-body">
           <div className="product-cat">
-            <a href="#">{props.product.categoryOption.name}</a>
+            <a href="#">{props.product.productId.categoryOption.name}</a>
           </div>
           <h3 className="product-title">
-            <a href="product.html">{props.product.name}</a>
+            <a href="product.html">{props.product.productId.name}</a>
           </h3>
-          <div className="product-price">{props.product.price}đ</div>
+         
+          <div className="product-price">
+          <del>{props.product.productId.price}đ</del>
+          </div>
+          <div className="product-price">
+              Được giảm còn: {props.product.salePrice}đ
+          </div>
+
           <div className="ratings-container">
             <div className="ratings">
               <div className="ratings-val" style={{ width: "0%" }} />
@@ -109,4 +116,4 @@ function ProductItem3(props) {
   );
 }
 
-export default ProductItem3;
+export default ProductItemSale;

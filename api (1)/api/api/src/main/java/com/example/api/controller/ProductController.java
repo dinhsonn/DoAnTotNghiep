@@ -1,7 +1,11 @@
 package com.example.api.controller;
 
+
 import com.example.api.entity.Product;
 import com.example.api.service.ProductService;
+
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -71,4 +75,11 @@ public class ProductController {
         productService.deleteProduct(productId);
         return new ResponseEntity<>("Product successfully deleted!", HttpStatus.OK);
     }
+
+    @GetMapping("/related/{brandId}")
+    public List<Product> getRelatedProducts(@PathVariable Long brandId) {
+        return productService.getRelatedProducts(brandId);
+    }
+
+
 }

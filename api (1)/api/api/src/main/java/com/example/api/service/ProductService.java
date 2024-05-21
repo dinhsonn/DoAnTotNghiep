@@ -1,5 +1,6 @@
 package com.example.api.service;
 
+
 import com.example.api.entity.Product;
 
 import java.util.List;
@@ -20,5 +21,7 @@ public interface ProductService {
     void deleteProduct(Long id);
     
     List<Product> getProductsByIds(List<Long> productIds);
+
+    List<Product> getRelatedProducts(Long brandId);
     
 }

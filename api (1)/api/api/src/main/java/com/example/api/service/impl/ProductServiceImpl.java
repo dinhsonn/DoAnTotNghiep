@@ -2,12 +2,15 @@ package com.example.api.service.impl;
 
 import lombok.AllArgsConstructor;
 
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.example.api.entity.Brand;
 import com.example.api.entity.Product;
 import com.example.api.service.ProductService;
+import com.example.api.repository.BrandRepository;
 import com.example.api.repository.ProductRepository;
 
 import java.util.Date;
@@ -19,7 +22,7 @@ import java.util.Optional;
 public class ProductServiceImpl implements ProductService {
 
     private ProductRepository productRepository;
-
+    private final BrandRepository brandRepository;
     @Override
     public Product createProduct(Product product) {
         product.setCreatedAt(new Date());
@@ -70,4 +73,13 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findAllById(productIds);
     }
 
+
+    @Override
+    public List<Product> getRelatedProducts(Long brandId) {
+        Brand brand = brandRepository.findById(brandId)
+            .orElseThrow(() -> new IllegalArgumentException("Invalid brand ID"));
+        return productRepository.findByBrandId(brand);
+    }
+    
+ 
 }

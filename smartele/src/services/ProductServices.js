@@ -33,6 +33,10 @@ function getProductSale()
 {
     return httpAxios.get("productsale");
 }
+function getProductsByBrandId(brandId)
+{
+    return httpAxios.get(`products/related/${brandId}`);
+}
 //product option
 function productOption()
 {
@@ -66,5 +70,6 @@ const ProductService = {
     productOptionById:productOptionById,
     productOptionValue:productOptionValue,
     productOptionValueByOption:productOptionValueByOption,
+    getProductsByBrandId:getProductsByBrandId
 }
 export default ProductService;
