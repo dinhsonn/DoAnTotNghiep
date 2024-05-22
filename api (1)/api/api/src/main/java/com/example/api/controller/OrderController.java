@@ -1,12 +1,12 @@
 package com.example.api.controller;
 
+import com.example.api.entity.Cart;
 import com.example.api.entity.Order;
 import com.example.api.entity.User;
 import com.example.api.service.OrderService;
 import com.example.api.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,28 +36,19 @@ public class OrderController {
                              @PathVariable String image, @PathVariable String paymentMethod) {
         orderService.addItemToOrder(userId, productId, name, email, phone, address, qty, price, image, paymentMethod);
     }
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteOrder(@PathVariable Long id) {
-        orderService.deleteOrder(id);
-        return new ResponseEntity<>("Order successfully deleted!", HttpStatus.OK);
+    @DeleteMapping("/{orderId}")
+    public void deleteOrder(@PathVariable Long orderId) {
+        orderService.deleteOrder(orderId);
     }
-    @DeleteMapping("/{OrderId}/items/{productId}")
-    public void removeItemFromOrder(@PathVariable Long OrderId, @PathVariable Long productId) {
-        orderService.removeItemFromOrder(OrderId, productId);
-    }
-    @GetMapping("/items")
-    public List<Order> getOrders() {
-        return orderService.getOrders();
-    }
-    
+
     @GetMapping("/{userId}")
-    public ResponseEntity<?> getUserAndOrdersByUserId(@PathVariable Long userId) {
+    public ResponseEntity<?> getOrdersByUserId(@PathVariable Long userId) {
         User user = userService.getUserById(userId);
         if (user != null) {
-            List<Order> Orders = orderService.getOrByUserId(userId);
+            List<Order> orders = orderService.getOrdersByUserId(userId);
             Map<String, Object> response = new HashMap<>();
             response.put("user", user);
-            response.put("Orders", Orders);
+            response.put("orders", orders);
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.notFound().build();
@@ -68,27 +59,18 @@ public class OrderController {
     public double getOrderTotal() {
         return orderService.calculateOrderTotal();
     }
-    
-    @PutMapping("/update/{OrderId}/items/{productId}/{qty}")
-    public void updateOrderQuantity(@PathVariable Long OrderId,@PathVariable Long productId, @PathVariable int qty) {
-        orderService.updateOrderQuantity(OrderId,productId, qty);
+    @GetMapping("/items")
+    public List<Order> getCagetOrdersrts() {
+        return orderService.getOrders();
     }
+    @PutMapping("/update/{orderId}/{qty}")
+    public void updateOrderQuantity(@PathVariable Long orderId, @PathVariable int qty) {
+        orderService.updateOrderQuantity(orderId, qty);
+    }
+
     @PutMapping("/update/{OrderId}/items/{paymentMethod}")
     public void updatepaymentMethod(@PathVariable Long OrderId,@PathVariable String paymentMethod) {
-        orderService.updatepaymentMethod(OrderId,paymentMethod);
-    }
-    @PutMapping("{id}")
-    public ResponseEntity<Order> updateOrder(
-            @PathVariable("id") Long OrderId,
-            @RequestBody Order order) {
-        
-                order.setId(OrderId);
-        Order updateOrder = orderService.updateOrder(order);
-        if (updateOrder != null) {
-            return new ResponseEntity<>(updateOrder, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        orderService.updatePaymentMethod(OrderId,paymentMethod);
     }
     @PutMapping("/{id}/status/{status}")
     public ResponseEntity<Order> updateOrderStatus(@PathVariable Long id, @PathVariable int status) {

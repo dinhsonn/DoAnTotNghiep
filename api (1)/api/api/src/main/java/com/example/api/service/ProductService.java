@@ -1,5 +1,6 @@
 package com.example.api.service;
 
+
 import com.example.api.entity.Product;
 
 import java.util.List;
@@ -23,5 +24,6 @@ public interface ProductService {
 
     Product updateProductQty(Long productId, int qty);
 
+    List<Product> getRelatedProducts(Long brandId);
     
 }

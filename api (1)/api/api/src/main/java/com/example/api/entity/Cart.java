@@ -31,9 +31,8 @@ import jakarta.persistence.Table;
         @JoinColumn(name = "user_id", nullable = false)
         private User user;
 
-        @ManyToOne
-        @JoinColumn(name = "product_id", nullable = false)
-        private Product product;
+        @Column(name = "product_id", nullable = false)
+        private Long productId;
 
         @Column(nullable = false)
         private int qty;

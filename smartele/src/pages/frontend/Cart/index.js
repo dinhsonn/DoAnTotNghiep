@@ -82,12 +82,23 @@ function Cart() {
     }
 
     CartService.getCarts()
-      .then((response) => {
+      .then(async (response) => {
         const userCartItems = response.data.filter(
           (item) => item.user.id === userId
         );
-        setCartItems(userCartItems);
-        calculateTotal(userCartItems);
+
+        const cartItemsWithProducts = await Promise.all(
+          userCartItems.map(async (item) => {
+            const productResponse = await ProductService.getById(item.productId);
+            return {
+              ...item,
+              product: productResponse.data,
+            };
+          })
+        );
+
+        setCartItems(cartItemsWithProducts);
+        calculateTotal(cartItemsWithProducts);
       })
       .catch((error) => {
         console.error("Error fetching cart items:", error);
@@ -136,7 +147,7 @@ function Cart() {
                               />
                             </figure>
                             <h3 className="product-title">
-                              {item.product.name}
+                              {item.product ? item.product.name : "Loading..."}
                             </h3>
                           </div>
                         </td>

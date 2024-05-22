@@ -6,7 +6,6 @@ import com.example.api.repository.CartRepository;
 import com.example.api.service.CartService;
 import com.example.api.service.ProductService;
 import com.example.api.service.UserService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,21 +30,21 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void addItemToCart(Long userId, Long productId, int qty, double price, String image ) {
+    public void addItemToCart(Long userId, Long productId, int qty, double price, String image) {
         User user = userService.findById(userId);
         if (user == null) {
             throw new RuntimeException("User not found with id: " + userId);
         }
 
-        Cart existingCartItem = cartRepository.findByUserAndProduct(user, productService.getProductById(productId));
+        Cart existingCartItem = cartRepository.findByUserAndProductId(user, productId);
         if (existingCartItem != null) {
             existingCartItem.setQty(existingCartItem.getQty() + qty);
-            existingCartItem.setUpdatedAt(new Date()); // Update updatedAt time
+            existingCartItem.setUpdatedAt(new Date());
             cartRepository.save(existingCartItem);
         } else {
             Cart newCartItem = new Cart();
             newCartItem.setUser(user);
-            newCartItem.setProduct(productService.getProductById(productId));
+            newCartItem.setProductId(productId);
             newCartItem.setQty(qty);
             newCartItem.setPrice(price);
             newCartItem.setStatus(1);
@@ -55,14 +54,13 @@ public class CartServiceImpl implements CartService {
         }
     }
 
-
     @Override
     public void removeItemFromCart(Long cartId, Long productId) {
         Optional<Cart> optionalCart = cartRepository.findById(cartId);
         if (optionalCart.isPresent()) {
             Cart cart = optionalCart.get();
-            if (cart.getProduct().getId().equals(productId)) {
-                cartRepository.deleteByProductAndId(cart.getProduct(), cartId);
+            if (cart.getProductId().equals(productId)) {
+                cartRepository.delete(cart);
             }
         }
     }
@@ -77,36 +75,36 @@ public class CartServiceImpl implements CartService {
         List<Cart> carts = cartRepository.findAll();
         double total = 0;
         for (Cart cart : carts) {
-            total += cart.getProduct().getPrice() * cart.getQty();
+            total += cart.getPrice() * cart.getQty();
         }
         return total;
     }
 
-    @Transactional
     @Override
     public void updateCartQuantity(Long cartId, Long productId, int qty) {
-        try {
-            Cart cart = cartRepository.findById(cartId).orElse(null);
-            if (cart != null) {
-                if (cart.getProduct().getId().equals(productId)) {
-                    cart.setQty(qty);
-                    cartRepository.save(cart);
-                }
+        Optional<Cart> optionalCart = cartRepository.findById(cartId);
+        if (optionalCart.isPresent()) {
+            Cart cart = optionalCart.get();
+            if (cart.getProductId().equals(productId)) {
+                cart.setQty(qty);
+                cart.setUpdatedAt(new Date());
+                cartRepository.save(cart);
             }
-        } catch (Exception e) {
-            throw new RuntimeException("Error updating cart quantity", e);
+        } else {
+            throw new RuntimeException("Cart item not found with id: " + cartId);
         }
     }
+
     @Override
     public Cart getCartById(Long cartId) {
-        Optional<Cart> optionalBrand = cartRepository.findById(cartId);
-        return optionalBrand.orElse(null);
+        Optional<Cart> optionalCart = cartRepository.findById(cartId);
+        return optionalCart.orElse(null);
     }
+
     @Override
     public List<Cart> getCartsByUserId(Long userId) {
         return cartRepository.findByUserId(userId);
     }
-
 
     @Override
     public void deleteCartItems(List<Long> cartItemIds) {
@@ -114,13 +112,14 @@ public class CartServiceImpl implements CartService {
             cartRepository.deleteById(cartItemId);
         }
     }
+
     @Override
     public void removeItemsFromCarts(List<Long> cartIds, Long productId) {
         for (Long cartId : cartIds) {
             Optional<Cart> optionalCart = cartRepository.findById(cartId);
             if (optionalCart.isPresent()) {
                 Cart cart = optionalCart.get();
-                if (cart.getProduct().getId().equals(productId)) {
+                if (cart.getProductId().equals(productId)) {
                     cartRepository.deleteById(cartId);
                 }
             }

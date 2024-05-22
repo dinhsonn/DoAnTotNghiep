@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useHistory, useLocation, useParams } from "react-router-dom";
 import ProductServices from "../../../services/ProductServices";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 import ProductRelated from "./ProductRelated";
 import CartService from "../../../services/CartServices";
 
@@ -17,8 +17,9 @@ function ProductDetail() {
   const [selectedImage, setSelectedImage] = useState("");
   const [productoptions, setProductOptions] = useState([]);
   const [productoptionvalues, setProductOptionValues] = useState([]);
+  const [categoryOptionValue, setCategoryOptionValue] = useState(null);
   useEffect(() => {
-    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
     if (loggedInUser) {
       setUserId(loggedInUser.id);
     }
@@ -27,7 +28,7 @@ function ProductDetail() {
   const handleAddToCart = (productId, qty, price, image, paymentMethod) => {
     console.log("Adding to cart:", productId, qty, price, image, paymentMethod);
     if (!userId) {
-      console.error('User ID is not available.');
+      console.error("User ID is not available.");
       return;
     }
     CartService.addItemToCart(userId, productId, qty, price, image, paymentMethod)
@@ -47,6 +48,7 @@ function ProductDetail() {
       .then((response) => {
         document.title = response.data.title;
         setProducts(response.data);
+        setCategoryOptionValue(response.data.categoryOptionValue);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -69,7 +71,9 @@ function ProductDetail() {
           const promises = productOptions.map(async (option) => {
             try {
               const optionId = option.id;
-              const response = await ProductServices.productOptionValueByOption(optionId);
+              const response = await ProductServices.productOptionValueByOption(
+                optionId
+              );
               const optionValues = response.data.content;
               return { optionId, optionValues };
             } catch (error) {
@@ -78,10 +82,13 @@ function ProductDetail() {
             }
           });
           const resolvedOptionValues = await Promise.all(promises);
-          const updatedOptionValues = resolvedOptionValues.reduce((acc, { optionId, optionValues }) => {
-            acc[optionId] = optionValues;
-            return acc;
-          }, {});
+          const updatedOptionValues = resolvedOptionValues.reduce(
+            (acc, { optionId, optionValues }) => {
+              acc[optionId] = optionValues;
+              return acc;
+            },
+            {}
+          );
           setProductOptionValues(updatedOptionValues);
         };
         fetchOptionValues();
@@ -93,8 +100,6 @@ function ProductDetail() {
   if (!products) {
     return <p>Loading...</p>;
   }
-
-
 
   const getImgUrl = (imageName) => {
     const endpoint = "productimages";
@@ -279,7 +284,6 @@ function ProductDetail() {
                               href="#"
                               className="btn-product btn-compare"
                               title="Compare"
-
                             >
                               <span>Thêm vào so sánh</span>
                             </a>
@@ -291,7 +295,6 @@ function ProductDetail() {
                           <div className="product-cat">
                             <span>Danh mục:</span>
                             <a href="#">Women</a>
-
                           </div>
                           {/* End .product-cat */}
                           <div className="social-icons social-icons-sm">

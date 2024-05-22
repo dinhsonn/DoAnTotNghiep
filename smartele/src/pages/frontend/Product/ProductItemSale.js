@@ -1,19 +1,17 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import CartService from "../../../services/CartServices";
-import ProductService from "../../../services/ProductServices";
 import Swal from 'sweetalert2';
 
-function ProductItem3(props) {
+function ProductItemSale(props) {
   const [userId, setUserId] = useState(null);
-  const [quantity, setQuantity] = useState(props.product.qty);
 
   useEffect(() => {
     const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
     if (loggedInUser) {
       setUserId(loggedInUser.id);
     }
-  }, []);
+  }, []); 
 
   const handleAddToCart = (productId, qty, price, image) => {
     console.log("Adding to cart:", productId, qty, price, image);
@@ -21,34 +19,17 @@ function ProductItem3(props) {
       console.error('User ID is not available.');
       return;
     }
-    if (quantity > 0) {
-      CartService.addItemToCart(userId, productId, qty, price, image)
-        .then(() => {
-          const newQuantity = quantity - 1;
-          ProductService.updateProductQty(productId, newQuantity)
-            .then(() => {
-              setQuantity(newQuantity);
-              Swal.fire(
-                "The product has been added to cart.",
-                "Your product has been added to the cart!",
-                "success"
-              );
-
-            })
-            .catch((error) => {
-              console.error("Error updating product quantity: ", error);
-            });
-        })
-        .catch((error) => {
-          console.error("Error adding to cart: ", error);
-        });
-    } else {
-      Swal.fire(
-        "Out of Stock",
-        "This product is out of stock!",
-        "warning"
-      );
-    }
+    CartService.addItemToCart(userId, productId, qty, price, image)
+      .then(() => {
+        Swal.fire(
+          "The product has been added to cart.",
+          "Your product has been added to the cart!",
+          "success"
+        );
+      })
+      .catch((error) => {
+        console.error("Error adding to cart: ", error);
+      });
   };
 
   const getImgUrl = (imageName) => {
@@ -60,8 +41,8 @@ function ProductItem3(props) {
     <div className="col-6 col-md-4 col-lg-4 col-xl-3">
       <div className="product">
         <figure className="product-media">
-          <span className="product-label label-new">New</span>
-          <Link to={`/productdetail/${props.product.id}`}>
+          <span className="product-label label-new" style={{backgroundColor:"red"}}>Giảm giá</span>
+          <Link to={`/productdetail/${props.product.productId.id}`}>
             <img
               src={getImgUrl(props.product.image)}
               alt="Product image"
@@ -77,7 +58,8 @@ function ProductItem3(props) {
             </a>
           </div>
           <div className="product-action action-icon-top">
-            <a href="#" className="btn-product btn-cart" onClick={() => handleAddToCart(props.product.id, 1, props.product.price, props.product.image)}>
+            <a href="#" className="btn-product btn-cart" onClick={() => handleAddToCart(props.product.id, 1, props.product.price, props.product.image)}
+>
               <span>add to cart</span>
             </a>
             <Link to={`/productdetail/${props.product.id}`}
@@ -97,12 +79,19 @@ function ProductItem3(props) {
         </figure>
         <div className="product-body">
           <div className="product-cat">
-            <a href="#">{props.product.categoryOption.name}</a>
+            <a href="#">{props.product.productId.categoryOption.name}</a>
           </div>
           <h3 className="product-title">
-            <a href="product.html">{props.product.name}</a>
+            <a href="product.html">{props.product.productId.name}</a>
           </h3>
-          <div className="product-price">{props.product.price}đ</div>
+         
+          <div className="product-price">
+          <del>{props.product.productId.price}đ</del>
+          </div>
+          <div className="product-price">
+              Được giảm còn: {props.product.salePrice}đ
+          </div>
+
           <div className="ratings-container">
             <div className="ratings">
               <div className="ratings-val" style={{ width: "0%" }} />
@@ -127,4 +116,4 @@ function ProductItem3(props) {
   );
 }
 
-export default ProductItem3;
+export default ProductItemSale;

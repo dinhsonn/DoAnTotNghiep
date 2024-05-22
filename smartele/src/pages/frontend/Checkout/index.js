@@ -4,6 +4,7 @@ import CartService from "../../../services/CartServices";
 import { useNavigate } from "react-router-dom";
 import OrderService from "../../../services/OrderServices";
 import axios from 'axios';
+import ProductService from "../../../services/ProductServices";
 
 function Checkout() {
   document.title = "Checkout";
@@ -46,16 +47,27 @@ function Checkout() {
     }
 
     CartService.getCarts()
-      .then((response) => {
-        console.log("Response data:", response.data);
+      .then(async (response) => {
         const userCartItems = response.data.filter(
           (item) => item.user.id === userId
         );
-        setCartItems(userCartItems);
-        calculateTotal(userCartItems);
+
+        const cartItemsWithProducts = await Promise.all(
+          userCartItems.map(async (item) => {
+            const productResponse = await ProductService.getById(item.productId);
+            return {
+              ...item,
+              product: productResponse.data,
+            };
+          })
+        );
+
+        setCartItems(cartItemsWithProducts);
+        calculateTotal(cartItemsWithProducts);
       })
       .catch((error) => {
         console.error("Error fetching cart items:", error);
+        Swal.fire("Error", "An error occurred while fetching cart items", "error");
       });
   }, [userId]);
 
@@ -82,7 +94,6 @@ function Checkout() {
   };
 
   const handleAddToOrder = (productId, name, email, phone, address, qty, price, image, paymentMethod) => {
-    
     console.log("Adding to order:", productId, name, email, phone, address, qty, price, image, paymentMethod);
     if (!userId) {
       console.error('User ID is not available.');
@@ -119,6 +130,7 @@ function Checkout() {
         console.error("Error adding to order: ", error);
       });
   };
+
   const sendToGoogleForm = (userId, productId, qty, price, image, paymentMethod) => {
     const formData = new FormData();
     formData.append("entry.1876847216", checkouts.name); 
@@ -146,7 +158,7 @@ function Checkout() {
       console.error("Lỗi khi gửi dữ liệu lên Google Form:", error);
     });
   };
-  
+
   const getImgUrl = (imageName) => {
     const endpoint = "productimages";
     return `http://localhost:8082/api/${endpoint}/image/${imageName}`;
@@ -200,154 +212,159 @@ function Checkout() {
                         value={checkouts.email}
                         onChange={handleChange}
                         required
-                      />                      </div>
+                      />                      
                     </div>
-                    <label>Điện thoại</label>
-                    <input
-                        type="phone"
-                        className="form-control"
-                        id="phone"
-                        name="phone"
-                        placeholder="Điện thoại"
-                        value={checkouts.phone}
-                        onChange={handleChange}
-                      />
-                     <label>Địa chỉ</label>
-                                          <input
-                        type="address"
-                        className="form-control"
-                        id="address"
-                        name="address"
-                        placeholder="Địa chỉ"
-                        value={checkouts.address}
-                        onChange={handleChange}
-                      />                  </div>
-                  <div className="col-lg-6">
-                    <div className="summary-title d-flex align-items-center justify-content-between">
-                      <h2 style={{ fontSize: '16px' }}>Thông tin đơn hàng</h2>
-                      <a href="/cart" style={{ fontSize: '14px' }}>Chỉnh sửa</a>
-                    </div>
-                    <table className="table table-cart table-mobile">
-                      <tbody>
-                        {cartItems.map((item) => (
-                          <tr key={item.id}>
-                            <td className="product-col">
-                              <div className="product">
-                                <figure className="product-media">
-                                  <img src={getImgUrl(item.image)} alt="Product image" />
-                                </figure>
-                                <h3 className="product-title">{item.product.name}</h3>
-                              </div>
-                            </td>
-                            <td className="price-col">${item.price}</td>
-                            <td className="quantity-col">
-                              <div className="cart-product-quantity">
-                                <span>Số lượng: {item.qty}</span>
-                              </div>
-                            </td>
-                            <td className="total-col">${item.price * item.qty}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
                   </div>
-                  <aside className="col-lg-6">
-                    <div className="summary">
-                      <h3 className="summary-title">Đơn hàng của bạn</h3>
-                      <table className="table table-summary">
-                        <thead>
-                          <tr>
-                            <th>Sản phẩm</th>
-                            <th>Giá</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {cartItems.map((item, index) => (
-                            <tr key={index}>
-                              <td><a href="#">{item.product.name}</a></td>
-                              <td>${item.price * item.qty}</td>
-                            </tr>
-                          ))}
-                          <tr className="summary-total">
-                            <td>Tổng cộng:</td>
-                            <td>${totalAmount.toFixed(2)}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                      <div className="accordion-summary" id="accordion-payment">
-                        <div className="card">
-                          <div className="card-header" id="heading-1">
-                            <h2 className="card-title">
-                              <a
-                                role="button"
-                                data-toggle="collapse"
-                                href="#collapse-1"
-                                aria-expanded="true"
-                                aria-controls="collapse-1"
-                                onClick={() => setPaymentMethod("Thanh toán trực tiếp")}
-                              >
-                                Thanh toán trực tiếp
-                              </a>
-                            </h2>
-                          </div>
-                          <div id="collapse-1" className="collapse show" aria-labelledby="heading-1" data-parent="#accordion-payment"></div>
-                        </div>
-                        <div className="card">
-                          <div className="card-header" id="heading-2">
-                            <h2 className="card-title">
-                              <a
-                                className="collapsed"
-                                role="button"
-                                data-toggle="collapse"
-                                href="#collapse-2"
-                                aria-expanded="false"
-                                aria-controls="collapse-2"
-                                onClick={() => setPaymentMethod("Thanh toán VNpay")}
-                              >
-                                Thanh toán VNpay
-                              </a>
-                            </h2>
-                          </div>
-                          <div id="collapse-2" className="collapse" aria-labelledby="heading-2" data-parent="#accordion-payment"></div>
-                        </div>
-                      </div>
-                      <button
-  type="button"
-  className="btn btn-outline-primary-2 btn-order btn-block"
-  onClick={() => {
-    if (cartItems.length > 0 && paymentMethod) { 
-      cartItems.forEach((item) => {
-        // Truyền các thông tin cần thiết vào hàm handleAddToOrder
-        handleAddToOrder(
-          item.product.id, // productId
-          checkouts.name, // name
-          checkouts.email, // email
-          checkouts.phone, // phone
-          checkouts.address, // address
-          item.qty,
-          item.price,
-          item.image,
-          paymentMethod
-        );
-      });
-    } else {
-      console.error('Vui lòng chọn phương thức thanh toán và có ít nhất một sản phẩm trong giỏ hàng.');
-    }
-  }}
->
-  Đặt hàng
-</button>
-
-                    </div>
-                  </aside>
+                  <label>Điện thoại</label>
+                  <input
+                      type="phone"
+                      className="form-control"
+                      id="phone"
+                      name="phone"
+                      placeholder="Điện thoại"
+                      value={checkouts.phone}
+                      onChange={handleChange}
+                    />
+                   <label>Địa chỉ</label>
+                                      <input
+                      type="address"
+                      className="form-control"
+                      id="address"
+                      name="address"
+                      placeholder="Địa chỉ"
+                      value={checkouts.address}
+                      onChange={handleChange}
+                    />                  
+                  </div>
+              <div className="col-lg-6">
+                <div className="summary-title d-flex align-items-center justify-content-between">
+                  <h2 style={{ fontSize: '16px' }}>Thông tin đơn hàng</h2>
+                  <a href="/cart" style={{ fontSize: '14px' }}>Chỉnh sửa</a>
                 </div>
-              </form>
+                <table className="table table-cart table-mobile">
+                  <tbody>
+                    {cartItems.map((item) => (
+                      <tr key={item.id}>
+                        <td className="product-col">
+                          <div className="product">
+                            <figure className="product-media">
+                              <img src={getImgUrl(item.image)} alt="Product image" />
+                            </figure>
+                            <h3 className="product-title">
+                              {item.product ? item.product.name : "Loading..."}
+                            </h3>
+                          </div>
+                        </td>
+                        <td className="price-col">${item.price}</td>
+                        <td className="quantity-col">
+                          <div className="cart-product-quantity">
+                            <span>Số lượng: {item.qty}</span>
+                          </div>
+                        </td>
+                        <td className="total-col">${item.price * item.qty}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <aside className="col-lg-6">
+                <div className="summary">
+                  <h3 className="summary-title">Đơn hàng của bạn</h3>
+                  <table className="table table-summary">
+                    <thead>
+                      <tr>
+                        <th>Sản phẩm</th>
+                        <th>Giá</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {cartItems.map((item, index) => (
+                        <tr key={index}>
+                          <td><a href="#">{item.product && item.product.name}</a></td>
+                          <td>${item.price * item.qty}</td>
+                        </tr>
+                      ))}
+                      <tr className="summary-total">
+                        <td>Tổng cộng:</td>
+                        <td>${totalAmount.toFixed(2)}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div className="accordion-summary" id="accordion-payment">
+                    <div className="card">
+                      <div className="card-header" id="heading-1">
+                        <h2 className="card-title">
+                          <a
+                            role="button"
+                            data-toggle="collapse"
+                            href="#collapse-1"
+                            aria-expanded="true"
+                            aria-controls="collapse-1"
+                            onClick={() => setPaymentMethod("Thanh toán trực tiếp")}
+                          >
+                            Thanh toán trực tiếp
+                          </a>
+                        </h2>
+                      </div>
+                      <div id="collapse-1" className="collapse show" aria-labelledby="heading-1" data-parent="#accordion-payment"></div>
+                    </div>
+                    <div className="card">
+                      <div className="card-header" id="heading-2">
+                        <h2 className="card-title">
+                          <a
+                            className="collapsed"
+                            role="button"
+                            data-toggle="collapse"
+                            href="#collapse-2"
+                            aria-expanded="false"
+                            aria-controls="collapse-2"
+                            onClick={() => setPaymentMethod("Thanh toán VNpay")}
+                          >
+                            Thanh toán VNpay
+                          </a>
+                        </h2>
+                      </div>
+                      <div id="collapse-2" className="collapse" aria-labelledby="heading-2" data-parent="#accordion-payment"></div>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    className="btn btn-outline-primary-2 btn-order btn-block"
+                    onClick={() => {
+                      if (cartItems.length > 0 && paymentMethod) { 
+                        cartItems.forEach((item) => {
+                          // Truyền các thông tin cần thiết vào hàm handleAddToOrder
+                          handleAddToOrder(
+                            item.product ? item.product.id : null,
+                            checkouts.name,
+                            checkouts.email,
+                            checkouts.phone,
+                            checkouts.address,
+                            item.qty,
+                            item.price,
+                            item.image,
+                            paymentMethod
+                          );
+                          
+                        });
+                      } else {
+                        console.error('Vui lòng chọn phương thức thanh toán và có ít nhất một sản phẩm trong giỏ hàng.');
+                      }
+                    }}
+                  >
+                    Đặt hàng
+                  </button>
+                </div>
+              </aside>
             </div>
-          </div>
+          </form>
         </div>
-      </main>
-    </>
-  );
+      </div>
+    </div>
+  </main>
+</>
+);
 }
 
 export default Checkout;
+

@@ -36,6 +36,10 @@ function getProductSale()
 {
     return httpAxios.get("productsale");
 }
+function getProductsByBrandId(brandId)
+{
+    return httpAxios.get(`products/related/${brandId}`);
+}
 //product option
 function productOption()
 {

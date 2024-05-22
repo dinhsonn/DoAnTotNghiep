@@ -1,19 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import OrderService from '../../../services/OrderServices'; // Đảm bảo đường dẫn này đúng
+import ProductService from '../../../services/ProductServices';
 
 function Order() {
     const [orders, setOrders] = useState([]);
+    const [products, setProducts] = useState([]);
 
     useEffect(() => {
-        OrderService.getAll()
-            .then(response => {
+        const fetchData = async () => {
+            try {
+                await loadProduct(); // Chuyển lời gọi hàm loadProduct() vào đây
+                const response = await OrderService.getAll(); // Đảm bảo OrderService có phương thức getAll()
                 setOrders(response.data);
                 console.log("data", response.data);
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error('Error fetching data:', error);
-            });
+            }
+        };
+    
+        fetchData();
     }, []);
+    
+    const loadProduct = async () => {
+        try {
+          const response = await ProductService.getAll(); // Ensure ImageService has a method getAll()
+          setProducts(response.data.content);
+        } catch (error) {
+          console.error("Error loading product:", error);
+        }
+      };
 
     const removeOrder = (id) => {
         if (window.confirm('Bạn có chắc chắn muốn xóa đơn hàng này không?')) {
@@ -128,45 +143,55 @@ function Order() {
                         </tr>
                     </thead>
                     <tbody>
-                        {orders.map((order, index) => (
-                            <tr className="datarow" key={order.id}>
-                                <td>
-                                    <input type="checkbox" id="checkId" />
-                                </td>
-                                <td>
-                                    <div className="name">
-                                        <a>{order.name}</a>
-                                    </div>
-                                    <div className="function_style">
-                                        <a href="#" className="text-success mx-1">
-                                            <i className="fa fa-toggle-on"></i>
-                                        </a>
-                                        <a href="order_edit.html" className="text-primary mx-1">
-                                            <i className="fa fa-edit"></i>
-                                        </a>
-                                        <a href="order_show.html" className="text-info mx-1">
-                                            <i className="fa fa-eye"></i>
-                                        </a>
-                                        <a href="#" className="text-danger mx-1" onClick={() => removeOrder(order.id)}>
-                                            <i className="fa fa-trash"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                                <td>{order.phone}</td>
-                                <td>{order.email}</td>
-                                <td>{order.address}</td>
-                                <td>{order.product.name}</td>
-                                <td>{new Date(order.createdAt).toLocaleDateString()}</td>
-                                <td>
-                                    <select value={order.status} onChange={(e) => updateOrderStatus(order.id, e.target.value)}>
-                                        <option value={1}>Chờ xác nhận</option>
-                                        <option value={2}>Đã xác nhận</option>
-                                        <option value={3}>Đang giao hàng</option>
-                                        <option value={4}>Giao thành công</option>
-                                    </select>
-                                </td>                                <td className="text-center">{order.id}</td>
-                            </tr>
-                        ))}
+                    {orders.map((order, index) => {
+    // Tìm sản phẩm trong danh sách products
+    const product = products.find(product => product.id === order.productId);
+    // Nếu không tìm thấy sản phẩm, có thể làm gì đó, ví dụ hiển thị một dòng thông báo hoặc không hiển thị gì cả
+    if (!product) {
+        return <tr key={order.id}><td colSpan="9">Không có thông tin sản phẩm</td></tr>;
+    }
+    return (
+        <tr className="datarow" key={order.id}>
+            <td>
+                <input type="checkbox" id="checkId" />
+            </td>
+            <td>
+                <div className="name">
+                    <a>{order.name}</a>
+                </div>
+                <div className="function_style">
+                    <a href="#" className="text-success mx-1">
+                        <i className="fa fa-toggle-on"></i>
+                    </a>
+                    <a href="order_edit.html" className="text-primary mx-1">
+                        <i className="fa fa-edit"></i>
+                    </a>
+                    <a href="order_show.html" className="text-info mx-1">
+                        <i className="fa fa-eye"></i>
+                    </a>
+                    <a href="#" className="text-danger mx-1" onClick={() => removeOrder(order.id)}>
+                        <i className="fa fa-trash"></i>
+                    </a>
+                </div>
+            </td>
+            <td>{order.phone}</td>
+            <td>{order.email}</td>
+            <td>{order.address}</td>
+            <td>{product.name}</td> {/* Hiển thị tên sản phẩm từ danh sách products */}
+            <td>{new Date(order.createdAt).toLocaleDateString()}</td>
+            <td>
+                <select value={order.status} onChange={(e) => updateOrderStatus(order.id, e.target.value)}>
+                    <option value={1}>Chờ xác nhận</option>
+                    <option value={2}>Đã xác nhận</option>
+                    <option value={3}>Đang giao hàng</option>
+                    <option value={4}>Giao thành công</option>
+                </select>
+            </td>
+            <td className="text-center">{order.id}</td>
+        </tr>
+    );
+})}
+
                     </tbody>
                 </table>
             </section>

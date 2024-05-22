@@ -1,118 +1,82 @@
-function ProductRelated() {
-    return ( 
-        <aside className="col-lg-3">
-        <div className="sidebar sidebar-product">
-          <div className="widget widget-products">
-            <h4 className="widget-title">Sản phẩm liên quan</h4>
-            {/* End .widget-title */}
-            <div className="products">
-              <div className="product product-sm">
-                <figure className="product-media">
-                  <a href="product.html">
-                    <img
-                      src="assets/images/products/single/sidebar/1.jpg"
-                      alt="Product image"
-                      className="product-image"
-                    />
-                  </a>
-                </figure>
-                <div className="product-body">
-                  <h5 className="product-title">
-                    <a href="product.html">
-                      Light brown studded Wide fit wedges
-                    </a>
-                  </h5>
-                  {/* End .product-title */}
-                  <div className="product-price">
-                    <span className="new-price">$50.00</span>
-                    <span className="old-price">$110.00</span>
-                  </div>
-                  {/* End .product-price */}
-                </div>
-                {/* End .product-body */}
-              </div>
-              {/* End .product product-sm */}
-              <div className="product product-sm">
-                <figure className="product-media">
-                  <a href="product.html">
-                    <img
-                      src="assets/images/products/single/sidebar/2.jpg"
-                      alt="Product image"
-                      className="product-image"
-                    />
-                  </a>
-                </figure>
-                <div className="product-body">
-                  <h5 className="product-title">
-                    <a href="product.html">
-                      Yellow button front tea top
-                    </a>
-                  </h5>
-                  {/* End .product-title */}
-                  <div className="product-price">$56.00</div>
-                  {/* End .product-price */}
-                </div>
-                {/* End .product-body */}
-              </div>
-              {/* End .product product-sm */}
-              <div className="product product-sm">
-                <figure className="product-media">
-                  <a href="product.html">
-                    <img
-                      src="assets/images/products/single/sidebar/3.jpg"
-                      alt="Product image"
-                      className="product-image"
-                    />
-                  </a>
-                </figure>
-                <div className="product-body">
-                  <h5 className="product-title">
-                    <a href="product.html">Beige metal hoop tote bag</a>
-                  </h5>
-                  {/* End .product-title */}
-                  <div className="product-price">$50.00</div>
-                  {/* End .product-price */}
-                </div>
-                {/* End .product-body */}
-              </div>
-              {/* End .product product-sm */}
-              <div className="product product-sm">
-                <figure className="product-media">
-                  <a href="product.html">
-                    <img
-                      src="assets/images/products/single/sidebar/4.jpg"
-                      alt="Product image"
-                      className="product-image"
-                    />
-                  </a>
-                </figure>
-                <div className="product-body">
-                  <h5 className="product-title">
-                    <a href="product.html">
-                      Black soft RI weekend travel bag
-                    </a>
-                  </h5>
-                  {/* End .product-title */}
-                  <div className="product-price">$75.00</div>
-                  {/* End .product-price */}
-                </div>
-                {/* End .product-body */}
-              </div>
-              {/* End .product product-sm */}
-            </div>
-            {/* End .products */}
-            <a href="category.html" className="btn btn-outline-dark-3">
-              <span>XEM NHIỀU HƠN</span>
-              <i className="icon-long-arrow-right" />
-            </a>
-          </div>
-          {/* End .widget widget-products */}
+import React, { useEffect, useState } from "react";
+import ProductServices from "../../../services/ProductServices";
+import { Link, useParams } from "react-router-dom";
 
-          {/* End .widget */}
+function ProductRelated({ brandId, currentProductId }) {
+  const [relatedProducts, setRelatedProducts] = useState([]);
+  const [productImages, setProductImages] = useState([]);
+
+  useEffect(() => {
+    if (brandId) {
+      ProductServices.getProductsByBrandId(brandId)
+        .then((response) => {
+          const filteredProducts = response.data.filter(product => product.id !== currentProductId);
+          setRelatedProducts(filteredProducts);
+          console.log("Filtered Related Products:", filteredProducts);
+        })
+        .catch((error) => {
+          console.error("Error fetching related products:", error);
+        });
+    }
+  }, [brandId, currentProductId]);
+
+  useEffect(() => {
+    relatedProducts.forEach((product) => {
+      ProductServices.getProductImageById(product.id)
+        .then((response) => {
+          setProductImages((prevImages) => ({
+            ...prevImages,
+            [product.id]: response.data.content[0].image 
+          }));
+        })
+        .catch((error) => {
+          console.error("Error fetching product images:", error);
+        });
+    });
+  }, [relatedProducts]);
+
+  const getImgUrl = (imageName) => {
+    const endpoint = "productimages";
+    return `http://localhost:8082/api/${endpoint}/image/${imageName}`;
+  };
+
+  return (
+    <aside className="col-lg-3">
+      <div className="sidebar sidebar-product">
+        <div className="widget widget-products">
+          <h4 className="widget-title">Sản phẩm liên quan</h4>
+          <div className="products">
+            {relatedProducts.map((product) => (
+              <div className="product product-sm" key={product.id}>
+                <figure className="product-media">
+                  <Link to={`/productdetail/${product.id}`}>
+                    <img
+                      src={getImgUrl(productImages[product.id])}
+                      alt="Product image"
+                      className="product-image"
+                    />
+                  </Link>
+                </figure>
+                <div className="product-body">
+                  <h5 className="product-title">
+                    <Link to={`/productdetail/${product.id}`}>{product.name}</Link>
+                  </h5>
+                  <div className="product-price">
+                    {product.oldPrice && <span className="old-price">${product.oldPrice}</span>}
+                    <span className="new-price">{product.price}đ</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <a href="/category" className="btn btn-outline-dark-3">
+            <span>XEM NHIỀU HƠN</span>
+            <i className="icon-long-arrow-right" />
+          </a>
         </div>
-        {/* End .sidebar sidebar-product */}
-      </aside>
-     );
+      </div>
+    </aside>
+  );
 }
 
 export default ProductRelated;

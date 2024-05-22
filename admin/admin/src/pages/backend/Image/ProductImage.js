@@ -18,8 +18,6 @@ function ProductImage() {
       console.error("Error loading products:", error);
     }
   };
-  
-
 
   const removeImage = async (id) => {
     try {
