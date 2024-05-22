@@ -1,36 +1,60 @@
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from 'axios'; // Thêm axios để gửi request tới backend
 import Login from "./Login";
 import Menu from "./Menu";
-import { useEffect, useState } from "react";
-import './Header.css';
 import CartHeader from "./CartHeader";
+import './Header.css';
 
 function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [name, setName] = useState(""); // Khai báo biến state 'name'
+  const [name, setName] = useState(""); // State cho tên người dùng
+  const [searchQuery, setSearchQuery] = useState(''); // State cho tìm kiếm
 
+  const navigate = useNavigate();
+
+  // Xử lý khi đăng nhập thành công
   const handleLoginSuccess = (user) => {
     setIsLoggedIn(true);
-    setName(user.name); 
+    setName(user.name);
+    localStorage.setItem('loggedInUser', JSON.stringify(user));
   };
 
+  // Xử lý khi đăng xuất
   const handleLogout = () => {
     localStorage.removeItem('loggedInUser');
     setIsLoggedIn(false);
-    setName(""); // Xóa 'name' khi đăng xuất
+    setName("");
     window.location.href = '/';
+  };
+
+  // Xử lý khi submit form tìm kiếm
+  const handleSearchSubmit = async (event) => {
+    event.preventDefault();
+    console.log(`User searched for: ${searchQuery}`);
+
+    // Gửi thông tin tìm kiếm tới backend
+    try {
+      await axios.post('http://localhost:8082/api/search-log', { query: searchQuery });
+    } catch (error) {
+      console.error('Error logging search query:', error);
+    }
+
+    // Điều hướng tới trang kết quả tìm kiếm
+    navigate(`/search?q=${searchQuery}`);
   };
 
   useEffect(() => {
     const storedUser = localStorage.getItem('loggedInUser');
-
     if (storedUser) {
       const user = JSON.parse(storedUser);
       setIsLoggedIn(true);
-      setName(user.name); // Gán 'name' từ thông tin người dùng vào state
+      setName(user.name);
     } else {
       setIsLoggedIn(false);
     }
   }, []);
+
   return (
     <>
       <header className="header header-intro-clearance header-3">
@@ -43,28 +67,20 @@ function Header() {
                 Liên hệ: +84 348 412 593
               </a>
             </div>
-            {/* End .header-left */}
             <div className="header-right">
               <ul className="top-menu">
                 <li>
                   <a href="#">Liên kết</a>
                   <ul>
                     <li>
-                    </li>
-                    <li>
                       <div className="header-dropdown">
                         <a href="#">Việt Nam</a>
                         <div className="header-menu">
                           <ul>
-                            <li>
-                              <a href="#">Việt Nam</a>
-                            </li>
-                            <li>
-                              <a href="#">English</a>
-                            </li>
+                            <li><a href="#">Việt Nam</a></li>
+                            <li><a href="#">English</a></li>
                           </ul>
                         </div>
-                        {/* End .header-menu */}
                       </div>
                     </li>
                     <li>
@@ -91,13 +107,9 @@ function Header() {
                   </ul>
                 </li>
               </ul>
-              {/* End .top-menu */}
             </div>
-            {/* End .header-right */}
           </div>
-          {/* End .container */}
         </div>
-        {/* End .header-top */}
         <div className="header-middle">
           <div className="container">
             <div className="header-left">
@@ -106,25 +118,17 @@ function Header() {
                 <i className="icon-bars" />
               </button>
               <a href="/" className="logo">
-                <img
-                  src="assets/images/demos/demo-3/logo.png"
-                  alt="Molla Logo"
-                  width={105}
-                  height={25}
-                />
+                <img src="assets/images/demos/demo-3/logo.png" alt="Molla Logo" width={105} height={25} />
               </a>
             </div>
-            {/* End .header-left */}
             <div className="header-center">
               <div className="header-search header-search-extended header-search-visible d-none d-lg-block">
                 <a href="#" className="search-toggle" role="button">
                   <i className="icon-search" />
                 </a>
-                <form action="#" method="get">
+                <form onSubmit={handleSearchSubmit}>
                   <div className="header-search-wrapper search-wrapper-wide">
-                    <label htmlFor="q" className="sr-only">
-                      Search
-                    </label>
+                    <label htmlFor="q" className="sr-only">Search</label>
                     <button className="btn btn-primary" type="submit">
                       <i className="icon-search" />
                     </button>
@@ -134,27 +138,17 @@ function Header() {
                       name="q"
                       id="q"
                       placeholder="Tìm kiếm sản phẩm ..."
-                      required=""
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      required
                     />
                   </div>
-                  {/* End .header-search-wrapper */}
                 </form>
               </div>
-              {/* End .header-search */}
             </div>
             <div className="header-right">
               <div className="dropdown compare-dropdown">
-                <a
-                  href="#"
-                  className="dropdown-toggle"
-                  role="button"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                  data-display="static"
-                  title="Compare Products"
-                  aria-label="Compare Products"
-                >
+                <a href="#" className="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static" title="Compare Products" aria-label="Compare Products">
                   <div className="icon">
                     <i className="icon-random" />
                   </div>
@@ -180,18 +174,14 @@ function Header() {
                     </li>
                   </ul>
                   <div className="compare-actions">
-                    <a href="#" className="action-link">
-                      Xóa tất cả
-                    </a>
+                    <a href="#" className="action-link">Xóa tất cả</a>
                     <a href="#" className="btn btn-outline-primary-2">
                       <span>So sánh</span>
                       <i className="icon-long-arrow-right" />
                     </a>
                   </div>
                 </div>
-                {/* End .dropdown-menu */}
               </div>
-              {/* End .compare-dropdown */}
               <div className="wishlist">
                 <a href="wishlist.html" title="Wishlist">
                   <div className="icon">
@@ -201,23 +191,13 @@ function Header() {
                   <p>Yêu thích</p>
                 </a>
               </div>
-              {/* End .compare-dropdown */}
               <CartHeader />
-              {/* End .cart-dropdown */}
             </div>
-            {/* End .header-right */}
           </div>
-          {/* End .container */}
         </div>
-        {/* End .header-middle */}
         <Menu />
-        {/* End .header-bottom */}
       </header>
-      {/* End .header */}
     </>
-
-
-
   );
 }
 

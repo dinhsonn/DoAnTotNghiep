@@ -2,6 +2,9 @@ package com.example.api.controller;
 
 import com.example.api.entity.Product;
 import com.example.api.service.ProductService;
+
+import java.util.Map;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -71,4 +74,19 @@ public class ProductController {
         productService.deleteProduct(productId);
         return new ResponseEntity<>("Product successfully deleted!", HttpStatus.OK);
     }
+    @PutMapping("/{id}/quantity")
+    public ResponseEntity<Product> updateProductQty(@PathVariable("id") Long productId, @RequestBody Map<String, Integer> updates) {
+        Integer newQty = updates.get("qty");
+        if (newQty == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Product updatedProduct = productService.updateProductQty(productId, newQty);
+        if (updatedProduct != null) {
+            return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    
+    
 }

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ImageService from "../../../services/ImageServices";
+import TrashServices from "../../../services/TrashServices";
 
 function ProductImage() {
   const [productImages, setProductImages] = useState([]);
@@ -17,11 +18,13 @@ function ProductImage() {
       console.error("Error loading products:", error);
     }
   };
+  
 
 
   const removeImage = async (id) => {
     try {
       await ImageService.remove(id);
+      await TrashServices.createImage(productImages.find(image => image.id === id));
       setProductImages(productImages.filter((image) => image.id !== id));
       console.log("Image deleted successfully");
       alert("Ảnh đã được xóa!");
@@ -30,9 +33,14 @@ function ProductImage() {
     }
   };
   const getImgUrl = (imageName) => {
-    const endpoint = 'productimages';
-    return `http://localhost:8082/api/${endpoint}/image/${imageName}`;
-  };
+    const endpoint = 'productimages'; 
+    let imageUrl = `http://localhost:8082/api/${endpoint}/image/${imageName}`;
+    
+    imageUrl = imageUrl.replace(/\.png/g, "") + ".png";
+
+    return imageUrl;
+};
+
   return (
     <div className="content">
       <section className="content-header my-2">
@@ -44,64 +52,16 @@ function ProductImage() {
           <div className="col-6">
             <ul className="manager">
               <li>
-                <a href="product_index.html">Tất cả (123)</a>
+                <Link to={"/image"}>Tất cả {(productImages.length)}</Link>
               </li>
               <li>
-                <a href="#">Xuất bản (12)</a>
-              </li>
-              <li>
-                <a href="product_trash.html">Rác (12)</a>
+                <Link to={"/image/trash"}>Rác</Link>
               </li>
             </ul>
           </div>
           <div className="col-6 text-end">
             <input type="text" className="search d-inline" />
             <button className="d-inline btnsearch">Tìm kiếm</button>
-          </div>
-        </div>
-        <div className="row mt-1 align-items-center">
-          <div className="col-md-8">
-            <select name="" className="d-inline me-1">
-              <option value="">Hành động</option>
-              <option value="">Bỏ vào thùng rác</option>
-            </select>
-            <button className="btnapply">Áp dụng</button>
-            <select name="" className="d-inline me-1">
-              <option value="">Tất cả danh mục</option>
-            </select>
-            <select name="" className="d-inline me-1">
-              <option value="">Tất cả thương hiệu</option>
-            </select>
-            <button className="btnfilter">Lọc</button>
-          </div>
-          <div className="col-md-4 text-end">
-            <nav aria-label="Page navigation example">
-              <ul className="pagination pagination-sm justify-content-end">
-                <li className="page-item disabled">
-                  <a className="page-link">«</a>
-                </li>
-                <li className="page-item">
-                  <a className="page-link" href="#">
-                    1
-                  </a>
-                </li>
-                <li className="page-item">
-                  <a className="page-link" href="#">
-                    2
-                  </a>
-                </li>
-                <li className="page-item">
-                  <a className="page-link" href="#">
-                    3
-                  </a>
-                </li>
-                <li className="page-item">
-                  <a className="page-link" href="#">
-                    »
-                  </a>
-                </li>
-              </ul>
-            </nav>
           </div>
         </div>
       </section>

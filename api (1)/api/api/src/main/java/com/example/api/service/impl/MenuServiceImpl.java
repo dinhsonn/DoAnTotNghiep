@@ -23,7 +23,6 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public Menu createMenu(Menu menu) {
                 menu.setCreatedAt(new Date());
-
         return menuRepository.save(menu);
     }
 

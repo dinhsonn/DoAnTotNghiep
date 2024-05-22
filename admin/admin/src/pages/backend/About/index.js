@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import AboutService from "../../../services/AboutServices";
 import { Link } from "react-router-dom";
+import TrashServices from "../../../services/TrashServices";
 
 function About() {
     const [abouts, setAbouts] = useState([]);
@@ -15,17 +16,27 @@ function About() {
             });
     }, []);
 
-    const removeAbout = (id) => {
-        AboutService.remove(id)
-            .then(() => {
-                setAbouts(abouts.filter(about => about.id !== id));
-                console.log("About item deleted successfully");
-                alert("Mục About đã được xóa!");
-            })
-            .catch(error => {
-                console.error('Error deleting About item:', error);
-            });
+    const removeAbout = async (id) => {
+        try {
+            // Xóa about
+            await AboutService.remove(id);
+    
+            // Lấy thông tin của about sẽ di chuyển vào thùng rác
+            const aboutToMoveToTrash = abouts.find(about => about.id === id);
+    
+            // Di chuyển vào thùng rác
+            await TrashServices.createAbout(aboutToMoveToTrash);
+    
+            // Cập nhật danh sách abouts sau khi xóa
+            setAbouts(abouts.filter((about) => about.id !== id));
+    
+            console.log("Product deleted successfully");
+            alert("Sản phẩm đã được xóa!");
+        } catch (error) {
+            console.error("Error deleting product:", error);
+        }
     };
+    
 
     return (
         <div className="content">
@@ -35,9 +46,9 @@ function About() {
                 <div className="row mt-3 align-items-center">
                     <div className="col-6">
                         <ul className="manager">
-                            <li><a href="user_index.html">Tất cả (123)</a></li>
+                            <li><a href="user_index.html">Tất cả ({abouts.length})</a></li>
                             <li><a href="#">Xuất bản (12)</a></li>
-                            <li><Link to={"/admin/trash"}>Rác (12)</Link></li>
+                            <li><Link to={"/about/trash"}>Rác (12)</Link></li>
                         </ul>
                     </div>
                     <div className="col-6 text-end">

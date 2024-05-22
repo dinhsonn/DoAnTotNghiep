@@ -1,0 +1,20 @@
+
+  
+  .search-bar {
+    margin: 20px;
+  }
+  
+  .filter-options {
+    margin: 20px;
+  }
+  
+  .search-results {
+    margin: 20px;
+  }
+  
+  .result-item {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px;
+  }
+  

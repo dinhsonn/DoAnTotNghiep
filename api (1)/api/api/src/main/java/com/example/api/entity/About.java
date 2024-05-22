@@ -42,6 +42,11 @@ public class About {
     @Column(name = "updated_at")
     private Date updatedAt;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "deleted_at")
+    private Date deletedAt;
+
+
     public About() {
         this.createdAt = new Date();
     }

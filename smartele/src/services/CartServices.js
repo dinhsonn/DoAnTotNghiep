@@ -19,7 +19,7 @@ const CartService = {
     return Promise.all(requests);
   },
   
-  
+
   getCarts: () => {
     return httpAxios.get("/carts/items");
   },
@@ -33,6 +33,8 @@ const CartService = {
   getCartById: (userId) => {
     return httpAxios.get(`/carts/${userId}`);
   },
-};
-
+  updateProductQty:(id, qty)=> {
+  return httpAxios.put(`products/${id}/quantity`, { qty });
+},
+}
 export default CartService;

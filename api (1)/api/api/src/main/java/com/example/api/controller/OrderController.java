@@ -90,5 +90,16 @@ public class OrderController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+    @PutMapping("/{id}/status/{status}")
+    public ResponseEntity<Order> updateOrderStatus(@PathVariable Long id, @PathVariable int status) {
+        Order order = orderService.getOrderById(id);
+        if (order != null) {
+            order.setStatus(status);
+            Order updatedOrder = orderService.updateOrder(order);
+            return ResponseEntity.ok(updatedOrder);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
 }

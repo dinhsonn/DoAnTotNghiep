@@ -46,7 +46,8 @@ public class BrandServiceImpl implements BrandService {
             existingBrand.setSortOrder(brand.getSortOrder());
             existingBrand.setStatus(brand.getStatus());
             existingBrand.setCreatedAt(brand.getCreatedAt());
-            existingBrand.setUpdatedAt(brand.getUpdatedAt());
+            existingBrand.setUpdatedAt(new Date());
+            existingBrand.setDeletedAt(new Date());
 
             Brand updatedBrand = brandRepository.save(existingBrand);
             return updatedBrand;

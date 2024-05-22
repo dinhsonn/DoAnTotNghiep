@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import CategoryService from "../../../services/CategoryServices";
 import { Link } from "react-router-dom";
+import TrashServices from "../../../services/TrashServices";
 
 function Category() {
     const [categories, setCategories] = useState([]);
@@ -25,18 +26,27 @@ function Category() {
             });
     };
 
-    const removeProduct = (id) => {
-        CategoryService.remove(id)
-            .then(() => {
-                setCategories(categories.filter(category => category.id !== id));
-                console.log("Categories deleted successfully");
-                alert("Danh mục đã được xóa!")
-            })
-            .catch(error => {
-                console.error('Error deleting product:', error);
-            });
-    };
 
+    const removeProduct = async (id) => {
+        try {
+            // Xóa about
+            await CategoryService.remove(id);
+    
+            // Lấy thông tin của about sẽ di chuyển vào thùng rác
+            const cateToMoveToTrash = categories.find(category => category.id === id);
+    
+            // Di chuyển vào thùng rác
+            await TrashServices.createCategory(cateToMoveToTrash);
+    
+            // Cập nhật danh sách abouts sau khi xóa
+            setCategories(categories.filter((category) => category.id !== id));
+    
+            console.log("Product deleted successfully");
+            alert("Sản phẩm đã được xóa!");
+        } catch (error) {
+            console.error("Error deleting product:", error);
+        }
+    };
     const handleChange = (e) => {
         const { name, value } = e.target;
 
@@ -146,9 +156,8 @@ function Category() {
                         <div className="row mt-3 align-items-center">
                             <div className="col-12">
                                 <ul className="manager">
-                                    <li><a href="category_index.html">Tất cả (123)</a></li>
-                                    <li><a href="#">Xuất bản (12)</a></li>
-                                    <li><a href="category_trash.html">Rác (12)</a></li>
+                                    <li><Link to="/category">Tất cả ({categories.length})</Link></li>
+                                    <li><Link to={"/category/trash"}> Thùng Rác</Link></li>
                                 </ul>
                             </div>
                         </div>

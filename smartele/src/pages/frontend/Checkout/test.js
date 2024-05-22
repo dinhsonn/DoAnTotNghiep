@@ -1,13 +1,30 @@
-// success.js
-import React from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 
-const SuccessPage = () => {
+const QueryCount = ({ query }) => {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const fetchQueryCount = async () => {
+      try {
+        const response = await axios.get('/api/search-log/count', { params: { query } });
+        setCount(response.data);
+      } catch (error) {
+        console.error('Error fetching query count:', error);
+      }
+    };
+
+    if (query) {
+      fetchQueryCount();
+    }
+  }, [query]);
+
   return (
     <div>
-      <h1>Thanh toán thành công!</h1>
-      <p>Cảm ơn bạn đã thanh toán. Đơn hàng của bạn đã được xử lý thành công.</p>
+      <h1>Số lần tìm kiếm cho: {query}</h1>
+      <p>{count} lần</p>
     </div>
   );
-}
+};
 
-export default SuccessPage;
+export default QueryCount;

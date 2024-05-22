@@ -19,13 +19,16 @@ function update(data, id) {
 function remove(id) {
     return httpAxios.delete(`users/${id}`);
 }
-
+const getOrdersByUserId = (userId) => {
+    return httpAxios.get(`/users/${userId}/orders`);
+  };
 const UserService = {
     getAll: getAll,
     create: create,
     getById: getById,
     update: update,
     remove: remove,
+    getOrdersByUserId:getOrdersByUserId,
 };
 
 export default UserService;

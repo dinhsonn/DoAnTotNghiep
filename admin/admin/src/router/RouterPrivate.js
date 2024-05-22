@@ -92,6 +92,12 @@ import SaleEdit from "../pages/backend/ProductSale/SaleEdit";
 import SaleShow from "../pages/backend/ProductSale/SaleShow";
 import Login from "../layouts/LayoutAdmin/Login";
 import ProductTrash from "../pages/backend/Product/ProductTrash.";
+import AboutTrash from "../pages/backend/About/AboutTrash";
+import CategoryTrash from "../pages/backend/Category/CategoryTrash";
+import Contact from "../pages/backend/Contact";
+import ContactShow from "../pages/backend/Contact/ContactShow";
+import ContactTrash from "../pages/backend/Contact/ContactTrash";
+import ImageTrash from "../pages/backend/Image/ImageTrash";
 
 const RouterPrivate = [
 
@@ -106,6 +112,7 @@ const RouterPrivate = [
   { path: "/category", component: Category },
   { path: "/category/show/:id", component: CategoryShow },
   { path: "/category/edit/:id", component: CategoryEdit },
+  { path: "/category/trash", component: CategoryTrash },
 
 //{ path: "/admin/category/update/:id", component: CategoryUpdate },
 
@@ -124,12 +131,18 @@ const RouterPrivate = [
   { path: "/menu", component: Menu },
   { path: "/menu/show/:id", component: MenuShow },
   { path: "/menu/edit/:id", component: MenuEdit },
-  { path: "/menu/trash/:id", component: MenuTrash },
+  { path: "/menu/trash", component: MenuTrash },
 
   { path: "/image", component: ProductImage },
   { path: "/image/create", component: ImageCreate },
   { path: "/image/edit/:id", component: ImageEdit },
   { path: "/image/show/:id", component: ImageShow },
+  { path: "/image/trash", component: ImageTrash },
+
+
+   { path: "/contact", component: Contact },
+  { path: "/contact/show/:id", component: ContactShow },
+  { path: "/contact/success", component: ContactTrash },
 
   // { path: "/admin/contact", component: ContactList },
   // { path: "/admin/contact/show/:id", component: ContactShow },
@@ -154,7 +167,7 @@ const RouterPrivate = [
   { path: "/about/show/:id", component: AboutShow },
   { path: "/about/create", component: AboutCreate },
   { path: "/about/edit/:id", component: AboutEdit },
-  { path: "/about/trash", component:  PostTrash},
+  { path: "/about/trash", component:  AboutTrash},
 
   { path: "/page", component: Page },
   { path: "/page/show/:id", component: PageShow },

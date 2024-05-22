@@ -49,7 +49,7 @@ function CartHeader() {
   };
 
   const removeItem = (cartId, productId) => {
-    CartService.removeFromCart(cartId, productId)
+    CartService.removeItemFromCart(cartId, productId)
       .then((response) => {
         Swal.fire({
           title: 'Are you sure?',
@@ -135,7 +135,10 @@ function CartHeader() {
         </div>
         <div className="dropdown-cart-action">
           <Link to={"cart"} className="btn btn-primary">
-            Xem
+            Giỏ hàng
+          </Link>
+          <Link to={"checkout"} className="btn btn-primary">
+            Thanh Toán
           </Link>
         </div>
       </div>

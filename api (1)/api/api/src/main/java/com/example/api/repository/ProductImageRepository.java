@@ -9,5 +9,5 @@ import org.springframework.data.domain.Pageable;
 
 public interface ProductImageRepository extends JpaRepository<ProductImage, Long> {
     Page<ProductImage> findAll(Pageable pageable);
-    Page<ProductImage> findByProductId_Id(Long productId, Pageable pageable);
+    Page<ProductImage> findByProductId(Long productId, Pageable pageable);
 }

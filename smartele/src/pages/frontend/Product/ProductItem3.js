@@ -1,17 +1,19 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import CartService from "../../../services/CartServices";
+import ProductService from "../../../services/ProductServices";
 import Swal from 'sweetalert2';
 
 function ProductItem3(props) {
   const [userId, setUserId] = useState(null);
+  const [quantity, setQuantity] = useState(props.product.qty);
 
   useEffect(() => {
     const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
     if (loggedInUser) {
       setUserId(loggedInUser.id);
     }
-  }, []); 
+  }, []);
 
   const handleAddToCart = (productId, qty, price, image) => {
     console.log("Adding to cart:", productId, qty, price, image);
@@ -19,17 +21,34 @@ function ProductItem3(props) {
       console.error('User ID is not available.');
       return;
     }
-    CartService.addItemToCart(userId, productId, qty, price, image)
-      .then(() => {
-        Swal.fire(
-          "The product has been added to cart.",
-          "Your product has been added to the cart!",
-          "success"
-        );
-      })
-      .catch((error) => {
-        console.error("Error adding to cart: ", error);
-      });
+    if (quantity > 0) {
+      CartService.addItemToCart(userId, productId, qty, price, image)
+        .then(() => {
+          const newQuantity = quantity - 1;
+          ProductService.updateProductQty(productId, newQuantity)
+            .then(() => {
+              setQuantity(newQuantity);
+              Swal.fire(
+                "The product has been added to cart.",
+                "Your product has been added to the cart!",
+                "success"
+              );
+
+            })
+            .catch((error) => {
+              console.error("Error updating product quantity: ", error);
+            });
+        })
+        .catch((error) => {
+          console.error("Error adding to cart: ", error);
+        });
+    } else {
+      Swal.fire(
+        "Out of Stock",
+        "This product is out of stock!",
+        "warning"
+      );
+    }
   };
 
   const getImgUrl = (imageName) => {
@@ -58,8 +77,7 @@ function ProductItem3(props) {
             </a>
           </div>
           <div className="product-action action-icon-top">
-            <a href="#" className="btn-product btn-cart" onClick={() => handleAddToCart(props.product.id, 1, props.product.price, props.product.image)}
->
+            <a href="#" className="btn-product btn-cart" onClick={() => handleAddToCart(props.product.id, 1, props.product.price, props.product.image)}>
               <span>add to cart</span>
             </a>
             <Link to={`/productdetail/${props.product.id}`}

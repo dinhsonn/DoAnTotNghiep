@@ -1,0 +1,26 @@
+.content {
+    padding: 20px;
+}
+
+.content-header {
+    margin-bottom: 20px;
+}
+
+.info-box {
+    background: #f7f7f7;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.info-box-content {
+    text-align: center;
+}
+
+.chart {
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}

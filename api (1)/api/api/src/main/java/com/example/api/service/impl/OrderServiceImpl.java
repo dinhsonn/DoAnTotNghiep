@@ -29,6 +29,9 @@ public class OrderServiceImpl implements OrderService {
         this.productService = productService;
         this.userService = userService;
     }
+    public List<Order> getOrdersByUserId(Long userId) {
+        return orderRepository.findByUserId(userId);
+    }
     @Override
     public void addItemToOrder(Long userId, Long productId, String name, String email,
                                 String phone, String address, int qty, double price,

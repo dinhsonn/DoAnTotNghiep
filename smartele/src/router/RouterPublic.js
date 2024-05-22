@@ -12,16 +12,20 @@ import Post from "../pages/frontend/Blog/Post";
 // // import PostTopic from "../pages/frontend/Post/PostTopic";
 // // import ProductBrand from "../pages/frontend/ProductBrand";
 import PostDetail from "../pages/frontend/Blog/PostDetail";
-// // import Search from "../layouts/LayoutSite/Search";
 import Cart from "../pages/frontend/Cart";
 import About from "../pages/frontend/About";
 import SuccessPage from "../pages/frontend/Checkout/test";
 import Profile from "../pages/frontend/Profile/Profile";
 import EditProfile from "../pages/frontend/Profile/EditProfile";
 import Order from "../pages/frontend/Profile/Order";
+import Search from "../pages/frontend/Search";
 
 const RouterPublic = [
+
+
     {path:'/',component:Home},
+    {path:'/search',component:Search},
+
     {path:'/product',component:Product},
     {path:'/wishlist',component:Wishlist},
     {path:'/checkout',component:Checkout},

@@ -1,5 +1,6 @@
 function PageTrash() {
-    return (  <div className="content">
+    return ( 
+       <div className="content">
     <section className="content-header my-2">
        <h1 className="d-inline">Thùng rác trang đơn</h1>
        <div className="row mt-3 align-items-center">

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import CartService from "../../../services/CartServices";
+import ProductService from "../../../services/ProductServices";
 import { useNavigate, Link } from "react-router-dom";
 
 function Cart() {
@@ -9,59 +10,66 @@ function Cart() {
   const [totalAmount, setTotalAmount] = useState(0);
   const [userId, setUserId] = useState(null);
 
-
   const removeItem = (cartId, productId) => {
     CartService.removeItemFromCart(cartId, productId)
       .then((response) => {
         Swal.fire({
-          title: 'Are you sure?',
+          title: "Are you sure?",
           text: "You won't be able to revert this!",
-          icon: 'warning',
+          icon: "warning",
           showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, delete it!'
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!",
         }).then((result) => {
           if (result.isConfirmed) {
-            setCartItems((prevCartItems) => prevCartItems.filter(item => item.product.id !== productId));
-            Swal.fire(
-              'Deleted!',
-              'Your file has been deleted.',
-              'success'
-            )
+            setCartItems((prevCartItems) =>
+              prevCartItems.filter((item) => item.product.id !== productId)
+            );
+            Swal.fire("Deleted!", "Your file has been deleted.", "success");
           }
-        })
+        });
       })
       .catch((error) => {
-        console.error('Error removing item from cart:', error);
+        console.error("Error removing item from cart:", error);
+        Swal.fire("Error", "An error occurred while removing item from cart", "error");
       });
   };
 
   const updateCartItemQuantity = (cartId, productId, newQuantity) => {
-    CartService.updateCartItemQuantity(cartId, productId, newQuantity)
-      .then((response) => {
-        console.log("Updated:", response);
-        // Cập nhật số lượng mới cho sản phẩm trong giỏ hàng
-        setCartItems(prevCartItems => {
-          const updatedItems = prevCartItems.map(item => {
-            if (item.product.id === productId) {
-              return { ...item, qty: newQuantity };
-            }
-            return item;
+    ProductService.getById(productId)
+      .then((productResponse) => {
+        if (newQuantity > productResponse.data.qty) {
+          Swal.fire("Xin lỗi", "Số lượng vượt quá số lượng có sẵn", "warning");
+          return;
+        }
+        CartService.updateCartItemQuantity(cartId, productId, newQuantity)
+          .then((response) => {
+            console.log("Updated:", response);
+            setCartItems((prevCartItems) => {
+              const updatedItems = prevCartItems.map((item) => {
+                if (item.product.id === productId) {
+                  return { ...item, qty: newQuantity };
+                }
+                return item;
+              });
+              calculateTotal(updatedItems);
+              return updatedItems;
+            });
+          })
+          .catch((error) => {
+            console.error("Error updating cart item quantity:", error);
+            Swal.fire("Error", "An error occurred while updating cart item quantity", "error");
           });
-          // Tính lại tổng số tiền sau khi cập nhật giỏ hàng
-          calculateTotal(updatedItems);
-          return updatedItems;
-        });
       })
       .catch((error) => {
-        console.error("Error:", error);
+        console.error("Error fetching product details:", error);
+        Swal.fire("Error", "An error occurred while fetching product details", "error");
       });
   };
 
-
   useEffect(() => {
-    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
     if (loggedInUser) {
       setUserId(loggedInUser.id);
     }
@@ -69,18 +77,21 @@ function Cart() {
 
   useEffect(() => {
     if (!userId) {
-      console.error('User ID is not available.');
+      console.error("User ID is not available.");
       return;
     }
 
     CartService.getCarts()
       .then((response) => {
-        const userCartItems = response.data.filter(item => item.user.id === userId);
+        const userCartItems = response.data.filter(
+          (item) => item.user.id === userId
+        );
         setCartItems(userCartItems);
         calculateTotal(userCartItems);
       })
       .catch((error) => {
         console.error("Error fetching cart items:", error);
+        Swal.fire("Error", "An error occurred while fetching cart items", "error");
       });
   }, [userId]);
 
@@ -138,10 +149,15 @@ function Cart() {
                               value={item.qty}
                               min={1}
                               step={1}
-                              onChange={(e) => updateCartItemQuantity(item.id, item.product.id, parseInt(e.target.value))}
+                              onChange={(e) =>
+                                updateCartItemQuantity(
+                                  item.id,
+                                  item.product.id,
+                                  parseInt(e.target.value)
+                                )
+                              }
                               required=""
                             />
-
                           </div>
                         </td>
                         <td className="total-col">

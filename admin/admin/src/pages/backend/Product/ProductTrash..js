@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import ProductService from "../../../services/ProductServices";
 import CategoryService from "../../../services/CategoryServices";
 import BrandServices from "../../../services/BrandServices";
-import TrashProServices from "../../../services/TrashProServices";
+import TrashServices from "../../../services/TrashServices";
+import ImageService from "../../../services/ImageServices";
 
 function ProductTrash() {
    const [products, setProducts] = useState([]);
@@ -11,6 +12,8 @@ function ProductTrash() {
    const [categoryOption, setCategoryOption] = useState([]);
    const [categoryOptionValue, setCategoryOptionvalue] = useState([]);
    const [brands, setBrands] = useState([]);
+   const [images, setImages] = useState([]);
+
  
    useEffect(() => {
      loadProducts();
@@ -18,11 +21,20 @@ function ProductTrash() {
      loadBrands();
      loadCategoryOption();
      loadCategoryOptionValue();
+     loadProductImages();
+
    }, []);
- 
+   const loadProductImages = async () => {
+    try {
+      const response = await ImageService.getAll(); // Ensure ImageService has a method getAll()
+      setImages(response.data.content);
+    } catch (error) {
+      console.error("Error loading product images:", error);
+    }
+  };
    const loadProducts = async () => {
      try {
-       const response = await TrashProServices.getAll();
+       const response = await TrashServices.getAll();
        setProducts(response.data.content);
        console.log("day ne",response.data.content);
      } catch (error) {
@@ -66,7 +78,7 @@ function ProductTrash() {
    
    const removeProduct = async (id) => {
      try {
-       await TrashProServices.remove(id); 
+       await TrashServices.remove(id); 
        setProducts(products.filter((product) => product.id !== id));
        console.log("Product deleted successfully");
        alert("Sản phẩm đã được xóa!");
@@ -76,10 +88,8 @@ function ProductTrash() {
    };
    const backProduct = async (id) => {
       try {
-        await TrashProServices.remove(id); 
-        // Thêm sản phẩm vào TrashProServices
+        await TrashServices.remove(id); 
         await ProductService.create(products.find(product => product.id === id));
-        // Cập nhật danh sách sản phẩm, loại bỏ sản phẩm đã xóa
         setProducts(products.filter((product) => product.id !== id));
         console.log("Product deleted successfully");
         alert("Thành công!");
@@ -87,19 +97,23 @@ function ProductTrash() {
         console.error("Error deleting product:", error);
       }
     };
- 
+    const getImgUrl = (imageName) => {
+      const endpoint = 'productimages'; 
+      let imageUrl = `http://localhost:8082/api/${endpoint}/image/${imageName}`;
+      
+      imageUrl = imageUrl.replace(/\.png/g, "") + ".png";
+  
+      return imageUrl;
+  };
     return ( 
    <div className="content">
 <section className="content-header my-2">
         <h1 className="d-inline">Sản phẩm</h1>
-        <Link to={"/product/create"} className="btn-add">
-          Thêm mới
-        </Link>
         <div className="row mt-3 align-items-center">
           <div className="col-6">
             <ul className="manager">
               <li>
-                <a href="product_index.html">Tất cả (123)</a>
+                <Link to={"/product"}>Tất cả sản phẩm</Link>
               </li>
               <li>
                 <a href="#">Xuất bản (12)</a>
@@ -159,13 +173,13 @@ function ProductTrash() {
         </div>
       </section>
       <section className="content-body my-2">
-        {/* Phần hiển thị danh sách sản phẩm */}
         <table className="table table-bordered">
           <thead>
             <tr>
               <th className="text-center" style={{ width: 30 }}>
                 <input type="checkbox" id="checkboxAll" />
               </th>
+              <th>Ảnh</th>
               <th>Tên sản phẩm</th>
               <th>Giá</th>
               <th>Số lượng</th>
@@ -177,9 +191,11 @@ function ProductTrash() {
             </tr>
           </thead>
           <tbody>
-            {products.map((product, index) => (
+            {products.map((product, index) => {
+                            const productImage = images.find(image => image.productId.id === product.id);
+                            return (
+            
               <tr key={index} className="datarow">
-                {/* Thêm các cột dữ liệu */}
                 <td>
                   <input type="checkbox" id={`checkId${index}`} />
                 </td>
@@ -188,20 +204,19 @@ function ProductTrash() {
                     <Link to={`/product/edit/${product.id}`}>{product.name}</Link>
                   </div>
                   <div className="function_style">
-                    <Link to="#" className="px-1 text-success">
-                      <i className="fa fa-toggle-on" />
-                    </Link>
-                    <Link to={`/product/edit/${product.id}`} className="px-1 text-primary">
-                      <i className="fa fa-edit" />
-                    </Link>
-                    <Link to={`/product/show/${product.id}`} className="px-1 text-info">
-                      <i className="fa fa-eye" />
-                    </Link>
                     <Link to="#" className="text-danger mx-1" onClick={() => removeProduct(product.id)}>
                              <i className="fa fa-trash"></i>
                      </Link>
                   </div>
                 </td>
+                <td>
+  {productImage ? (
+    <img src={getImgUrl(productImage.image)} alt={productImage.image} style={{ width: '180px' }} />
+  ) : (
+    <span>Không có ảnh</span>
+  )}
+</td>
+
                 <td>{product.price}</td>
                 <td>{product.qty}</td>
                 <td>{product.categoryId.name}</td>
@@ -210,10 +225,11 @@ function ProductTrash() {
                 <td>{product.brandId.name}</td>
                 <td><Link to="#" className="text-danger mx-1" onClick={() => backProduct(product.id)}>
                              <a>BACK</a>
-                     </Link>
+                    </Link>
                      </td>
               </tr>
-            ))}
+                          );
+                        })}
           </tbody>
         </table>
       </section>

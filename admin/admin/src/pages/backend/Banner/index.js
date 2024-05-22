@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import BannerService from "../../../services/BannerServices";
+import TrashServices from "../../../services/TrashServices";
 
 function Banner() {
    const [banners, setBanners] = useState([]);
@@ -16,22 +17,38 @@ function Banner() {
        });
    }, []);
    //xóa sản phẩm
-   const removeBanner = (id) => {
-      BannerService.remove(id)
-        .then(() => {
-         setBanners(banners.filter(slider => slider.id !== id));
-          console.log("Slider deleted successfully");
-          alert("Slider đã được xóa!")
-        })
-        .catch(error => {
-          console.error('Error deleting product:', error);
-        });
-    };
+   const removeBanner = async (id) => {
+    try {
+        // Xóa about
+        await BannerService.remove(id);
+
+        // Lấy thông tin của about sẽ di chuyển vào thùng rác
+        const bannerToMoveToTrash = banners.find(banner => banner.id === id);
+
+        // Di chuyển vào thùng rác
+        await TrashServices.createBanner(bannerToMoveToTrash);
+
+        // Cập nhật danh sách abouts sau khi xóa
+        setBanners(banners.filter((banner) => banner.id !== id));
+
+        console.log("Product deleted successfully");
+        alert("Sản phẩm đã được xóa!");
+    } catch (error) {
+        console.error("Error deleting product:", error);
+    }
+};
+
     //image
     const getImgUrl = (imageName) => {
       const endpoint = 'banners'; 
-      return `http://localhost:8082/api/${endpoint}/image/${imageName}`;
+      let imageUrl = `http://localhost:8082/api/${endpoint}/image/${imageName}`;
+      
+      // Xóa bớt một phần đuôi ".png" nếu có
+      imageUrl = imageUrl.replace(/\.png/g, "") + ".png";
+  
+      return imageUrl;
   };
+  
   return (
     <div className="content">
       <section className="content-header my-2">
@@ -48,13 +65,11 @@ function Banner() {
               <div className="col-12">
                 <ul className="manager">
                   <li>
-                    <a href="brand_index.html">Tất cả (123)</a>
+                    <Link to="/banner">Tất cả ({banners.length})</Link>
                   </li>
+                  <li></li>
                   <li>
-                    <a href="#">Xuất bản (12)</a>
-                  </li>
-                  <li>
-                    <a href="brand_trash.html">Rác (12)</a>
+                  <li><Link to={"/banner/trash"}> Thùng Rác</Link></li>
                   </li>
                 </ul>
               </div>

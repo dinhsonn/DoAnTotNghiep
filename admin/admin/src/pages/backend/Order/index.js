@@ -7,7 +7,7 @@ function Order() {
     useEffect(() => {
         OrderService.getAll()
             .then(response => {
-                setOrders(response.data); // Giả định rằng dữ liệu trả về là một mảng đơn hàng
+                setOrders(response.data);
                 console.log("data", response.data);
             })
             .catch(error => {
@@ -29,6 +29,37 @@ function Order() {
         }
     };
 
+    function getStatusText(status) {
+        switch (status) {
+            case 1:
+                return "Chờ xác nhận";
+            case 2:
+                return "Đã xác nhận";
+            case 3:
+                return "Đang giao hàng";
+            case 4:
+                return "Giao thành công";
+            default:
+                return "Trạng thái không xác định";
+        }
+    }
+    const updateOrderStatus = (id, status) => {
+        OrderService.updateOrderStatus(id, status)
+            .then(response => {
+                // Cập nhật lại danh sách đơn hàng sau khi cập nhật trạng thái
+                setOrders(prevOrders => prevOrders.map(order => {
+                    if (order.id === id) {
+                        return { ...order, status: status };
+                    } else {
+                        return order;
+                    }
+                }));
+                console.log("Order status updated successfully");
+            })
+            .catch(error => {
+                console.error('Error updating order status:', error);
+            });
+    };
     return (
         <div className="content">
             <section className="content-header my-2">
@@ -92,6 +123,7 @@ function Order() {
                             <th>Địa chỉ</th>
                             <th>Tên sản phẩm</th>
                             <th>Ngày đặt hàng</th>
+                            <th>Tình trạng</th>
                             <th className="text-center" style={{ width: '30px' }}>ID</th>
                         </tr>
                     </thead>
@@ -125,7 +157,14 @@ function Order() {
                                 <td>{order.address}</td>
                                 <td>{order.product.name}</td>
                                 <td>{new Date(order.createdAt).toLocaleDateString()}</td>
-                                <td className="text-center">{order.id}</td>
+                                <td>
+                                    <select value={order.status} onChange={(e) => updateOrderStatus(order.id, e.target.value)}>
+                                        <option value={1}>Chờ xác nhận</option>
+                                        <option value={2}>Đã xác nhận</option>
+                                        <option value={3}>Đang giao hàng</option>
+                                        <option value={4}>Giao thành công</option>
+                                    </select>
+                                </td>                                <td className="text-center">{order.id}</td>
                             </tr>
                         ))}
                     </tbody>

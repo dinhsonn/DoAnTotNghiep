@@ -69,5 +69,17 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> getProductsByIds(List<Long> productIds) {
         return productRepository.findAllById(productIds);
     }
+    @Override
+    public Product updateProductQty(Long productId, int qty) {
+        Optional<Product> productOptional = productRepository.findById(productId);
+        if (productOptional.isPresent()) {
+            Product product = productOptional.get();
+            product.setQty(qty);
+            return productRepository.save(product);
+        } else {
+            return null;
+        }
+    }
+
 
 }

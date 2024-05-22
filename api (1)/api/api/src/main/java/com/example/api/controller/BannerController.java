@@ -40,8 +40,8 @@ public class BannerController {
     public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file,
                                              @RequestParam("customName") String customName) {
         try {
-        //  String uploadDir = "C:\\Users\\DELL\\Desktop\\New folder\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage";
-          String uploadDir = "C:\\Users\\MY-PC\\OneDrive\\Máy tính\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage";
+          String uploadDir = "C:\\Users\\DELL\\Desktop\\New folder\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage";
+        //  String uploadDir = "C:\\Users\\MY-PC\\OneDrive\\Máy tính\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage";
 
             File directory = new File(uploadDir);
             if (!directory.exists()) {
@@ -63,8 +63,8 @@ public class BannerController {
     }
 @GetMapping("/image/{imageName}")
 public ResponseEntity<byte[]> getImage(@PathVariable String imageName) throws IOException {
-     //String imagePath = "C:\\Users\\DELL\\Desktop\\New folder\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage\\" + imageName;
-     String imagePath = "C:\\Users\\MY-PC\\OneDrive\\Máy tính\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage\\" + imageName;
+     String imagePath = "C:\\Users\\DELL\\Desktop\\New folder\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage\\" + imageName;
+     //String imagePath = "C:\\Users\\MY-PC\\OneDrive\\Máy tính\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage\\" + imageName;
 
     Resource resource = new FileSystemResource(imagePath);
 
@@ -99,15 +99,37 @@ public ResponseEntity<byte[]> getImage(@PathVariable String imageName) throws IO
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Banner> updateBanner(@PathVariable("id") Long bannerId, @RequestBody Banner banner) {
-        banner.setId(bannerId);
-        Banner updatedBanner = bannerService.updateBanner(banner);
-        if (updatedBanner != null) {
+    public ResponseEntity<Banner> updateBanner(
+        @PathVariable("id") Long bannerId,
+        @RequestParam(value = "file", required = false) MultipartFile file,
+        @RequestBody Banner banner) {
+        
+        try {
+            if (file != null && !file.isEmpty()) {
+                 String uploadDir = "C:\\Users\\DELL\\Desktop\\New folder\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage";
+               // String uploadDir = "C:\\Users\\MY-PC\\OneDrive\\Máy tính\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage";
+    
+                String originalFilename = file.getOriginalFilename();
+                String fileName = originalFilename.substring(0, originalFilename.lastIndexOf('.')) + ".png";
+    
+                String filePath = uploadDir + File.separator + fileName;
+    
+                try (FileOutputStream fos = new FileOutputStream(filePath)) {
+                    fos.write(file.getBytes());
+                }
+    
+                banner.setImage(fileName);
+            }
+    
+            banner.setId(bannerId);
+            Banner updatedBanner = bannerService.updateBanner(banner);
             return new ResponseEntity<>(updatedBanner, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteBanner(@PathVariable("id") Long bannerId) {

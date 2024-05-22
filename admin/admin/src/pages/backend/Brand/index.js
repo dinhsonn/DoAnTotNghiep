@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import BrandServices from "../../../services/BrandServices";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import TrashServices from "../../../services/TrashServices";
 function Brand() {
   const [brands, setBrands] = useState([]);
   const [formData, setFormData] = useState({
@@ -22,17 +23,19 @@ function Brand() {
         console.error("Error fetching data:", error);
       });
   };
-  const removeBrands = (id) => {
-    BrandServices.remove(id)
-      .then(() => {
+  const removeBrands = async (id) => {
+    try {
+        await BrandServices.remove(id);
+        const brandToMoveToTrash = brands.find(brand => brand.id === id);
+        await TrashServices.createBrand(brandToMoveToTrash);
         setBrands(brands.filter((brand) => brand.id !== id));
+
         console.log("Brand deleted successfully");
         alert("Thương hiệu đã được xóa!");
-      })
-      .catch((error) => {
-        console.error("Error deleting product:", error);
-      });
-  };
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
+};
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -47,10 +50,15 @@ function Brand() {
     });
   };
       //image
-   const getImgUrl = (imageName) => {
-         const endpoint = 'brand'; 
-         return `http://localhost:8082/api/${endpoint}/image/${imageName}`;
-   };
+    //image
+    const getImgUrl = (imageName) => {
+      const endpoint = 'banners'; 
+      let imageUrl = `http://localhost:8082/api/${endpoint}/image/${imageName}`;
+      
+      imageUrl = imageUrl.replace(/\.png/g, "") + ".png";
+  
+      return imageUrl;
+  };
    const [file, setFile] = useState(null);
    const [imageName, setImageName] = useState('');
    const [message, setMessage] = useState('');
@@ -138,17 +146,6 @@ function Brand() {
               </div>
               <div className="mb-3">
                 <label>
-                  <strong>Mô tả</strong>
-                </label>
-                <textarea
-                  name="description"
-                  rows="4"
-                  className="form-control"
-                  placeholder="Mô tả"
-                ></textarea>
-              </div>
-              <div className="mb-3">
-                <label>
                   <strong>Hình đại diện</strong>
                 </label>
                 <br />
@@ -182,27 +179,16 @@ function Brand() {
             <div className="row mt-3 align-items-center">
               <div className="col-12">
                 <ul className="manager">
-                  <li>
-                    <a href="brand_index.html">Tất cả (123)</a>
-                  </li>
-                  <li>
-                    <a href="#">Xuất bản (12)</a>
-                  </li>
-                  <li>
-                    <a href="brand_trash.html">Rác (12)</a>
-                  </li>
+                <li>
+                <Link to="/brand">Tất cả ({brands.length})</Link>
+                </li>
+                  <li><Link to={"/brand/trash"}> Thùng Rác</Link></li>
                 </ul>
               </div>
             </div>
             <div className="row my-2 align-items-center">
+
               <div className="col-md-6">
-                <select name="" className="d-inline me-1">
-                  <option value="">Hành động</option>
-                  <option value="">Bỏ vào thùng rác</option>
-                </select>
-                <button className="btnapply">Áp dụng</button>
-              </div>
-              <div className="col-md-6 text-end">
                 <input type="text" className="search d-inline" />
                 <button className="btnsearch d-inline">Tìm kiếm</button>
               </div>

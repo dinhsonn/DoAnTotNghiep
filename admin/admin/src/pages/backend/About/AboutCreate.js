@@ -54,9 +54,8 @@ function AboutCreate() {
                     <div className="mb-3">
                         <label htmlFor="status" className="form-label">Status:</label>
                         <select className="form-select" id="status" name="status" value={formData.status} onChange={handleChange}>
-                            <option value="">Chọn trạng thái</option>
-                            <option value="published">Xuất bản</option>
-                            <option value="unpublished">Chưa xuất bản</option>
+                        <option value="1">Xuất bản</option>
+                    <option value="2">Chưa xuất bản</option>
                         </select>
                     </div>
                 </form>

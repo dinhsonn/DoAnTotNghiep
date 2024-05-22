@@ -1,13 +1,18 @@
 package com.example.api.controller;
 
 import com.example.api.entity.User;
+import com.example.api.service.OrderService;
 import com.example.api.service.UserService;
+
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.example.api.entity.Order;
 
 @RestController
 @RequestMapping("/api/users")
@@ -15,11 +20,22 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final OrderService orderService; // Add this line
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, OrderService orderService) { // Modify constructor
         this.userService = userService;
+        this.orderService = orderService; // Initialize orderService
     }
 
+    @GetMapping("/{id}/orders")
+    public ResponseEntity<List<Order>> getOrdersByUserId(@PathVariable Long id) {
+        List<Order> orders = orderService.getOrdersByUserId(id);
+        if (orders != null && !orders.isEmpty()) {
+            return new ResponseEntity<>(orders, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+    }
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
         User savedUser = userService.createUser(user);
@@ -61,5 +77,6 @@ public class UserController {
         userService.deleteUser(id);
         return new ResponseEntity<>("User successfully deleted!", HttpStatus.OK);
     }
+
 
 }

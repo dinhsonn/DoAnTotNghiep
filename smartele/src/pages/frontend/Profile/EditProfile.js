@@ -6,7 +6,7 @@ import axios from 'axios';
 const EditProfile = () => {
   const [userDetails, setUserDetails] = useState(null);
   const [editedUser, setEditedUser] = useState(null);
-  const [editedEmail, setEditedEmail] = useState(null);
+  const [phoneNumberError, setPhoneNumberError] = useState('');
 
   useEffect(() => {
     const userId = JSON.parse(localStorage.getItem('loggedInUser'))?.id;
@@ -25,6 +25,14 @@ const EditProfile = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
+    // Kiểm tra nếu là trường số điện thoại và giá trị nhập không phải là số hoặc không đủ 11 số
+    if (name === 'phone' && (isNaN(value) || value.length < 10)) {
+      setPhoneNumberError('Số điện thoại phải số');
+    } else {
+      setPhoneNumberError(''); // Xóa thông báo lỗi nếu nhập đúng định dạng
+    }
+
     setEditedUser((prevUser) => ({ ...prevUser, [name]: value }));
   };
 
@@ -53,16 +61,6 @@ const EditProfile = () => {
           </div>
           <form className="contact-form mb-3" onSubmit={handleFormSubmit}>
             <div className="row">
-              <div className="col-sm-12">
-                <label htmlFor="username">Tên đăng nhập:</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="username"
-                  value={editedUser?.username || ''}
-                  readOnly
-                />
-              </div>
               <div className="col-sm-6">
                 <label htmlFor="name">Tên tài khoản:</label>
                 <input
@@ -88,13 +86,14 @@ const EditProfile = () => {
               <div className="col-sm-6">
                 <label htmlFor="phone">Số điện thoại:</label>
                 <input
-                  className="form-control"
+                  className={`form-control ${phoneNumberError ? 'is-invalid' : ''}`}
                   type="text"
                   id="phone"
                   name="phone"
                   value={editedUser?.phone || ''}
                   onChange={handleInputChange}
                 />
+                {phoneNumberError && <div className="invalid-feedback">{phoneNumberError}</div>}
               </div>
               <div className="col-sm-12">
                 <label htmlFor="address">Địa chỉ:</label>

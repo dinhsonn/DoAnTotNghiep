@@ -22,15 +22,15 @@ function ProductDetail() {
     if (loggedInUser) {
       setUserId(loggedInUser.id);
     }
-  }, []); 
+  }, []);
 
-  const handleAddToCart = (productId, qty, price, image,paymentMethod) => {
-    console.log("Adding to cart:", productId, qty, price, image,paymentMethod);
+  const handleAddToCart = (productId, qty, price, image, paymentMethod) => {
+    console.log("Adding to cart:", productId, qty, price, image, paymentMethod);
     if (!userId) {
       console.error('User ID is not available.');
       return;
     }
-    CartService.addItemToCart(userId, productId, qty, price, image,paymentMethod)
+    CartService.addItemToCart(userId, productId, qty, price, image, paymentMethod)
       .then(() => {
         Swal.fire(
           "The product has been added to cart.",
@@ -61,7 +61,7 @@ function ProductDetail() {
       .catch((error) => {
         console.error("Error fetching product images:", error);
       });
-      ProductServices.productOptionById(id)
+    ProductServices.productOptionById(id)
       .then((response) => {
         const productOptions = response.data.content;
         setProductOptions(productOptions);
@@ -231,9 +231,9 @@ function ProductDetail() {
                                 id="color"
                                 className="form-control"
                               >
-                              {productoptionvalues[productoption.id]?.map((productoptionvalue, index) => (
-                                <option key={index} value={productoptionvalue.id}>{productoptionvalue.value}</option>
-                              ))}
+                                {productoptionvalues[productoption.id]?.map((productoptionvalue, index) => (
+                                  <option key={index} value={productoptionvalue.id}>{productoptionvalue.value}</option>
+                                ))}
                               </select>
                             </div>
                           </div>
@@ -245,24 +245,24 @@ function ProductDetail() {
                           <div className="details-action-col">
                             <label htmlFor="qty">Số lượng:</label>
                             <div className="product-details-quantity">
-                            <input
-  type="number"
-  id="qty"
-  className="form-control"
-  defaultValue={1}
-  value={qty}
-  min={1}
-  max={10}
-  step={1}
-  onChange={(e) => setQty(e.target.value)}
-  required=""
-/>
+                              <input
+                                type="number"
+                                id="qty"
+                                className="form-control"
+                                defaultValue={1}
+                                value={qty}
+                                min={1}
+                                max={10}
+                                step={1}
+                                onChange={(e) => setQty(e.target.value)}
+                                required=""
+                              />
 
 
                             </div>
                             {/* End .product-details-quantity */}
                             <a href="#" className="btn-product btn-cart"
-                            onClick={() => handleAddToCart(products.id, qty, products.price, products.image, 'Thanh toán trực tiếp')}>
+                              onClick={() => handleAddToCart(products.id, qty, products.price, products.image, 'Thanh toán trực tiếp')}>
                               <span>THÊM VÀO GIỎ HÀNG</span>
                             </a>
                           </div>
@@ -279,7 +279,7 @@ function ProductDetail() {
                               href="#"
                               className="btn-product btn-compare"
                               title="Compare"
-                              
+
                             >
                               <span>Thêm vào so sánh</span>
                             </a>
@@ -291,7 +291,7 @@ function ProductDetail() {
                           <div className="product-cat">
                             <span>Danh mục:</span>
                             <a href="#">Women</a>
-                         
+
                           </div>
                           {/* End .product-cat */}
                           <div className="social-icons social-icons-sm">
@@ -1029,7 +1029,7 @@ function ProductDetail() {
                 {/* End .owl-carousel */}
               </div>
               {/* End .col-lg-9 */}
-           <ProductRelated/>
+              <ProductRelated />
               {/* End .col-lg-3 */}
             </div>
 

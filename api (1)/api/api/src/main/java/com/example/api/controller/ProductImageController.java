@@ -147,5 +147,4 @@ public class ProductImageController {
         Page<ProductImage> productimage = productImageService.getProductImage(productId, pageable);
         return new ResponseEntity<>(productimage, HttpStatus.OK);
     }
-
 }

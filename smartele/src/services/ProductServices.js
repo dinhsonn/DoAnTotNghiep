@@ -21,6 +21,9 @@ function remove(id)
 {
     return httpAxios.delete("product/destroy/" + id);
 }
+    function updateProductQty(id, qty) {
+        return httpAxios.put(`products/${id}/quantity`, { qty });
+    }
 function getProductImage()
 { 
     return httpAxios.get("productimages");
@@ -66,5 +69,6 @@ const ProductService = {
     productOptionById:productOptionById,
     productOptionValue:productOptionValue,
     productOptionValueByOption:productOptionValueByOption,
+    updateProductQty:updateProductQty,
 }
 export default ProductService;

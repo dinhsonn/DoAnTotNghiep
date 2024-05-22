@@ -27,6 +27,8 @@ public interface OrderService {
     void updatepaymentMethod(Long OrderId,String paymentMethod);
 
     public void deleteOrder(Long userId);
+    
+    public List<Order> getOrdersByUserId(Long userId);
 
 }
 

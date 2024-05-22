@@ -1,8 +1,16 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import ReactPaginate from 'react-paginate';
 import MenuServices from "../../../services/MenuServices";
+import TrashServices from "../../../services/TrashServices";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './Menu.css'; // Tạo file này để thêm CSS tùy chỉnh
+
 function Menu() {
   const [menus, setMenus] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 9;
+
   const [formData, setFormData] = useState({
     name: "",
     link: "",
@@ -11,6 +19,7 @@ function Menu() {
     status: "0",
     parentId: "",
   });
+
   useEffect(() => {
     loadMenu();
   }, [formData]);
@@ -25,17 +34,19 @@ function Menu() {
       });
   };
 
-  const removeMenu = (id) => {
-    MenuServices.remove(id)
-      .then(() => {
-        setMenus(menus.filter((menu) => menu.id !== id));
-
-        alert("Menu đã được xóa!");
-      })
-      .catch((error) => {
-        console.error("Error deleting product:", error);
-      });
+  const removeMenu = async (id) => {
+    try {
+      await MenuServices.remove(id);
+      const menuToMoveToTrash = menus.find(menu => menu.id === id);
+      await TrashServices.createMenu(menuToMoveToTrash);
+      setMenus(menus.filter((menu) => menu.id !== id));
+      console.log("Menu deleted successfully");
+      alert("Đã hoàn thành!");
+    } catch (error) {
+      console.error("Error deleting menu:", error);
+    }
   };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -44,6 +55,7 @@ function Menu() {
       [name]: value,
     });
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     MenuServices.create(formData)
@@ -57,24 +69,27 @@ function Menu() {
       });
   };
 
+  const pageCount = Math.ceil(menus.length / itemsPerPage);
+  const offset = currentPage * itemsPerPage;
+  const currentMenus = menus.slice(offset, offset + itemsPerPage);
+
   return (
     <div className="content">
       <section className="content-header my-2">
         <h1 className="d-inline">Quản lý menu</h1>
         <div className="row mt-3 align-items-center">
-          <div className="col-6">
-            <ul className="manager">
-              <li>
-                <a href="menu_index.html">Tất cả (123)</a>
-              </li>
-              <li>
-                <a href="#">Xuất bản (12)</a>
-              </li>
-              <li>
-                <a href="menu_trash.html">Rác (12)</a>
-              </li>
-            </ul>
-          </div>
+          {menus.length > itemsPerPage && (
+            <div className="col-6">
+              <ul className="manager">
+                <li>
+                  <Link to="/menu">Tất cả ({menus.length})</Link>
+                </li>
+                <li>
+                  <Link to="/menu/trash">Rác</Link>
+                </li>
+              </ul>
+            </div>
+          )}
           <div className="col-6 text-end">
             <input type="text" className="search d-inline" />
             <button className="d-inline btnsearch">Tìm kiếm</button>
@@ -85,20 +100,13 @@ function Menu() {
         <div className="row">
           <div className="col-md-3">
             <ul className="list-group">
-              <li className="list-group-item mb-2">
-                <select name="postion" className="form-control">
-                  <option value="mainmenu">Main Menu</option>
-                  <option value="footermenu">Footer Menu</option>
-                </select>
-              </li>
-          
               <li className="list-group-item mb-2 border">
                 <a
                   className="d-block"
                   href="#multiCollapseCustom"
                   data-bs-toggle="collapse"
                 >
-                  Tùy biến liên kết
+                  Thêm
                 </a>
                 <form onSubmit={handleSubmit}>
                   <div
@@ -190,44 +198,6 @@ function Menu() {
             </ul>
           </div>
           <div className="col-md-9">
-            <div className="row mt-1 align-items-center">
-              <div className="col-md-8">
-                <select name="" className="d-inline me-1">
-                  <option value="">Hành động</option>
-                  <option value="">Bỏ vào thùng rác</option>
-                </select>
-                <button className="btnapply">Áp dụng</button>
-              </div>
-              <div className="col-md-4 text-end">
-                <nav aria-label="Page navigation example">
-                  <ul className="pagination pagination-sm justify-content-end">
-                    <li className="page-item disabled">
-                      <a className="page-link">&laquo;</a>
-                    </li>
-                    <li className="page-item">
-                      <a className="page-link" href="#">
-                        1
-                      </a>
-                    </li>
-                    <li className="page-item">
-                      <a className="page-link" href="#">
-                        2
-                      </a>
-                    </li>
-                    <li className="page-item">
-                      <a className="page-link" href="#">
-                        3
-                      </a>
-                    </li>
-                    <li className="page-item">
-                      <a className="page-link" href="#">
-                        &raquo;
-                      </a>
-                    </li>
-                  </ul>
-                </nav>
-              </div>
-            </div>
             <table className="table table-bordered">
               <thead>
                 <tr>
@@ -245,7 +215,7 @@ function Menu() {
                 </tr>
               </thead>
               <tbody>
-                {menus.map((menu, index) => (
+                {currentMenus.map((menu, index) => (
                   <tr className="datarow">
                     <td className="text-center">
                       <input type="checkbox" id="checkId" />
@@ -286,6 +256,16 @@ function Menu() {
                 ))}
               </tbody>
             </table>
+            {menus.length > itemsPerPage && (
+              <ReactPaginate
+                previousLabel={"Previous"}
+                nextLabel={"Next"}
+                pageCount={pageCount}
+                onPageChange={({ selected }) => setCurrentPage(selected)}
+                containerClassName={"pagination"}
+                activeClassName={"active"}
+              />
+            )}
           </div>
         </div>
       </section>

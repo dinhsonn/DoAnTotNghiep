@@ -45,6 +45,10 @@ public class Brand {
     @Column(name = "updated_at")
     private Date updatedAt;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "deleted_at")
+    private Date deletedAt;
+
     public Brand() {
         this.createdAt = new Date();
     }
