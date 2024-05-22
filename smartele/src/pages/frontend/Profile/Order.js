@@ -4,6 +4,7 @@ import './Order.css';
 
 import Sidebar from './Sidebar';
 import OrderService from '../../../services/OrderServices';
+import ProductService from '../../../services/ProductServices';
 
 const Order = () => {
   // State
@@ -12,7 +13,6 @@ const Order = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(2); // Số sản phẩm mỗi trang
 
-  // Effect hook để lấy userId từ localStorage khi component được render
   useEffect(() => {
     const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
     if (loggedInUser) {
@@ -20,7 +20,6 @@ const Order = () => {
     }
   }, []);
 
-  // Effect hook để lấy danh sách đơn hàng từ API khi userId thay đổi
   useEffect(() => {
     if (!userId) {
       console.error('User ID is not available.');
@@ -28,9 +27,22 @@ const Order = () => {
     }
 
     OrderService.getOrders()
-      .then((response) => {
-        const userCartItems = response.data.filter(item => item.user.id === userId);
-        setOrders(userCartItems);
+    .then(async (response) => {
+      const userCartItems = response.data.filter(
+        (item) => item.user.id === userId
+      );
+
+      const cartItemsWithProducts = await Promise.all(
+        userCartItems.map(async (item) => {
+          const productResponse = await ProductService.getById(item.productId);
+          return {
+            ...item,
+            product: productResponse.data,
+          };
+        })
+      );
+
+        setOrders(cartItemsWithProducts);
       })
       .catch((error) => {
         console.error("Error fetching cart items:", error);
@@ -43,7 +55,6 @@ const Order = () => {
     return `http://localhost:8082/api/${endpoint}/image/${imageName}`;
   };
 
-  // Helper function để lấy chuỗi trạng thái từ giá trị status
   const getStatusText = (status) => {
     switch (status) {
       case 1:
@@ -59,27 +70,23 @@ const Order = () => {
     }
   };
 
-  // Tính toán index của item cuối cùng trên trang hiện tại
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = orders.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(orders.length / itemsPerPage);
 
-  // Handler để chuyển sang trang tiếp theo
   const handleNextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
     }
   };
 
-  // Handler để chuyển sang trang trước đó
   const handlePrevPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
     }
   };
 
-  // Handler để điều hướng đến trang cụ thể
   const goToPage = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -93,34 +100,35 @@ const Order = () => {
           <h2>Danh sách đơn hàng</h2>
           <table className="table">
             <tbody>
-              {currentItems.map((item) => (
-                <tr key={item.id}>
-                  <td className="product-col">
-                    <div className="product">
-                      <figure className="product-media">
-                        <img
-                          src={getImgUrl(item.image)}
-                          alt="Product image"
-                        />
-                      </figure>
-                      <h3 className="product-title">
-                        {item.product.name}
-                      </h3>
-                    </div>
-                  </td>
-                  <td className="quantity-col">
-                    <div className="cart-product-quantity">
-                      <span>Số lượng: {item.qty}</span>
-                    </div>
-                  </td>
-                  <td className="total-col">
-                    ${item.price * item.qty}
-                  </td>
-                  <td className="status-col">
-                    {getStatusText(item.status)}
-                  </td>
-                </tr>
-              ))}
+            {currentItems.map((item) => (
+  <tr key={item.id}>
+    <td className="product-col">
+      <div className="product">
+        <figure className="product-media">
+          <img
+            src={getImgUrl(item.image)}
+            alt="Product image"
+          />
+        </figure>
+        <h3 className="product-title">
+          {item.product && item.product.name}
+        </h3>
+      </div>
+    </td>
+    <td className="quantity-col">
+      <div className="cart-product-quantity">
+        <span>Số lượng: {item.qty}</span>
+      </div>
+    </td>
+    <td className="total-col">
+      ${item.price * item.qty}
+    </td>
+    <td className="status-col">
+      {getStatusText(item.status)}
+    </td>
+  </tr>
+))}
+
             </tbody>
           </table>
           <div className="pagination">

@@ -60,6 +60,6 @@ public class ProductImageServiceImpl implements ProductImageService {
 
     @Override
     public Page<ProductImage> getProductImage(Long productId, Pageable pageable) {
-        return productImageRepository.findByProductId(productId, pageable);
+        return productImageRepository.findByProductId_Id(productId, pageable);
     }
 }
