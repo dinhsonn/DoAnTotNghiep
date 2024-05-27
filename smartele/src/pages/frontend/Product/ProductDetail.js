@@ -97,6 +97,7 @@ function ProductDetail() {
         console.error("Error fetching product options:", error);
       });
   }, [id]);
+
   if (!products) {
     return <p>Loading...</p>;
   }
@@ -106,7 +107,9 @@ function ProductDetail() {
     return `http://localhost:8082/api/${endpoint}/image/${imageName}`;
   };
 
+  
   return (
+    
     <>
       <main className="main">
         <nav aria-label="breadcrumb" className="breadcrumb-nav border-0 mb-0">
@@ -221,10 +224,12 @@ function ProductDetail() {
                           </a>
                         </div>
                         {/* End .rating-container */}
-                        <div className="product-price">{products.price}đ</div>
+                        <div className="product-price">
+  {(products.price !== undefined ? products.price : 0).toLocaleString('vi-VN') + 'đ'}
+</div>
                         {/* End .product-price */}
                         <div className="product-content">
-                          <p>{products.description}</p>
+                  
                         </div>
                         {/* End .product-content */}
                         {productoptions.map((productoption, index) => (
@@ -332,6 +337,7 @@ function ProductDetail() {
                               <i className="icon-pinterest" />
                             </a>
                           </div>
+                          
                         </div>
                         {/* End .product-details-footer */}
                       </div>
@@ -409,39 +415,11 @@ function ProductDetail() {
                     >
                       <div className="product-desc-content">
                         <h3>Thông tin sản phẩm</h3>
-                        <p>
-                          Lorem ipsum dolor sit amet, consectetuer adipiscing
-                          elit. Donec odio. Quisque volutpat mattis eros. Nullam
-                          malesuada erat ut turpis. Suspendisse urna viverra
-                          non, semper suscipit, posuere a, pede. Donec nec justo
-                          eget felis facilisis fermentum. Aliquam porttitor
-                          mauris sit amet orci. Aenean dignissim pellentesque
-                          felis. Phasellus ultrices nulla quis nibh. Quisque a
-                          lectus. Donec consectetuer ligula vulputate sem
-                          tristique cursus.{" "}
-                        </p>
-                        <ul>
-                          <li>
-                            Nunc nec porttitor turpis. In eu risus enim. In
-                            vitae mollis elit.{" "}
-                          </li>
-                          <li>Vivamus finibus vel mauris ut vehicula.</li>
-                          <li>
-                            Nullam a magna porttitor, dictum risus nec, faucibus
-                            sapien.
-                          </li>
-                        </ul>
-                        <p>
-                          Lorem ipsum dolor sit amet, consectetuer adipiscing
-                          elit. Donec odio. Quisque volutpat mattis eros. Nullam
-                          malesuada erat ut turpis. Suspendisse urna viverra
-                          non, semper suscipit, posuere a, pede. Donec nec justo
-                          eget felis facilisis fermentum. Aliquam porttitor
-                          mauris sit amet orci. Aenean dignissim pellentesque
-                          felis. Phasellus ultrices nulla quis nibh. Quisque a
-                          lectus. Donec consectetuer ligula vulputate sem
-                          tristique cursus.{" "}
-                        </p>
+                
+                        {products.description && products.description.split(';').map((spec, index) => (
+                          <p key={index}>{spec.trim()}</p>
+                        ))}
+         
                       </div>
                       {/* End .product-desc-content */}
                     </div>
@@ -454,29 +432,9 @@ function ProductDetail() {
                     >
                       <div className="product-desc-content">
                         <h3>Thông tin</h3>
-                        <p>
-                          Lorem ipsum dolor sit amet, consectetuer adipiscing
-                          elit. Donec odio. Quisque volutpat mattis eros. Nullam
-                          malesuada erat ut turpis. Suspendisse urna viverra
-                          non, semper suscipit, posuere a, pede. Donec nec justo
-                          eget felis facilisis fermentum. Aliquam porttitor
-                          mauris sit amet orci.{" "}
-                        </p>
-                        <h3>Fabric &amp; care</h3>
-                        <ul>
-                          <li>Faux suede fabric</li>
-                          <li>Gold tone metal hoop handles.</li>
-                          <li>RI branding</li>
-                          <li>Snake print trim interior </li>
-                          <li>Adjustable cross body strap</li>
-                          <li>
-                            {" "}
-                            Height: 31cm; Width: 32cm; Depth: 12cm; Handle Drop:
-                            61cm
-                          </li>
-                        </ul>
-                        <h3>Size</h3>
-                        <p>one size</p>
+                        {products.specifications && products.specifications.split(',').map((spec, index) => (
+                          <p key={index}>{spec.trim()}</p>
+                        ))}
                       </div>
                       {/* End .product-desc-content */}
                     </div>
@@ -1032,7 +990,8 @@ function ProductDetail() {
                 {/* End .owl-carousel */}
               </div>
               {/* End .col-lg-9 */}
-              <ProductRelated />
+              <ProductRelated brandId={products && products.brandId && products.brandId.id}  />
+
               {/* End .col-lg-3 */}
             </div>
 

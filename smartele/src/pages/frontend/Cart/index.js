@@ -117,7 +117,9 @@ function Cart() {
     const endpoint = "productimages";
     return `http://localhost:8082/api/${endpoint}/image/${imageName}`;
   };
-
+  function formatCurrency(number) {
+    return number.toLocaleString('vi-VN') + 'đ';
+  }
   return (
     <>
       <div className="page-content">
@@ -151,7 +153,7 @@ function Cart() {
                             </h3>
                           </div>
                         </td>
-                        <td className="price-col">${item.price}</td>
+                        <td className="price-col">{formatCurrency(item.price)}</td>
                         <td className="quantity-col">
                           <div className="cart-product-quantity">
                             <input
@@ -172,7 +174,7 @@ function Cart() {
                           </div>
                         </td>
                         <td className="total-col">
-                          ${item.price * item.qty}
+                          {formatCurrency(item.price * item.qty)}
                         </td>
                         <td className="remove-col">
                           <button
@@ -220,11 +222,11 @@ function Cart() {
                     <tbody>
                       <tr className="summary-subtotal">
                         <td>Subtotal:</td>
-                        <td>${totalAmount.toFixed(2)}</td>
+                        <td>{formatCurrency(totalAmount)}</td>
                       </tr>
                       <tr className="summary-total">
                         <td>Total:</td>
-                        <td>${totalAmount.toFixed(2)}</td>
+                        <td>{formatCurrency(totalAmount)}</td>
                       </tr>
                     </tbody>
                   </table>

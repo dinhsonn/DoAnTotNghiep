@@ -2,14 +2,17 @@ import { useEffect, useState } from "react";
 import "./Header.css";
 import CategoryServices from "../../services/CategoryServices";
 import MenuServices from "../../services/MenuServices";
-import { Link } from "react-router-dom";
+import ProductServices from "../../services/ProductServices";
+import { Link , useNavigate  } from "react-router-dom";
 
 function Menu() {
   const [categories, setCategories] = useState([]);
   const [categoryoptions, setCategoryoptions] = useState([]);
+  const [productValues, setProductValues] = useState([]);
   const [optionValues, setOptionValues] = useState({});
   const [menus, setMenus] = useState([]);
   const [hoveredCategoryId, setHoveredCategoryId] = useState(null); 
+  const navigate = useNavigate();
   useEffect(() => {
     CategoryServices.getAll()
       .then((response) => {
@@ -65,7 +68,17 @@ function Menu() {
         console.error("Error fetching data:", error);
       });
   }, []);
-
+  function handleOptionValueClick(categoryOptionValueId) {
+    ProductServices.getProductsByCategoryOptionValue(categoryOptionValueId)
+      .then((response) => {
+        setProductValues(response.data);
+        navigate(`/product?categoryOptionValueId=${categoryOptionValueId}`);
+      })
+      .catch((error) => {
+        console.error("Error fetching products by option value:", error);
+      });
+  }
+  
   return (
     <div className="header-bottom sticky-header">
       <div className="container">
@@ -111,6 +124,10 @@ function Menu() {
                                           className="valuecte"
                                           href=""
                                           key={index}
+                                          onClick={(e) => {
+                                            e.preventDefault(); 
+                                            handleOptionValueClick(value.id);
+                                          }}
                                         >
                                           {value.value}
                                         </a>

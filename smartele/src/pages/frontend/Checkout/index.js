@@ -163,7 +163,9 @@ function Checkout() {
     const endpoint = "productimages";
     return `http://localhost:8082/api/${endpoint}/image/${imageName}`;
   };
-
+  function formatCurrency(number) {
+    return number.toLocaleString('vi-VN') + 'đ';
+  }
   return (
     <>
       <main className="main">
@@ -255,13 +257,13 @@ function Checkout() {
                             </h3>
                           </div>
                         </td>
-                        <td className="price-col">${item.price}</td>
+                        <td className="price-col">{formatCurrency(item.price)}</td>
                         <td className="quantity-col">
                           <div className="cart-product-quantity">
                             <span>Số lượng: {item.qty}</span>
                           </div>
                         </td>
-                        <td className="total-col">${item.price * item.qty}</td>
+                        <td className="total-col">{formatCurrency(item.price * item.qty)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -281,12 +283,12 @@ function Checkout() {
                       {cartItems.map((item, index) => (
                         <tr key={index}>
                           <td><a href="#">{item.product && item.product.name}</a></td>
-                          <td>${item.price * item.qty}</td>
+                          <td>{formatCurrency(item.price * item.qty)}</td>
                         </tr>
                       ))}
                       <tr className="summary-total">
                         <td>Tổng cộng:</td>
-                        <td>${totalAmount.toFixed(2)}</td>
+                        <td>{formatCurrency(totalAmount)}</td>
                       </tr>
                     </tbody>
                   </table>

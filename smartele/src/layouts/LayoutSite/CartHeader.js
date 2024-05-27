@@ -86,7 +86,9 @@ function CartHeader() {
     const endpoint = "productimages";
     return `http://localhost:8082/api/${endpoint}/image/${imageName}`;
   };
-
+  function formatCurrency(number) {
+    return number.toLocaleString('vi-VN') + 'đ';
+  }
   return (
     <div className="dropdown cart-dropdown">
       <a
@@ -113,7 +115,7 @@ function CartHeader() {
         <a href="product.html">{item.product && item.product.name}</a>
       </h4>
       <span className="cart-product-info">
-        <span className="cart-product-qty">{item.qty}</span>x${item.price}
+        <span className="cart-product-qty">{item.qty}</span>x{formatCurrency(item.price)}
       </span>
     </div>
     {/* End .product-cart-details */}
@@ -131,7 +133,7 @@ function CartHeader() {
         </div>
         <div className="dropdown-cart-total">
           <span>Tổng cộng</span>
-          <span className="cart-total-price">${totalAmount.toFixed(2)}</span>
+          <span className="cart-total-price">{formatCurrency(totalAmount)}</span>
         </div>
         <div className="dropdown-cart-action">
           <Link to={"cart"} className="btn btn-primary">
