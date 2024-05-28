@@ -22,7 +22,7 @@ function CartHeader() {
       return;
     }
 
-    fetchCartItems(); 
+    fetchCartItems();
 
     const interval = setInterval(() => {
       fetchCartItems();
@@ -47,34 +47,6 @@ function CartHeader() {
       console.error("Error fetching cart items:", error);
     }
   };
-
-  const removeItem = (cartId, productId) => {
-    CartService.removeItemFromCart(cartId, productId)
-      .then((response) => {
-        Swal.fire({
-          title: 'Are you sure?',
-          text: "You won't be able to revert this!",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            setCartItems((prevCartItems) => prevCartItems.filter(item => item.product.id !== productId));
-            Swal.fire(
-              'Deleted!',
-              'Your file has been deleted.',
-              'success'
-            )
-          }
-        })
-      })
-      .catch((error) => {
-        console.error('Error removing item from cart:', error);
-      });
-  };
-
   const calculateTotal = (items) => {
     const total = items.reduce((accumulator, item) => {
       return accumulator + item.qty * item.price;
@@ -106,28 +78,23 @@ function CartHeader() {
       </a>
       <div className="dropdown-menu dropdown-menu-right">
         <div className="dropdown-cart-products">
-        {cartItems.map((item) => (
-  <div className="product" key={item.id}>
-    <div className="product-cart-details">
-      <h4 className="product-title">
-        <a href="product.html">{item.product && item.product.name}</a>
-      </h4>
-      <span className="cart-product-info">
-        <span className="cart-product-qty">{item.qty}</span>x${item.price}
-      </span>
-    </div>
-    {/* End .product-cart-details */}
-    <figure className="product-image-container">
-      <a href="product.html" className="product-image">
-        <img src={getImgUrl(item.image)} alt="Product" />
-      </a>
-    </figure>
-    <a href="#" className="btn-remove" title="Remove Product" onClick={() => removeItem(item.id, item.product && item.product.id)}>
-      <i className="icon-close" />
-    </a>
-  </div>
-))}
-
+          {cartItems.map((item) => (
+            <div className="product" key={item.id}>
+              <div className="product-cart-details">
+                <h4 className="product-title">
+                  <a href="product.html">{item.product && item.product.name}</a>
+                </h4>
+                <span className="cart-product-info">
+                  <span className="cart-product-qty">{item.qty}</span>x${item.price}
+                </span>
+              </div>
+              <figure className="product-image-container">
+                <a href="product.html" className="product-image">
+                  <img src={getImgUrl(item.image)} alt="Product" />
+                </a>
+              </figure>
+            </div>
+          ))}
         </div>
         <div className="dropdown-cart-total">
           <span>Tổng cộng</span>

@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import UserServices from "../../../services/UserServices";
 import { useEffect, useState } from "react";
 import TrashServices from "../../../services/TrashServices";
+import * as XLSX from "xlsx";
 
 function Admin() {
   const [admins, setAdmins] = useState([]);
@@ -21,6 +22,22 @@ function Admin() {
         console.error('Error fetching data:', error);
       });
   }, []);
+  const exportToExcel = () => {
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(admins);
+
+    // Customize styles for header row
+    const headerStyle = {
+      font: { bold: true },
+      alignment: { horizontal: "center", vertical: "center" },
+      fill: { bgColor: { indexed: 64 }, fgColor: { rgb: "FFFFFF00" } },
+    };
+
+
+    XLSX.utils.book_append_sheet(wb, ws, "Tài khoản");
+
+    XLSX.writeFile(wb, "Danh sách tài khoản.xlsx");
+  };
 
   const removeAdmin = (id) => {
     const adminToRemove = admins.find(admin => admin.id === id);
@@ -67,6 +84,8 @@ function Admin() {
       <section className="content-header my-2">
         <h1 className="d-inline">Thành viên</h1>
         <Link to={"/admin/create"} className="btn-add">Thêm mới</Link>
+        <button onClick={exportToExcel}>Xuất ra Excel</button>
+
         <div className="row mt-3 align-items-center">
           <div className="col-6">
             <ul className="manager">

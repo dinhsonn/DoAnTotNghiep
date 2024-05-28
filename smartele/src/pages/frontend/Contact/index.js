@@ -1,10 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-import axios from "axios"; // Import Axios
 import Swal from "sweetalert2";
 import ContactService from "../../../services/ContactServices";
-
 
 function Contact() {
   const navigate = useNavigate();
@@ -18,7 +15,7 @@ function Contact() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === "phone" && !/^\d+$/.test(value)) {
+    if (name === "phone" && value !== "" && !/^\d+$/.test(value)) {
       return;
     }
     setContacts((prevState) => ({
@@ -39,8 +36,9 @@ function Contact() {
         sendToGoogleForm();
         setTimeout(() => {
           navigate('/contact');
-          window.location.reload()
-        }, 1000);      })
+          window.location.reload();
+        }, 1000);
+      })
       .catch((error) => {
         console.error("Lỗi khi tạo mới người dùng:", error);
       });
@@ -48,27 +46,25 @@ function Contact() {
 
   const sendToGoogleForm = () => {
     const formData = new FormData();
-    formData.append("entry.146884205", contacts.name); 
+    formData.append("entry.146884205", contacts.name);
     formData.append("entry.1659690825", contacts.email);
-    formData.append("entry.1688564603", contacts.phone); 
+    formData.append("entry.1688564603", contacts.phone);
     formData.append("entry.836537999", contacts.content);
-  
+
     fetch("https://docs.google.com/forms/d/e/1FAIpQLSdcEijVmzwHO16eo9e47IG241cZsaPsFUMQhvQar_8iIxTn0A/formResponse", {
       method: "POST",
       body: formData,
     })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      console.log("Dữ liệu đã được gửi lên Google Form thành công");
-    })
-    .catch(error => {
-      console.error("Lỗi khi gửi dữ liệu lên Google Form:", error);
-    });
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        console.log("Dữ liệu đã được gửi lên Google Form thành công");
+      })
+      .catch(error => {
+        console.error("Lỗi khi gửi dữ liệu lên Google Form:", error);
+      });
   };
-  
-
 
   return (
     <>
@@ -79,21 +75,18 @@ function Contact() {
               <li className="breadcrumb-item">
                 <a href="/">Trang chủ</a>
               </li>
-
               <li className="breadcrumb-item active" aria-current="page">
                 Liên hệ chúng tôi
               </li>
             </ol>
           </div>
-          {/* End .container */}
         </nav>
-        {/* End .breadcrumb-nav */}
+
         <div className="page-content pb-0">
           <div className="container">
             <div className="row">
               <div className="col-lg-6 mb-2 mb-lg-0">
                 <h2 className="title mb-1">Thông tin liên hệ</h2>
-                {/* End .title mb-2 */}
                 <p className="mb-3">
                   Vestibulum volutpat, lacus a ultrices sagittis, mi neque euismod
                   dui, eu pulvinar nunc sapien ornare nisl. Phasellus pede arcu,
@@ -117,11 +110,8 @@ function Contact() {
                           <a href="mailto:#">smartele@gmail.com</a>
                         </li>
                       </ul>
-                      {/* End .contact-list */}
                     </div>
-                    {/* End .contact-info */}
                   </div>
-                  {/* End .col-sm-7 */}
                   <div className="col-sm-5">
                     <div className="contact-info">
                       <h3>Hoạt động</h3>
@@ -137,23 +127,17 @@ function Contact() {
                           8h-16h
                         </li>
                       </ul>
-                      {/* End .contact-list */}
                     </div>
-                    {/* End .contact-info */}
                   </div>
-                  {/* End .col-sm-5 */}
                 </div>
-                {/* End .row */}
               </div>
-              {/* End .col-lg-6 */}
+
               <div className="col-lg-6">
                 <h2 className="title mb-1">Bạn có câu hỏi nào không?</h2>
-                {/* End .title mb-2 */}
                 <p className="mb-2">
                   Sử dụng mẫu dưới đây để liên hệ với cửa hàng
                 </p>
-                <form action="#" className="contact-form mb-3" onSubmit={handleSubmit}>
-                  {/* Form Inputs */}
+                <form className="contact-form mb-3" onSubmit={handleSubmit}>
                   <div className="row">
                     <div className="col-sm-6">
                       <label htmlFor="name" className="sr-only">
@@ -196,7 +180,7 @@ function Contact() {
                         className="form-control"
                         id="phone"
                         name="phone"
-                        placeholder="Điện thoại"
+                        placeholder="Điện thoại *"
                         value={contacts.phone}
                         onChange={handleChange}
                       />
@@ -210,38 +194,23 @@ function Contact() {
                       rows={4}
                       name="content"
                       id="content"
-                      required=""
                       placeholder="Ghi chú *"
-                      defaultValue={""}
                       value={contacts.content}
                       onChange={handleChange}
+                      required
                     />
                   </div>
-                  {/* Submit Button */}
-                  <button
-                    type="submit"
-                    className="btn btn-outline-primary-2 btn-minwidth-sm"
-                  >
+                  <button type="submit" className="btn btn-outline-primary-2 btn-minwidth-sm">
                     <span>GỬI ĐI</span>
                     <i className="icon-long-arrow-right" />
                   </button>
                 </form>
-                {/* End .contact-form */}
               </div>
-              {/* End .col-lg-6 */}
             </div>
-            {/* End .row */}
-            {/* End .stores */}
           </div>
-          {/* End .container */}
-          <div id="map" />
-          {/* End #map */}
         </div>
-        {/* End .page-content */}
       </main>
-      {/* End .main */}
     </>
-
   );
 }
 

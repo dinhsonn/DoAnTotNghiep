@@ -32,7 +32,6 @@ function Checkout() {
     }));
   };
 
-
   useEffect(() => {
     const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
     if (loggedInUser) {
@@ -70,7 +69,6 @@ function Checkout() {
         Swal.fire("Error", "An error occurred while fetching cart items", "error");
       });
   }, [userId]);
-
 
   const calculateTotal = (items) => {
     const total = items.reduce((accumulator, item) => {
@@ -164,6 +162,19 @@ function Checkout() {
     return `http://localhost:8082/api/${endpoint}/image/${imageName}`;
   };
 
+  const validateForm = () => {
+    const { name, email, phone, address } = checkouts;
+    if (!name || !email || !phone || !address) {
+      Swal.fire("Error", "Vui lòng nhập đầy đủ thông tin", "error");
+      return false;
+    }
+    if (!paymentMethod) {
+      Swal.fire("Error", "Vui lòng chọn phương thức thanh toán", "error");
+      return false;
+    }
+    return true;
+  };
+
   return (
     <>
       <main className="main">
@@ -183,7 +194,7 @@ function Checkout() {
         <div className="page-content">
           <div className="checkout">
             <div className="container">
-              <form action="#"onSubmit={handleAddToOrder}>
+              <form action="#">
                 <div className="row">
                   <div className="col-lg-6">
                     <h2 className="checkout-title">Chi tiết thanh toán</h2>
@@ -331,7 +342,7 @@ function Checkout() {
                     type="button"
                     className="btn btn-outline-primary-2 btn-order btn-block"
                     onClick={() => {
-                      if (cartItems.length > 0 && paymentMethod) { 
+                      if (cartItems.length > 0 && validateForm()) { 
                         cartItems.forEach((item) => {
                           // Truyền các thông tin cần thiết vào hàm handleAddToOrder
                           handleAddToOrder(
@@ -345,7 +356,6 @@ function Checkout() {
                             item.image,
                             paymentMethod
                           );
-                          
                         });
                       } else {
                         console.error('Vui lòng chọn phương thức thanh toán và có ít nhất một sản phẩm trong giỏ hàng.');
@@ -367,4 +377,3 @@ function Checkout() {
 }
 
 export default Checkout;
-

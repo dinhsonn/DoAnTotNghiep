@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import CartService from "../../../services/CartServices";
 import ProductService from "../../../services/ProductServices";
 import Swal from 'sweetalert2';
+import WishlistService from "../../../services/WishlistService";
 
 function ProductItem3(props) {
   const [userId, setUserId] = useState(null);
@@ -44,13 +45,57 @@ function ProductItem3(props) {
         });
     } else {
       Swal.fire(
-        "Out of Stock",
-        "This product is out of stock!",
+        "Xin lỗi",
+        "Sản phẩm đã hết hàng!",
         "warning"
       );
     }
   };
-
+  const handleAddToWishlist = (productId, qty, price, image) => {
+    console.log("Adding to Wishlist:", productId, qty, price, image);
+    if (!userId) {
+      console.error('User ID is not available.');
+      return;
+    }
+    
+    if (props.wishlistItems && props.wishlistItems.length > 0) {
+      const isInWishlist = props.wishlistItems.some(item => item.productId === productId);
+    
+      if (isInWishlist) {
+        Swal.fire(
+          "Already in Wishlist",
+          "The product is already in your wishlist!",
+          "info"
+        );
+      } else {
+        // Nếu sản phẩm chưa có trong danh sách mong muốn, thêm vào
+        WishlistService.addToWishlist(userId, productId, qty, price, image)
+          .then(() => {
+            Swal.fire(
+              "Added to Wishlist",
+              "The product has been added to your wishlist!",
+              "success"
+            );
+          })
+          .catch((error) => {
+            console.error("Error adding to wishlist: ", error);
+          });
+      }
+    } else {
+      WishlistService.addToWishlist(userId, productId, qty, price, image)
+        .then(() => {
+          Swal.fire(
+            "Added to Wishlist",
+            "The product has been added to your wishlist!",
+            "success"
+          );
+        })
+        .catch((error) => {
+          console.error("Error adding to wishlist: ", error);
+        });
+    }
+  };
+  
   const getImgUrl = (imageName) => {
     const endpoint = "productimages";
     return `http://localhost:8082/api/${endpoint}/image/${imageName}`;
@@ -72,6 +117,7 @@ function ProductItem3(props) {
             <a
               href="#"
               className="btn-product-icon btn-wishlist btn-expandable"
+              onClick={() => handleAddToWishlist(props.product.id, 1, props.product.price, props.product.image)} // Thêm sự kiện cho nút "Thêm vào danh sách mong muốn"
             >
               <span>add to wishlist</span>
             </a>

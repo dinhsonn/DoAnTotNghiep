@@ -23,6 +23,9 @@ function remove(id)
 {
     return httpAxios.delete(`products/${id}`);
 }
+function uploadExcel(formData) {
+    return httpAxios.post(`products/uploadExcel`, formData);
+}
 //product option
 function productOption()
 {
@@ -72,6 +75,7 @@ const ProductService = {
     remove:remove,
     getById:getById,
     update:update,
+    uploadExcel,
     productOption:productOption,
     createProductOption:createProductOption,
     productOptionById:productOptionById,

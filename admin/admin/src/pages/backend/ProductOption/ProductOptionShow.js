@@ -28,7 +28,7 @@ function ProductOptionShow() {
        <h1 className="d-inline">Chi tiết</h1>
        <div className="row mt-2 align-items-center">
           <div className="col-md-12 text-end">
-             <a href="topic_index.html" className="btn btn-primary btn-sm">
+             <a href="/productoption" className="btn btn-primary btn-sm">
                 <i className="fa fa-arrow-left"></i> Về danh sách
              </a>
              <a href="topic_edit.html" className="btn btn-success btn-sm">

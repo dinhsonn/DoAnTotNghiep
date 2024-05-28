@@ -183,10 +183,9 @@ function Header() {
                 </div>
               </div>
               <div className="wishlist">
-                <a href="wishlist.html" title="Wishlist">
+                <a href="/wishlist" title="Wishlist">
                   <div className="icon">
                     <i className="icon-heart-o" />
-                    <span className="wishlist-count badge">3</span>
                   </div>
                   <p>Yêu thích</p>
                 </a>

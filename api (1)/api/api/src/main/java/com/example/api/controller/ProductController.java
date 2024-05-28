@@ -1,11 +1,15 @@
 package com.example.api.controller;
 
-
+import com.example.api.entity.CategoryOptionValue;
 import com.example.api.entity.Product;
+import com.example.api.service.CategoryOptionValueService;
 import com.example.api.service.ProductService;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +32,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProductController {
 
     private ProductService productService;
+    @Autowired
+    private CategoryOptionValueService categoryOptionValueService;
 
     public ProductController(ProductService productService) {
         this.productService = productService;
@@ -60,7 +66,7 @@ public class ProductController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable("id") Long productId,
-                                                  @RequestBody Product product) {
+            @RequestBody Product product) {
         product.setId(productId);
         Product updatedProduct = productService.updateProduct(product);
         if (updatedProduct != null) {
@@ -75,8 +81,10 @@ public class ProductController {
         productService.deleteProduct(productId);
         return new ResponseEntity<>("Product successfully deleted!", HttpStatus.OK);
     }
+
     @PutMapping("/{id}/quantity")
-    public ResponseEntity<Product> updateProductQty(@PathVariable("id") Long productId, @RequestBody Map<String, Integer> updates) {
+    public ResponseEntity<Product> updateProductQty(@PathVariable("id") Long productId,
+            @RequestBody Map<String, Integer> updates) {
         Integer newQty = updates.get("qty");
         if (newQty == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -88,6 +96,14 @@ public class ProductController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    
-    
+
+    @GetMapping("/related/{brandId}")
+    public List<Product> getRelatedProducts(@PathVariable Long brandId) {
+        return productService.getRelatedProducts(brandId);
+    }
+
+    @GetMapping("/byCategoryOptionValue/{categoryOptionValueId}")
+    public List<Product> getProductsByCategoryOptionValue(@PathVariable CategoryOptionValue categoryOptionValueId) {
+            return productService.getProductsByCategoryOptionValue(categoryOptionValueId);    
+    }
 }

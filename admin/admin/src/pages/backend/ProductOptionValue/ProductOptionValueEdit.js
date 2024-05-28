@@ -69,7 +69,7 @@ function ProductOptionValueEdit() {
     <section className="content-header my-2">
        <h1 className="d-inline">Cập nhật Option sản phẩm</h1>
        <div className="text-end">
-          <a className="btn btn-sm btn-primary" href="/topic">Về danh sách</a>
+          <a className="btn btn-sm btn-primary" href="/productoptionvalue">Về danh sách</a>
        </div>
     </section>
     <section className="content-body my-2">

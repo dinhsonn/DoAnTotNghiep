@@ -5,6 +5,7 @@ import CategoryService from "../../../services/CategoryServices";
 import BrandServices from "../../../services/BrandServices";
 import TrashServices from "../../../services/TrashServices";
 import ImageService from "../../../services/ImageServices";
+import * as XLSX from 'xlsx';
 
 function ProductList() {
   const [products, setProducts] = useState([]);
@@ -98,6 +99,43 @@ function ProductList() {
     }
   };
   
+  const exportToExcel = () => {
+    const simplifiedProducts = products.map(product => ({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      qty: product.qty,
+      description:product.description,
+      warranty:product.warranty,
+      specifications:product.specifications,
+      // Bổ sung các trường khác cần thiết ở đây
+    }));
+  
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(simplifiedProducts);
+  
+    // Tùy chỉnh tiêu đề của các cột
+    const header = [['ID', 'Tên sản phẩm', 'Giá', 'Số lượng', 'Mô tả', 'Bảo hành', 'Thông số']];
+    XLSX.utils.sheet_add_aoa(ws, header, { origin: 'A1' });
+  
+    // Định dạng các ô dữ liệu
+    ws['!cols'] = [
+      { wpx: 100 }, // Width of ID column
+      { wpx: 200 }, // Width of Name column
+      { wpx: 100 }, // Width of Price column
+      { wpx: 100 }, // Width of Quantity column
+      { wpx: 200 }, // Width of Description column
+      { wpx: 200 }, // Width of Warranty column
+      { wpx: 400 }  // Width of Specifications column
+      // Bạn có thể định dạng các cột khác ở đây
+    ];
+  
+    XLSX.utils.book_append_sheet(wb, ws, 'Products');
+  
+    XLSX.writeFile(wb, 'Danh sách sản phẩm.xlsx');
+  };
+  
+  
 
   const getImgUrl = (imageName) => {
     const endpoint = 'productimages'; 
@@ -119,6 +157,7 @@ function ProductList() {
         <Link to={"/product/create"} className="btn-add">
           Thêm mới
         </Link>
+        <button onClick={exportToExcel}>Xuất ra Excel</button>
         <div className="row mt-3 align-items-center">
           <div className="col-6">
             <ul className="manager">

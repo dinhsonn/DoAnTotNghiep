@@ -10,7 +10,7 @@ function Cart() {
   const [totalAmount, setTotalAmount] = useState(0);
   const [userId, setUserId] = useState(null);
 
-  const removeItem = (cartId, productId) => {
+  const removeItem = (cartId, productId, qty) => {
     CartService.removeItemFromCart(cartId, productId)
       .then((response) => {
         Swal.fire({
@@ -26,7 +26,22 @@ function Cart() {
             setCartItems((prevCartItems) =>
               prevCartItems.filter((item) => item.product.id !== productId)
             );
-            Swal.fire("Deleted!", "Your file has been deleted.", "success");
+            ProductService.getById(productId)
+              .then((productResponse) => {
+                const updatedQty = productResponse.data.qty + qty;
+                ProductService.updateProductQty(productId, updatedQty)
+                  .then(() => {
+                    Swal.fire("Deleted!", "Your item has been deleted.", "success");
+                  })
+                  .catch((error) => {
+                    console.error("Error updating product quantity:", error);
+                    Swal.fire("Error", "An error occurred while updating product quantity", "error");
+                  });
+              })
+              .catch((error) => {
+                console.error("Error fetching product details:", error);
+                Swal.fire("Error", "An error occurred while fetching product details", "error");
+              });
           }
         });
       })
@@ -177,7 +192,7 @@ function Cart() {
                         <td className="remove-col">
                           <button
                             className="btn-remove"
-                            onClick={() => removeItem(item.id, item.product.id)}
+                            onClick={() => removeItem(item.id, item.product.id, item.qty)}
                           >
                             <i className="icon-close" />
                           </button>
