@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Line, Doughnut } from 'react-chartjs-2';
+import React, { useEffect, useState, useRef } from 'react';
+import { Line, Doughnut, Bar } from 'react-chartjs-2';
 
 import {
     Chart as ChartJS,
@@ -10,7 +10,8 @@ import {
     Title,
     Tooltip,
     Legend,
-    ArcElement
+    ArcElement,
+    BarElement // Import BarElement
 } from 'chart.js';
 
 ChartJS.register(
@@ -21,15 +22,43 @@ ChartJS.register(
     Title,
     Tooltip,
     Legend,
-    ArcElement
+    ArcElement,
+    BarElement // Register BarElement
 );
 
 function Dashboard() {
     const [keywords, setKeywords] = useState([]);
-    const [monthlyEarnings, setMonthlyEarnings] = useState(0);
+    const [dailyEarnings, setDailyEarnings] = useState({});
+    const [monthlyEarnings, setMonthlyEarnings] = useState([]);
     const [dates, setDates] = useState([]);
     const [earningsData, setEarningsData] = useState([]);
     const [refresh, setRefresh] = useState(false);
+    
+    // Reference to chart components
+    const lineChartRef = useRef(null);
+    const barChartRef = useRef(null);
+
+    const calculateDailyAndMonthlyEarnings = (data) => {
+        const dailyEarnings = {};
+        const monthlyEarnings = {};
+
+        data.forEach(item => {
+            const date = item.createdAt.split('T')[0];
+            const month = date.split('-').slice(0, 2).join('-');
+
+            if (!dailyEarnings[date]) {
+                dailyEarnings[date] = 0;
+            }
+            dailyEarnings[date] += item.price * item.qty;
+
+            if (!monthlyEarnings[month]) {
+                monthlyEarnings[month] = 0;
+            }
+            monthlyEarnings[month] += item.price * item.qty;
+        });
+
+        return { dailyEarnings, monthlyEarnings };
+    };
 
     const fetchSearchLog = () => {
         fetch('http://localhost:8082/api/search-log')
@@ -55,21 +84,14 @@ function Dashboard() {
             .then(response => response.json())
             .then(data => {
                 if (Array.isArray(data)) {
-                    const earnings = data.reduce((acc, item) => acc + item.price * item.qty, 0);
-                    setMonthlyEarnings(earnings);
+                    const { dailyEarnings, monthlyEarnings } = calculateDailyAndMonthlyEarnings(data);
 
-                    const earningsByDate = data.reduce((acc, item) => {
-                        const date = item.createdAt.split('T')[0];
-                        if (!acc[date]) {
-                            acc[date] = 0;
-                        }
-                        acc[date] += item.price * item.qty;
-                        return acc;
-                    }, {});
-
-                    const sortedDates = Object.keys(earningsByDate).sort();
+                    const sortedDates = Object.keys(dailyEarnings).sort();
                     setDates(sortedDates);
-                    setEarningsData(sortedDates.map(date => earningsByDate[date]));
+                    setEarningsData(sortedDates.map(date => dailyEarnings[date]));
+
+                    const monthlyEarningsArray = Object.entries(monthlyEarnings).map(([month, earnings]) => ({ month, earnings }));
+                    setMonthlyEarnings(monthlyEarningsArray);
                 } else {
                     console.error('API response is not an array:', data);
                 }
@@ -83,6 +105,17 @@ function Dashboard() {
         fetchSearchLog();
         fetchOrderItems();
     }, [refresh]);
+
+    useEffect(() => {
+        // Destroy existing charts before re-rendering
+        if (lineChartRef.current && lineChartRef.current.chartInstance) {
+            lineChartRef.current.chartInstance.destroy();
+        }
+        if (barChartRef.current && barChartRef.current.chartInstance) {
+            barChartRef.current.chartInstance.destroy();
+        }
+    }, [refresh]);
+    
 
     const lineData = {
         labels: dates,
@@ -108,6 +141,19 @@ function Dashboard() {
         ],
     };
 
+    const monthlyEarningsData = {
+        labels: monthlyEarnings.map(item => item.month),
+        datasets: [
+            {
+                label: 'Thu nhập hàng tháng',
+                data: monthlyEarnings.map(item => item.earnings),
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1,
+            },
+        ],
+    };
+
     const handleRefresh = () => {
         setRefresh(prev => !prev);
     };
@@ -120,11 +166,11 @@ function Dashboard() {
             <section className="content-body my-2">
                 <div className="row">
                     <div className="col-md-3">
-                    <button onClick={handleRefresh} className="btn btn-primary ml-2">Refresh</button>
+                        <button onClick={handleRefresh} className="btn btn-primary ml-2">Refresh</button>
                         <div className="info-box">
                             <div className="info-box-content">
                                 <span className="info-box-text">Thu nhập (Tháng): </span>
-                                <span className="info-box-number">{monthlyEarnings.toLocaleString()} VNĐ</span>
+                                <span className="info-box-number">{monthlyEarnings.reduce((acc, item) => acc + item.earnings, 0).toLocaleString()} VNĐ</span>
                             </div>
                         </div>
                     </div>
@@ -132,14 +178,14 @@ function Dashboard() {
                 <div className="row">
                     <div className="col-md-8">
                         <div className="chart">
-                            <h3>Tổng quan về thu nhập</h3>
-                            <Line data={lineData} />
+                            <h3>Tổng quan về thu nhập hàng ngày</h3>
+                            <Line ref={lineChartRef} data={lineData} />
                         </div>
                     </div>
                     <div className="col-md-4">
                         <div className="chart">
-                            <h3>Revenue Sources</h3>
-                            <Doughnut data={doughnutData} />
+                            <h3>Thu nhập hàng tháng</h3>
+                            <Bar ref={barChartRef} data={monthlyEarningsData} />
                         </div>
                     </div>
                 </div>
@@ -150,20 +196,21 @@ function Dashboard() {
                                 <h3>Từ khóa được tìm kiếm nhiều nhất</h3>
                                 <ul>
                                     {keywords.length > 0 ? (
-                                        keywords.map((item, index) => (
-                                            <li key={index}>{item.keyword}</li>
-                                        ))
-                                    ) : (
-                                        <li>No keywords found</li>
-                                    )}
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-    );
-}
-
-export default Dashboard;
+                                                                                keywords.map((item, index) => (
+                                                                                    <li key={index}>{item.keyword}</li>
+                                                                                ))
+                                                                            ) : (
+                                                                                <li>No keywords found</li>
+                                                                            )}
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </section>
+                                                </div>
+                                            );
+                                        }
+                                        
+                                        export default Dashboard;
+                                        

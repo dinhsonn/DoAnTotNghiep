@@ -29,6 +29,17 @@ function Login() {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
+    const { name, email, password } = formData;
+    
+      if (password.length < 10 || !/[a-zA-Z]/.test(password)) {
+      Swal.fire({
+        title: "Lỗi!",
+        text: "Mật khẩu phải có ít nhất 10 ký tự và chứa ít nhất một chữ cái!",
+        icon: "error"
+      });
+      return;
+    }
+  
     UserServices.create(formData)
       .then(response => {
         Swal.fire({
@@ -41,6 +52,7 @@ function Login() {
         console.error('Lỗi khi tạo mới người dùng:', error);
       });
   };
+  
   //dang nhap
   const handleSubmitLogin = (e) => {
     e.preventDefault();
@@ -217,6 +229,14 @@ const handleGoogleLogin = async (credentialResponse) => {
                             onChange={handleChange} value={formData.password}
                           />
                         </div>
+                        <a
+                              className="custom-control-label"
+                              htmlFor="signin-remember"
+                              href="/quenmatkhau"
+
+                            >
+                              Quên mật khẩu?
+                        </a>
                         {/* End .form-group */}
                         <div className="form-footer">
                           <button

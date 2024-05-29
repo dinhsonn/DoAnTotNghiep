@@ -39,13 +39,15 @@ function ProductRelated({ brandId, currentProductId }) {
     const endpoint = "productimages";
     return `http://localhost:8082/api/${endpoint}/image/${imageName}`;
   };
-
+  function formatCurrency(number) {
+    return number.toLocaleString('vi-VN') + 'đ';
+  }
   return (
-    <aside className="col-lg-3">
-      <div className="sidebar sidebar-product">
+    <aside className="col-lg-3" >
+      <div className="sidebar sidebar-product"style={{width:"250px"}}>
         <div className="widget widget-products">
           <h4 className="widget-title">Sản phẩm liên quan</h4>
-          <div className="products">
+          <div className="products" >
             {relatedProducts.map((product) => (
               <div className="product product-sm" key={product.id}>
                 <figure className="product-media">
@@ -63,7 +65,7 @@ function ProductRelated({ brandId, currentProductId }) {
                   </h5>
                   <div className="product-price">
                     {product.oldPrice && <span className="old-price">${product.oldPrice}</span>}
-                    <span className="new-price">{product.price}đ</span>
+                    <span className="new-price">{formatCurrency(product.price)}</span>
                   </div>
                 </div>
               </div>

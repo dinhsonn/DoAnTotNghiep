@@ -76,9 +76,9 @@
       
          const categoryIdObject = categories.find(category => category.id ===  parseInt(product.categoryId));
          const brandIdObject = brands.find(brand => brand.id === parseInt(product.brandId));
-         const cateOptionIdObject = categoryOptions.find(categoryOption => categoryOption.id === categoryOption.id);
-         const cateOptionValueIdObject = categoryOptionValues.find(categoryOptionValue => categoryOptionValue.id === categoryOptionValue.id);
-      
+         const cateOptionIdObject = categoryOptions.find(categoryOption => categoryOption.id === parseInt(product.categoryOption));
+         const cateOptionValueIdObject = categoryOptionValues.find(categoryOptionValue => categoryOptionValue.id === parseInt(product.categoryOptionValue));
+               
          const updatedProduct = {
             ...product,
             categoryId: categoryIdObject,

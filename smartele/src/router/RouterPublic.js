@@ -19,6 +19,7 @@ import Profile from "../pages/frontend/Profile/Profile";
 import EditProfile from "../pages/frontend/Profile/EditProfile";
 import Order from "../pages/frontend/Profile/Order";
 import Search from "../pages/frontend/Search";
+import ForgotPassword from "../layouts/LayoutSite/ForgotPassword";
 
 const RouterPublic = [
 
@@ -46,6 +47,8 @@ const RouterPublic = [
     {path:'/profile',component:Profile},
     {path:'/edit',component:EditProfile},
     {path:'/order',component:Order},
-    // {path:'/login',component:Login},
+    {path:'/quenmatkhau',component:ForgotPassword},
+
+
 ]
 export default RouterPublic;

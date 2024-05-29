@@ -32,18 +32,35 @@ function ProductEdit() {
     const fetchProduct = async () => {
       try {
         const productResponse = await ProductService.getById(id);
-        setProduct(productResponse.data);
-
+        const fetchedProduct = productResponse.data;
+        setProduct({
+          ...fetchedProduct,
+          categoryId: fetchedProduct.categoryId ? fetchedProduct.categoryId.id : "", 
+          brandId: fetchedProduct.brandId ? fetchedProduct.brandId.id : "", 
+          categoryOption: fetchedProduct.categoryOption ? fetchedProduct.categoryOption.id : "",
+          categoryOptionValue: fetchedProduct.categoryOptionValue ? fetchedProduct.categoryOptionValue.id : "",
+        });
+  
         const categoriesResponse = await CategoryService.getAll();
         setCategories(categoriesResponse.data.content);
-
+  
         const brandsResponse = await BrandServices.getAll();
         setBrands(brandsResponse.data.content);
+  
+        // Fetch category options if categoryId is present
+        if (fetchedProduct.categoryId) {
+          fetchCategoryOptionsByCategoryId(fetchedProduct.categoryId.id);
+        }
+  
+        // Fetch category option values if categoryOption is present
+        if (fetchedProduct.categoryOption) {
+          fetchCategoryOptionValuesByOption(fetchedProduct.categoryOption.id);
+        }
       } catch (error) {
         console.error("Error fetching product details:", error);
       }
     };
-
+  
     fetchProduct();
   }, [id]);
     const fetchCategoryOptionsByCategoryId = async (categoryId) => {
@@ -63,44 +80,47 @@ function ProductEdit() {
        console.error("Error fetching category option values:", error);
     }
  };
-  const handleChange = (e) => {
-   const { name, value } = e.target;
-   if (name === 'categoryId') {
+ const handleChange = (e) => {
+  const { name, value } = e.target;
+  if (name === 'categoryId') {
     fetchCategoryOptionsByCategoryId(value);
-    } else if (name === 'categoryOption') {
-        fetchCategoryOptionValuesByOption(value);
-    }
-   setProduct(prevState => ({
-       ...prevState,
-       [name]: value
-   }));
+  } else if (name === 'categoryOption') {
+    fetchCategoryOptionValuesByOption(value);
+  }
+  setProduct(prevState => ({
+    ...prevState,
+    [name]: value
+  }));
 };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    const categoryIdObject = categories.find(category => category.id ===  category.id);
-    const brandIdObject = brands.find(brand => brand.id === brand.id);
-    const cateOptionIdObject = categoryOptions.find(categoryOption => categoryOption.id === categoryOption.id);
-    const cateOptionValueIdObject = categoryOptionValues.find(categoryOptionValue => categoryOptionValue.id === categoryOptionValue.id);
-    
-    const updatedProduct = {
-       ...product,
-       categoryId: categoryIdObject,
-       brandId: brandIdObject,
-       categoryOption: cateOptionIdObject,
-       categoryOptionValue: cateOptionValueIdObject,
-    };
+  const categoryIdObject = categories.find(category => category.id ===  parseInt(product.categoryId));
+  const brandIdObject = brands.find(brand => brand.id === parseInt(product.brandId));
+  const cateOptionIdObject = categoryOptions.find(categoryOption => categoryOption.id === parseInt(product.categoryOption));
+  const cateOptionValueIdObject = categoryOptionValues.find(categoryOptionValue => categoryOptionValue.id === parseInt(product.categoryOptionValue));
 
-    ProductService.update(product,id)
-      .then((response) => {
-        console.log("Updated product:", response.data);
-        alert("Cập nhật sản phẩm thành công!");
-      })
-      .catch((error) => {
-        console.error("Error updating product:", error);
-      });
-  };
+  // Tạo object mới để gửi lên server, chỉ chứa các ID
+  const updatedProduct = {
+    ...product,
+    categoryId: categoryIdObject,
+    brandId: brandIdObject,
+    categoryOption: cateOptionIdObject,
+    categoryOptionValue: cateOptionValueIdObject,
+ };
+
+
+  ProductService.update(updatedProduct, id)
+    .then((response) => {
+      console.log("Updated product:", response.data);
+      alert("Cập nhật sản phẩm thành công!");
+    })
+    .catch((error) => {
+      console.error("Error updating product:", error);
+    });
+};
+
 
   return (
     <div className="content">

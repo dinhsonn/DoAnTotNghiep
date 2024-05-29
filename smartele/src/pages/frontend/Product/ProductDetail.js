@@ -183,7 +183,6 @@ function ProductDetail(props) {
     return `http://localhost:8082/api/${endpoint}/image/${imageName}`;
   };
 
-
   
   return (
     

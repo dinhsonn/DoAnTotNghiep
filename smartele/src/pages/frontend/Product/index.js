@@ -3,14 +3,37 @@ import ProductServices from "../../../services/ProductServices";
 import BrandServices from "../../../services/BrandServices";
 import CategoryServices from "../../../services/CategoryServices";
 import ProductItem3 from "./ProductItem3";
+import { useLocation } from "react-router-dom";
 function Product() {
   const [products, setProducts] = useState([]);
   const [brands, setBrands] = useState([]);
   const [categories, setCategories] = useState([]);
   const [productImages, setProductImages] = useState([]);
+  const [productValueImages, setProductValueImages] = useState([]);
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedPriceRanges, setSelectedPriceRanges] = useState([]);
+  const [productValue, setProductValue] = useState([]);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const categoryOptionValueId = queryParams.get("categoryOptionValueId");
+  const [productValueLoaded, setProductValueLoaded] = useState(false);
+  useEffect(() => {
+    if (categoryOptionValueId) {
+      ProductServices.getProductsByCategoryOptionValue(categoryOptionValueId)
+        .then((response) => {
+          setProductValue(response.data);
+          console.log("kkk",response.data)
+          setProductValueLoaded(true); 
+        })
+        .catch((error) => {
+          console.error("Error fetching products:", error);
+        });
+    } else {
+      setProductValueLoaded(false);
+    }
+  }, [categoryOptionValueId]);
+  
 
   useEffect(() => {
     BrandServices.getAll()
@@ -36,10 +59,10 @@ function Product() {
         const [productsResponse, productImagesResponse] = await Promise.all([
           ProductServices.getAll(),
           ProductServices.getProductImage(),
+        
         ]);
         const productsData = productsResponse.data.content;
         const productImagesData = productImagesResponse.data.content;
-        console.log("sp", productsData);
         setProducts(productsData);
         setProductImages(productImagesData);
       } catch (error) {
@@ -49,6 +72,7 @@ function Product() {
 
     fetchData();
   }, []);
+
   const combinedData = products.map((product) => {
     const correspondingImages = productImages.filter(
       (image) => image.productId.id === product.id && image.sortOrder === 1
@@ -61,7 +85,29 @@ function Product() {
       image: imageUrls.length > 0 ? imageUrls[0] : null,
     };
   });
+  useEffect(() => {
+    if (productValue.length > 0) {
+      ProductServices.getProductImageById(categoryOptionValueId)
+        .then((response) => {
+          setProductValueImages(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching product images:", error);
+        });
+    }
+  }, [productValue, categoryOptionValueId]);
+  const combinedProductValueData = productValue.map((product) => {
+    const correspondingImages = productImages.filter(
+      (image) => image.productId.id === product.id && image.sortOrder === 1
+    );
 
+    const imageUrls = correspondingImages.map((image) => image.image);
+
+    return {
+      ...product,
+      image: imageUrls.length > 0 ? imageUrls[0] : null,
+    };
+  });
   const handleBrandChange = (brandId) => {
     setSelectedBrands((prevSelectedBrands) => {
       if (prevSelectedBrands.includes(brandId)) {
@@ -147,7 +193,8 @@ function Product() {
             return product.price >= range.min && product.price < range.max;
           })
         : true;
-    return brandMatch && priceMatch && categoryMatch;
+
+    return brandMatch && priceMatch && categoryMatch ;
   });
 
   return (
@@ -205,9 +252,13 @@ function Product() {
             {/* End .toolbox */}
             <div className="products">
               <div className="row">
-                {filteredProducts.map((combinedItem, index) => (
-                  <ProductItem3 product={combinedItem} key={index} />
-                ))}
+              {productValueLoaded
+                ? combinedProductValueData.map((combinedItem, index) => (
+                    <ProductItem3 product={combinedItem} key={index} />
+                  ))
+                : filteredProducts.map((combinedItem, index) => (
+                    <ProductItem3 product={combinedItem} key={index} />
+                  ))}
               </div>
               {/* End .row */}
               <div className="load-more-container text-center">
@@ -339,30 +390,32 @@ function Product() {
                   <div className="collapse show" id="widget-4">
                     <div className="widget-body">
                       <div className="filter-items filter-items-count">
-                      {categories.map((category, index) => (
-                        <div className="filter-item">
-                          <div className="custom-control custom-checkbox">
-                            <input
-                              type="checkbox"
-                              className="custom-control-input"
-                              id={`brand-${category.id}`}
-                              checked={selectedCategories.includes(category.id)}
-                              onChange={() => handleCategoryChange(category.id)}
-                            />
-                            <label
-                              className="custom-control-label"
-                              htmlFor={`brand-${category.id}`}
-                            >
-                              {category.name}
-                            </label>
-                          
-                          </div>
-                          <span className="item-count">
+                        {categories.map((category, index) => (
+                          <div className="filter-item">
+                            <div className="custom-control custom-checkbox">
+                              <input
+                                type="checkbox"
+                                className="custom-control-input"
+                                id={`brand-${category.id}`}
+                                checked={selectedCategories.includes(
+                                  category.id
+                                )}
+                                onChange={() =>
+                                  handleCategoryChange(category.id)
+                                }
+                              />
+                              <label
+                                className="custom-control-label"
+                                htmlFor={`brand-${category.id}`}
+                              >
+                                {category.name}
+                              </label>
+                            </div>
+                            <span className="item-count">
                               {categoryCounts[category.id] || 0}
                             </span>
-                         
-                        </div>
-                      ))}
+                          </div>
+                        ))}
                         {/* End .filter-item */}
                       </div>
                       {/* End .filter-items */}
