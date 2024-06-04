@@ -16,10 +16,10 @@ import Cart from "../pages/frontend/Cart";
 import About from "../pages/frontend/About";
 import SuccessPage from "../pages/frontend/Checkout/test";
 import Profile from "../pages/frontend/Profile/Profile";
-import EditProfile from "../pages/frontend/Profile/EditProfile";
 import Order from "../pages/frontend/Profile/Order";
 import Search from "../pages/frontend/Search";
 import ForgotPassword from "../layouts/LayoutSite/ForgotPassword";
+import Address from "../pages/frontend/Profile/Address";
 
 const RouterPublic = [
 
@@ -45,8 +45,8 @@ const RouterPublic = [
     {path:'/about',component:About},
     {path:'/test',component:SuccessPage},
     {path:'/profile',component:Profile},
-    {path:'/edit',component:EditProfile},
     {path:'/order',component:Order},
+    {path:'/addresses',component:Address},
     {path:'/quenmatkhau',component:ForgotPassword},
 
 

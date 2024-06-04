@@ -5,38 +5,45 @@ import TrashServices from "../../../services/TrashServices";
 
 function About() {
     const [abouts, setAbouts] = useState([]);
+    const [filteredAbouts, setFilteredAbouts] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
-        AboutService.getAll()
-            .then(response => {
-                setAbouts(response.data.content);
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-            });
+        loadAbouts();
     }, []);
+
+    const loadAbouts = async () => {
+        try {
+            const response = await AboutService.getAll();
+            setAbouts(response.data.content);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
 
     const removeAbout = async (id) => {
         try {
-            // Xóa about
             await AboutService.remove(id);
-    
-            // Lấy thông tin của about sẽ di chuyển vào thùng rác
             const aboutToMoveToTrash = abouts.find(about => about.id === id);
-    
-            // Di chuyển vào thùng rác
             await TrashServices.createAbout(aboutToMoveToTrash);
-    
-            // Cập nhật danh sách abouts sau khi xóa
             setAbouts(abouts.filter((about) => about.id !== id));
-    
-            console.log("Product deleted successfully");
-            alert("Sản phẩm đã được xóa!");
+            console.log("About deleted successfully");
+            alert("About đã được xóa!");
         } catch (error) {
-            console.error("Error deleting product:", error);
+            console.error("Error deleting about:", error);
         }
     };
     
+    useEffect(() => {
+        const filteredAbouts = abouts.filter((about) =>
+            about.title.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setFilteredAbouts(filteredAbouts);
+    }, [searchTerm, abouts]);
+
+    const handleSearch = (event) => {
+        setSearchTerm(event.target.value);
+    };
 
     return (
         <div className="content">
@@ -52,32 +59,8 @@ function About() {
                         </ul>
                     </div>
                     <div className="col-6 text-end">
-                        <input type="text" className="search d-inline" />
+                        <input type="text" className="search d-inline" onChange={handleSearch} />
                         <button className="d-inline btnsearch">Tìm kiếm</button>
-                    </div>
-                </div>
-                <div className="row mt-1 align-items-center">
-                    <div className="col-md-8">
-                        <select name="" className="d-inline me-1">
-                            <option value="">Hành động</option>
-                            <option value="">Bỏ vào thùng rác</option>
-                        </select>
-                        <button className="btnapply">Áp dụng</button>
-                    </div>
-                    <div className="col-md-4 text-end">
-                        <nav aria-label="Page navigation example">
-                            <ul className="pagination pagination-sm justify-content-end">
-                                <li className="page-item disabled">
-                                    <a className="page-link">&laquo;</a>
-                                </li>
-                                <li className="page-item"><a className="page-link" href="#">1</a></li>
-                                <li className="page-item"><a className="page-link" href="#">2</a></li>
-                                <li className="page-item"><a className="page-link" href="#">3</a></li>
-                                <li className="page-item">
-                                    <a className="page-link" href="#">&raquo;</a>
-                                </li>
-                            </ul>
-                        </nav>
                     </div>
                 </div>
             </section>
@@ -96,7 +79,7 @@ function About() {
                         </tr>
                     </thead>
                     <tbody>
-                        {abouts.map((about, index) => (
+                        {filteredAbouts.map((about, index) => (
                             <tr className="datarow" key={index}>
                                 <td className="text-center">
                                     <input type="checkbox" id="checkId" />

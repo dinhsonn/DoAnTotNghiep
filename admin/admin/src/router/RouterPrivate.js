@@ -97,7 +97,6 @@ import CategoryTrash from "../pages/backend/Category/CategoryTrash";
 import Contact from "../pages/backend/Contact";
 import ContactShow from "../pages/backend/Contact/ContactShow";
 import ContactTrash from "../pages/backend/Contact/ContactTrash";
-import ImageTrash from "../pages/backend/Image/ImageTrash";
 
 const RouterPrivate = [
 
@@ -137,7 +136,6 @@ const RouterPrivate = [
   { path: "/image/create", component: ImageCreate },
   { path: "/image/edit/:id", component: ImageEdit },
   { path: "/image/show/:id", component: ImageShow },
-  { path: "/image/trash", component: ImageTrash },
 
 
    { path: "/contact", component: Contact },

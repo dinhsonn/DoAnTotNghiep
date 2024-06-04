@@ -6,22 +6,34 @@ import * as XLSX from "xlsx";
 
 function Admin() {
   const [admins, setAdmins] = useState([]);
+  const [filteredAdmins, setFilteredAdmins] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    UserServices.getAll()
-      .then(response => {
-        const filteredAdmins = response.data.content;
-        const sortedAdmins = filteredAdmins.sort((a, b) => {
-          if (a.roles === 2 && b.roles !== 2) return -1;
-          if (a.roles !== 2 && b.roles === 2) return 1;
-          return 0;
-        });
-        setAdmins(filteredAdmins);
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
+    loadAdmins();
   }, []);
+
+  const loadAdmins = async () => {
+    try {
+      const response = await UserServices.getAll();
+      const sortedAdmins = response.data.content.sort((a, b) => {
+        if (a.roles === 2 && b.roles !== 2) return -1;
+        if (a.roles !== 2 && b.roles === 2) return 1;
+        return 0;
+      });
+      setAdmins(sortedAdmins);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  useEffect(() => {
+    const filteredAdmins = admins.filter((admin) =>
+      admin.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredAdmins(filteredAdmins);
+  }, [searchTerm, admins]);
+
   const exportToExcel = () => {
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.json_to_sheet(admins);
@@ -33,9 +45,7 @@ function Admin() {
       fill: { bgColor: { indexed: 64 }, fgColor: { rgb: "FFFFFF00" } },
     };
 
-
     XLSX.utils.book_append_sheet(wb, ws, "Tài khoản");
-
     XLSX.writeFile(wb, "Danh sách tài khoản.xlsx");
   };
 
@@ -77,7 +87,10 @@ function Admin() {
       alert("Không thể xóa Admin");
     }
   };
-  
+
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
 
   return (
     <div className="content">
@@ -94,7 +107,7 @@ function Admin() {
             </ul>
           </div>
           <div className="col-6 text-end">
-            <input type="text" className="search d-inline" />
+            <input type="text" className="search d-inline" onChange={handleSearch} />
             <button className="d-inline btnsearch">Tìm kiếm</button>
           </div>
         </div>
@@ -141,7 +154,7 @@ function Admin() {
             </tr>
           </thead>
           <tbody>
-            {admins.map((admin, index) => (
+            {filteredAdmins.map((admin, index) => (
               <tr className="datarow" key={index}>
                 <td className="text-center">
                   <input type="checkbox" id="checkId" />
@@ -159,7 +172,7 @@ function Admin() {
                     <Link to={`/admin/edit/${admin.id}`} className="text-primary mx-1">
                       <i className="fa fa-edit"></i>
                     </Link>
-                    <Link to={`/admin/show/${admin.id}`} className="text-info mx-1">
+                    <Link to ={`/admin/show/${admin.id}`} className="text-info mx-1">
                       <i className="fa fa-eye"></i>
                     </Link>
                     <Link to="#" className="text-danger mx-1" onClick={() => removeAdmin(admin.id)}>
@@ -184,3 +197,4 @@ function Admin() {
 }
 
 export default Admin;
+

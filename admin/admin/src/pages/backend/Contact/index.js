@@ -5,7 +5,14 @@ import ContactService from "../../../services/ContactServices";
 
 function Contact() {
     const [contacts, setContacts] = useState([]);
-
+    const [searchTerm, setSearchTerm] = useState(""); 
+    const handleSearch = (event) => {
+      setSearchTerm(event.target.value); 
+    };
+  
+    const filteredContact = contacts.filter((contact) =>
+        contact.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
     useEffect(() => {
         loadContacts();
     }, []);
@@ -67,17 +74,14 @@ function Contact() {
                             </div>
                         </div>
                         <div className="row my-2 align-items-center">
-                            <div className="col-md-6">
-                                <select name="" className="d-inline me-1">
-                                    <option value="">Hành động</option>
-                                    <option value="">Bỏ vào thùng rác</option>
-                                </select>
-                                <button className="btnapply">Áp dụng</button>
-                            </div>
-                            <div className="col-md-6 text-end">
-                                <input type="text" className="search d-inline" />
-                                <button className="d-inline">Tìm kiếm</button>
-                            </div>
+                        <div className="col-md-6">
+                <input
+                  type="text"
+                  className="search d-inline"
+                  onChange={handleSearch}
+                />
+                <button className="d-inline">Tìm kiếm</button>
+              </div>
                         </div>
                         <div className="row mb-2">
                             <div className="col-md-6">
@@ -98,7 +102,7 @@ function Contact() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {contacts.map((contact, index) => (
+                                {filteredContact.map((contact, index) => (
                                     <tr className="datarow" key={contact.id}>
                                         <td className="text-center">
                                             <input type="checkbox" id={`checkId-${contact.id}`} />

@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import CartService from "../../../services/CartServices";
 import Swal from 'sweetalert2';
+import WishlistService from "../../../services/WishlistService";
 
 function ProductItemSale(props) {
   const [userId, setUserId] = useState(null);
@@ -16,8 +17,12 @@ function ProductItemSale(props) {
   const handleAddToCart = (productId, qty, price, image) => {
     console.log("Adding to cart:", productId, qty, price, image);
     if (!userId) {
-      console.error('User ID is not available.');
-      return;
+      Swal.fire(
+        "Chưa đăng nhập",
+        "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.",
+        "warning"
+      );
+            return;
     }
     CartService.addItemToCart(userId, productId, qty, price, image)
       .then(() => {
@@ -31,7 +36,46 @@ function ProductItemSale(props) {
         console.error("Error adding to cart: ", error);
       });
   };
+  const handleAddToWishlist = async (productId, qty, price, image) => {
+    if (!userId) {
+      Swal.fire(
+        "Chưa đăng nhập",
+        "Bạn cần đăng nhập để thêm sản phẩm vào danh sách mong muốn.",
+        "warning"
+      );
+      return;
+    }
 
+    console.log("Adding to Wishlist:", productId, qty, price, image);
+    try {
+      if (props.wishlistItems && props.wishlistItems.length > 0) {
+        const isInWishlist = props.wishlistItems.some(item => item.productId === productId);
+        if (isInWishlist) {
+          Swal.fire(
+            "Đã có trong danh sách mong muốn",
+            "Sản phẩm đã có trong danh sách mong muốn của bạn!",
+            "info"
+          );
+        } else {
+          await WishlistService.addToWishlist(userId, productId, qty, price, image);
+          Swal.fire(
+            "Đã thêm vào danh sách mong muốn",
+            "Sản phẩm đã được thêm vào danh sách mong muốn của bạn!",
+            "success"
+          );
+        }
+      } else {
+        await WishlistService.addToWishlist(userId, productId, qty, price, image);
+        Swal.fire(
+          "Đã thêm vào danh sách mong muốn",
+          "Sản phẩm đã được thêm vào danh sách mong muốn của bạn!",
+          "success"
+        );
+      }
+    } catch (error) {
+      console.error("Error adding to wishlist: ", error);
+    }
+  };
   const getImgUrl = (imageName) => {
     const endpoint = "productimages";
     return `http://localhost:8082/api/${endpoint}/image/${imageName}`;

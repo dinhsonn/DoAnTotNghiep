@@ -1,12 +1,19 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import SliderService from "../../../services/SliderServices";
+import TrashServices from "../../../services/TrashServices";
 
 
 function Slider() {
    const [sliders, setSliders] = useState([]);
-   //api này gọi user 
-   useEffect(() => {
+   const [searchTerm, setSearchTerm] = useState(""); 
+   const handleSearch = (event) => {
+     setSearchTerm(event.target.value); 
+   };
+ 
+   const filteredSlider = sliders.filter((slider) =>
+      slider.name.toLowerCase().includes(searchTerm.toLowerCase())
+   );   useEffect(() => {
       SliderService.getAll()
        .then(response => {
          setSliders(response.data.content);
@@ -17,21 +24,28 @@ function Slider() {
        });
    }, []);
    //xóa sản phẩm
-   const removeSlider = (id) => {
-      SliderService.remove(id)
-        .then(() => {
+   const removeSlider = async (id) => {
+      try {
+         await SliderService.remove(id);
+         const sliderToMoveToTrash = sliders.find(slider => slider.id === id);
+         await TrashServices.createBrand(sliderToMoveToTrash);
          setSliders(sliders.filter(slider => slider.id !== id));
-          console.log("Slider deleted successfully");
-          alert("Slider đã được xóa!")
-        })
-        .catch(error => {
-          console.error('Error deleting product:', error);
-        });
-    };
+ 
+         console.log("Slider deleted successfully");
+         alert("Slider đã được xóa!");
+     } catch (error) {
+       console.error("Error deleting product:", error);
+     }
+ };
+      
     //image
     const getImgUrl = (imageName) => {
       const endpoint = 'sliders'; 
-      return `http://localhost:8082/api/${endpoint}/image/${imageName}`;
+      let imageUrl = `http://localhost:8082/api/${endpoint}/image/${imageName}`;
+      
+      imageUrl = imageUrl.replace(/\.png/g, "") + ".png";
+  
+      return imageUrl;
   };
     return ( 
         <div className="content">
@@ -41,14 +55,17 @@ function Slider() {
            <div className="row mt-3 align-items-center">
               <div className="col-6">
                  <ul className="manager">
-                    <li><a href="banner_index.html">Tất cả (123)</a></li>
-                    <li><a href="#">Xuất bản (12)</a></li>
-                    <li><a href="banner_trash.html">Rác (12)</a></li>
+                    <li><Link to="/slider">Tất cả ({sliders.length})</Link></li>
+                    <li><Link to="/slider/trash">Rác</Link></li>
                  </ul>
               </div>
-              <div className="col-6 text-end">
-                 <input type="text" className="search d-inline" />
-                 <button className="d-inline btnsearch">Tìm kiếm</button>
+              <div className="col-md-6">
+                <input
+                  type="text"
+                  className="search d-inline"
+                  onChange={handleSearch} // Thêm sự kiện onChange cho ô tìm kiếm
+                />
+                <button className="d-inline">Tìm kiếm</button>
               </div>
            </div>
            <div className="row mt-1 align-items-center">
@@ -96,7 +113,7 @@ function Slider() {
                  </tr>
               </thead>
               <tbody>
-               {sliders.map((slider,index)=>(
+               {filteredSlider.map((slider,index)=>(
                  <tr className="datarow">
                     <td className="text-center">
                        <input type="checkbox" />

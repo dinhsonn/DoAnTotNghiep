@@ -19,7 +19,14 @@ function Menu() {
     status: "0",
     parentId: "",
   });
+  const [searchTerm, setSearchTerm] = useState(""); 
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value); 
+  };
 
+  const filteredMenu = menus.filter((menu) =>
+    menu.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   useEffect(() => {
     loadMenu();
   }, [formData]);
@@ -90,10 +97,14 @@ function Menu() {
               </ul>
             </div>
           )}
-          <div className="col-6 text-end">
-            <input type="text" className="search d-inline" />
-            <button className="d-inline btnsearch">Tìm kiếm</button>
-          </div>
+            <div className="col-md-6">
+                <input
+                  type="text"
+                  className="search d-inline"
+                  onChange={handleSearch} // Thêm sự kiện onChange cho ô tìm kiếm
+                />
+                <button className="d-inline">Tìm kiếm</button>
+              </div>
         </div>
       </section>
       <section className="content-body my-2">
@@ -215,7 +226,7 @@ function Menu() {
                 </tr>
               </thead>
               <tbody>
-                {currentMenus.map((menu, index) => (
+                {filteredMenu.map((menu, index) => (
                   <tr className="datarow">
                     <td className="text-center">
                       <input type="checkbox" id="checkId" />

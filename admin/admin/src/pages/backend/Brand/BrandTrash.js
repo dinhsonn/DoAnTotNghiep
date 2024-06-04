@@ -96,9 +96,9 @@ function BrandTrash() {
                                 </td>
                                 <td>
                                     <div className="name">
-                                        <Link to={`/brand/edit/${brand.id}`}>
+                                    <a>
                                             {brand.name}
-                                        </Link>
+                                        </a>
                                     </div>
                                     <div className="function_style">
                                         <a href="#" className="text-primary mx-1" onClick={() => restoreBrand(brand.id)}>

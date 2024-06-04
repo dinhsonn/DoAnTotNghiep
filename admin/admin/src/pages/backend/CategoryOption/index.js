@@ -10,7 +10,14 @@ function CategoryOption() {
     categoryId: "",
     status: "0",
   });
+  const [searchTerm, setSearchTerm] = useState(""); 
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value); 
+  };
 
+  const filteredOptione = categoryoptions.filter((categoryoption) =>
+    categoryoption.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   useEffect(() => {
     loadCategoryOptions();
   }, [formData]);
@@ -163,15 +170,12 @@ function CategoryOption() {
               </div>
             </div>
             <div className="row my-2 align-items-center">
-              <div className="col-md-6">
-                <select name="" className="d-inline me-1">
-                  <option value="">Hành động</option>
-                  <option value="">Bỏ vào thùng rác</option>
-                </select>
-                <button className="btnapply">Áp dụng</button>
-              </div>
-              <div className="col-md-6 text-end">
-                <input type="text" className="search d-inline" />
+            <div className="col-md-6">
+                <input
+                  type="text"
+                  className="search d-inline"
+                  onChange={handleSearch} // Thêm sự kiện onChange cho ô tìm kiếm
+                />
                 <button className="d-inline">Tìm kiếm</button>
               </div>
             </div>
@@ -192,7 +196,7 @@ function CategoryOption() {
                 </tr>
               </thead>
               <tbody>
-                {categoryoptions.map((categoryoption, index) => (
+                {filteredOptione.map((categoryoption, index) => (
                   <tr className="datarow">
                     <td>
                       <input type="checkbox" id="checkId" />

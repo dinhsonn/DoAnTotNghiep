@@ -4,12 +4,13 @@ import ProductService from "../../../services/ProductServices";
 import { Link } from "react-router-dom";
 import CartService from "../../../services/CartServices";
 import Swal from 'sweetalert2';
+import WishlistService from "../../../services/WishlistService";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
-const Search = () => {
+function Search(props) {
   const query = useQuery();
   const searchTerm = query.get("q");
   const [results, setResults] = useState([]);
@@ -25,7 +26,11 @@ const Search = () => {
 
   const handleAddToCart = (productId, qty, price, image) => {
     if (!userId) {
-      console.error('User ID is not available.');
+      Swal.fire(
+        "Chưa đăng nhập",
+        "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.",
+        "warning"
+      );
       return;
     }
     CartService.addItemToCart(userId, productId, qty, price, image)
@@ -40,7 +45,46 @@ const Search = () => {
         console.error("Error adding to cart: ", error);
       });
   };
+  const handleAddToWishlist = async (productId, qty, price, image) => {
+    if (!userId) {
+      Swal.fire(
+        "Chưa đăng nhập",
+        "Bạn cần đăng nhập để thêm sản phẩm vào danh sách mong muốn.",
+        "warning"
+      );
+      return;
+    }
 
+    console.log("Adding to Wishlist:", productId, qty, price, image);
+    try {
+      if (props.wishlistItems && props.wishlistItems.length > 0) {
+        const isInWishlist = props.wishlistItems.some(item => item.productId === productId);
+        if (isInWishlist) {
+          Swal.fire(
+            "Đã có trong danh sách mong muốn",
+            "Sản phẩm đã có trong danh sách mong muốn của bạn!",
+            "info"
+          );
+        } else {
+          await WishlistService.addToWishlist(userId, productId, qty, price, image);
+          Swal.fire(
+            "Đã thêm vào danh sách mong muốn",
+            "Sản phẩm đã được thêm vào danh sách mong muốn của bạn!",
+            "success"
+          );
+        }
+      } else {
+        await WishlistService.addToWishlist(userId, productId, qty, price, image);
+        Swal.fire(
+          "Đã thêm vào danh sách mong muốn",
+          "Sản phẩm đã được thêm vào danh sách mong muốn của bạn!",
+          "success"
+        );
+      }
+    } catch (error) {
+      console.error("Error adding to wishlist: ", error);
+    }
+  };
   const getImgUrl = (imageName) => {
     const endpoint = "productimages";
     return `http://localhost:8082/api/${endpoint}/image/${imageName}`;
@@ -51,14 +95,14 @@ const Search = () => {
       setLoading(true);
       ProductService.getAll().then((response) => {
         const filteredResults = response.data.content.filter(
-          (result) => 
+          (result) =>
             result.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             result.categoryId?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             result.brandId?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             result.warranty?.toLowerCase().includes(searchTerm.toLowerCase())
         );
 
-        Promise.all(filteredResults.map(product => 
+        Promise.all(filteredResults.map(product =>
           ProductService.getProductImage(product.id).then((imageResponse) => {
             const productImage = imageResponse.data.content.find(img => img.productId.id === product.id);
             return {
@@ -91,28 +135,27 @@ const Search = () => {
             ) : results.length > 0 ? (
               results.map((result) => (
                 <div className="col-6 col-md-4 col-lg-4 col-xl-3" key={result.id}>
-                  <div className="product">
+                  <div className="product ">
                     <figure className="product-media">
-                      <span className="product-label label-new">New</span>
+                      <span className="product-label label-new" >New</span>
                       <Link to={`/productdetail/${result.id}`}>
-                        {result.image ? (
+                        {result.image && (
                           <img
                             src={getImgUrl(result.image)}
                             alt="Product image"
                             className="product-image"
                           />
-                        ) : (
-                          <img
-                            src="placeholder-image-url.jpg"
-                            alt="Placeholder"
-                            className="product-image"
-                          />
                         )}
                       </Link>
+
                       <div className="product-action-vertical">
                         <a
                           href="#"
                           className="btn-product-icon btn-wishlist btn-expandable"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleAddToWishlist(result.id, 1, result.price, result.image);
+                          }}
                         >
                           <span>add to wishlist</span>
                         </a>

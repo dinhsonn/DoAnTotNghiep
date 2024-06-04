@@ -14,6 +14,7 @@ function ProductList() {
   const [categoryOptionValue, setCategoryOptionvalue] = useState([]);
   const [brands, setBrands] = useState([]);
   const [images, setImages] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]); // State for filtered products
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -108,34 +109,28 @@ function ProductList() {
       description:product.description,
       warranty:product.warranty,
       specifications:product.specifications,
-      // Bổ sung các trường khác cần thiết ở đây
     }));
   
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.json_to_sheet(simplifiedProducts);
   
-    // Tùy chỉnh tiêu đề của các cột
     const header = [['ID', 'Tên sản phẩm', 'Giá', 'Số lượng', 'Mô tả', 'Bảo hành', 'Thông số']];
     XLSX.utils.sheet_add_aoa(ws, header, { origin: 'A1' });
   
-    // Định dạng các ô dữ liệu
     ws['!cols'] = [
-      { wpx: 100 }, // Width of ID column
-      { wpx: 200 }, // Width of Name column
-      { wpx: 100 }, // Width of Price column
-      { wpx: 100 }, // Width of Quantity column
-      { wpx: 200 }, // Width of Description column
-      { wpx: 200 }, // Width of Warranty column
-      { wpx: 400 }  // Width of Specifications column
-      // Bạn có thể định dạng các cột khác ở đây
+      { wpx: 100 }, 
+      { wpx: 200 }, 
+      { wpx: 100 }, 
+      { wpx: 100 }, 
+      { wpx: 200 }, 
+      { wpx: 200 }, 
+      { wpx: 400 }  
     ];
   
     XLSX.utils.book_append_sheet(wb, ws, 'Products');
   
     XLSX.writeFile(wb, 'Danh sách sản phẩm.xlsx');
   };
-  
-  
 
   const getImgUrl = (imageName) => {
     const endpoint = 'productimages'; 
@@ -150,10 +145,16 @@ function ProductList() {
     navigate(`/image/create?productId=${productId}`);
   };
 
+  const handleSearch = (event) => {
+    const keyword = event.target.value;
+    const filteredProducts = products.filter(product => product.name.toLowerCase().includes(keyword.toLowerCase()));
+    setFilteredProducts(filteredProducts);
+  };
+
   return (
     <div className="content">
       <section className="content-header my-2">
-      <h1 className="d-inline">Sản phẩm</h1>
+        <h1 className="d-inline">Sản phẩm</h1>
         <Link to={"/product/create"} className="btn-add">
           Thêm mới
         </Link>
@@ -162,16 +163,13 @@ function ProductList() {
           <div className="col-6">
             <ul className="manager">
               <li>
-                <Link to={"/product"}>Tất cả {(products.length)}</Link>
+                <Link to={"/product"}>Tất cả ({(products.length)}) </Link>
               </li>
-              <li>
-                <a href="#">Xuất bản (12)</a>
-              </li>
-              <li><Link to={"/product/trash"}>Rác (12)</Link></li>
+              <li><Link to={"/product/trash"}>Rác </Link></li>
             </ul>
           </div>
           <div className="col-6 text-end">
-            <input type="text" className="search d-inline" />
+            <input type="text" className="search d-inline" onChange={handleSearch} />
             <button className="d-inline btnsearch">Tìm kiếm</button>
           </div>
         </div>
@@ -215,7 +213,7 @@ function ProductList() {
             </nav>
           </div>
         </div>
-              </section>
+      </section>
       <section className="content-body my-2">
         {/* Product list section */}
         <table className="table table-bordered">
@@ -237,7 +235,8 @@ function ProductList() {
             </tr>
           </thead>
           <tbody>
-            {products.map((product, index) => {
+            {/* Display filteredProducts if available, otherwise display products */}
+            {(filteredProducts.length > 0 ? filteredProducts : products).map((product, index) => {
               const productImage = images.find(image => image.productId.id === product.id);
               return (
                 <tr key={index} className="datarow">
@@ -288,3 +287,4 @@ function ProductList() {
 }
 
 export default ProductList;
+

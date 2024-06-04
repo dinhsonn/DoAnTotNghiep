@@ -11,7 +11,14 @@ function Category() {
         sortOrder:'',
         status: '0'
     });
-
+    const [searchTerm, setSearchTerm] = useState(""); 
+    const handleSearch = (event) => {
+        setSearchTerm(event.target.value); 
+      };
+    
+      const filteredCategory = categories.filter((category) =>
+        category.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
     useEffect(() => {
         loadCategories();
     }, []);
@@ -163,16 +170,13 @@ function Category() {
                         </div>
                         <div className="row my-2 align-items-center">
                             <div className="col-md-6">
-                                <select name="" className="d-inline me-1">
-                                    <option value="">Hành động</option>
-                                    <option value="">Bỏ vào thùng rác</option>
-                                </select>
-                                <button className="btnapply">Áp dụng</button>
-                            </div>
-                            <div className="col-md-6 text-end">
-                                <input type="text" className="search d-inline" />
-                                <button className="d-inline btnsearch">Tìm kiếm</button>
-                            </div>
+                <input
+                  type="text"
+                  className="search d-inline"
+                  onChange={handleSearch}   
+                />
+                <button className="d-inline">Tìm kiếm</button>
+              </div>
                         </div>
                         <table className="table table-bordered">
                             <thead>
@@ -188,7 +192,7 @@ function Category() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {categories.map(category => (
+                                {filteredCategory.map(category => (
                                     <tr className="datarow" key={category.id}>
                                         <td className="text-center">
                                             <input type="checkbox" id={`checkId${category.id}`} />

@@ -9,7 +9,14 @@ function CategoryOptionValue() {
     value: "",
     option: "",
   });
+  const [searchTerm, setSearchTerm] = useState(""); 
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value); 
+  };
 
+  const filteredOptione = categoryoptionvalues.filter((categoryoptionvalue) =>
+    categoryoptionvalue.value.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   useEffect(() => {
     loadCategoryOptionvalues();
   }, [formData]);
@@ -145,15 +152,12 @@ function CategoryOptionValue() {
               </div>
             </div>
             <div className="row my-2 align-items-center">
-              <div className="col-md-6">
-                <select name="" className="d-inline me-1">
-                  <option value="">Hành động</option>
-                  <option value="">Bỏ vào thùng rác</option>
-                </select>
-                <button className="btnapply">Áp dụng</button>
-              </div>
-              <div className="col-md-6 text-end">
-                <input type="text" className="search d-inline" />
+            <div className="col-md-6">
+                <input
+                  type="text"
+                  className="search d-inline"
+                  onChange={handleSearch}
+                />
                 <button className="d-inline">Tìm kiếm</button>
               </div>
             </div>
@@ -174,7 +178,7 @@ function CategoryOptionValue() {
                 </tr>
               </thead>
               <tbody>
-                {categoryoptionvalues.map((categoryoptionvalue, index) => (
+                {filteredOptione.map((categoryoptionvalue, index) => (
                   <tr className="datarow">
                     <td>
                       <input type="checkbox" id="checkId" />

@@ -4,14 +4,13 @@ body {
 }
 
 .profile-container {
-  max-width: 1200px; /* Increase the max-width for better responsiveness */
-  height: 570px;
+  max-width: 1000px;
+  height: 600px;
   margin: 20px auto;
   padding: 20px;
   background-color: #fff;
   display: flex;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-
 }
 .sidebar {
   width: 200px;
@@ -36,7 +35,8 @@ body {
   padding: 20px;
 }
 
-h2 {
+h4 {
+  font-weight: 700;
   color: #333;
 }
 
@@ -125,4 +125,8 @@ p {
 
 .pagination button.active {
   background-color: #0056b3;
+}
+.gender-selection {
+  display: flex;
+  gap: 40px;
 }

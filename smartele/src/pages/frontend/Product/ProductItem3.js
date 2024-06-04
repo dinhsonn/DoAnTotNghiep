@@ -16,33 +16,31 @@ function ProductItem3(props) {
     }
   }, []);
 
-  const handleAddToCart = (productId, qty, price, image) => {
-    console.log("Adding to cart:", productId, qty, price, image);
+  const handleAddToCart = async (productId, qty, price, image) => {
     if (!userId) {
-      console.error('User ID is not available.');
+      Swal.fire(
+        "Chưa đăng nhập",
+        "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.",
+        "warning"
+      );
       return;
     }
-    if (quantity > 0) {
-      CartService.addItemToCart(userId, productId, qty, price, image)
-        .then(() => {
-          const newQuantity = quantity - 1;
-          ProductService.updateProductQty(productId, newQuantity)
-            .then(() => {
-              setQuantity(newQuantity);
-              Swal.fire(
-                "The product has been added to cart.",
-                "Your product has been added to the cart!",
-                "success"
-              );
 
-            })
-            .catch((error) => {
-              console.error("Error updating product quantity: ", error);
-            });
-        })
-        .catch((error) => {
-          console.error("Error adding to cart: ", error);
-        });
+    console.log("Adding to cart:", productId, qty, price, image);
+    if (quantity > 0) {
+      try {
+        await CartService.addItemToCart(userId, productId, qty, price, image);
+        const newQuantity = quantity - 1;
+        await ProductService.updateProductQty(productId, newQuantity);
+        setQuantity(newQuantity);
+        Swal.fire(
+          "Sản phẩm đã được thêm vào giỏ hàng.",
+          "Sản phẩm của bạn đã được thêm vào giỏ hàng!",
+          "success"
+        );
+      } catch (error) {
+        console.error("Error adding to cart or updating product quantity: ", error);
+      }
     } else {
       Swal.fire(
         "Xin lỗi",
@@ -51,58 +49,57 @@ function ProductItem3(props) {
       );
     }
   };
-  const handleAddToWishlist = (productId, qty, price, image) => {
-    console.log("Adding to Wishlist:", productId, qty, price, image);
+
+  const handleAddToWishlist = async (productId, qty, price, image) => {
     if (!userId) {
-      console.error('User ID is not available.');
+      Swal.fire(
+        "Chưa đăng nhập",
+        "Bạn cần đăng nhập để thêm sản phẩm vào danh sách mong muốn.",
+        "warning"
+      );
       return;
     }
-    
-    if (props.wishlistItems && props.wishlistItems.length > 0) {
-      const isInWishlist = props.wishlistItems.some(item => item.productId === productId);
-    
-      if (isInWishlist) {
-        Swal.fire(
-          "Already in Wishlist",
-          "The product is already in your wishlist!",
-          "info"
-        );
-      } else {
-        // Nếu sản phẩm chưa có trong danh sách mong muốn, thêm vào
-        WishlistService.addToWishlist(userId, productId, qty, price, image)
-          .then(() => {
-            Swal.fire(
-              "Added to Wishlist",
-              "The product has been added to your wishlist!",
-              "success"
-            );
-          })
-          .catch((error) => {
-            console.error("Error adding to wishlist: ", error);
-          });
-      }
-    } else {
-      WishlistService.addToWishlist(userId, productId, qty, price, image)
-        .then(() => {
+
+    console.log("Adding to Wishlist:", productId, qty, price, image);
+    try {
+      if (props.wishlistItems && props.wishlistItems.length > 0) {
+        const isInWishlist = props.wishlistItems.some(item => item.productId === productId);
+        if (isInWishlist) {
           Swal.fire(
-            "Added to Wishlist",
-            "The product has been added to your wishlist!",
+            "Đã có trong danh sách mong muốn",
+            "Sản phẩm đã có trong danh sách mong muốn của bạn!",
+            "info"
+          );
+        } else {
+          await WishlistService.addToWishlist(userId, productId, qty, price, image);
+          Swal.fire(
+            "Đã thêm vào danh sách mong muốn",
+            "Sản phẩm đã được thêm vào danh sách mong muốn của bạn!",
             "success"
           );
-        })
-        .catch((error) => {
-          console.error("Error adding to wishlist: ", error);
-        });
+        }
+      } else {
+        await WishlistService.addToWishlist(userId, productId, qty, price, image);
+        Swal.fire(
+          "Đã thêm vào danh sách mong muốn",
+          "Sản phẩm đã được thêm vào danh sách mong muốn của bạn!",
+          "success"
+        );
+      }
+    } catch (error) {
+      console.error("Error adding to wishlist: ", error);
     }
   };
-  
+
   const getImgUrl = (imageName) => {
     const endpoint = "productimages";
     return `http://localhost:8082/api/${endpoint}/image/${imageName}`;
   };
-  function formatCurrency(number) {
+
+  const formatCurrency = (number) => {
     return number.toLocaleString('vi-VN') + 'đ';
-  }
+  };
+
   return (
     <div className="col-6 col-md-4 col-lg-4 col-xl-3">
       <div className="product">
@@ -119,21 +116,32 @@ function ProductItem3(props) {
             <a
               href="#"
               className="btn-product-icon btn-wishlist btn-expandable"
-              onClick={() => handleAddToWishlist(props.product.id, 1, props.product.price, props.product.image)} // Thêm sự kiện cho nút "Thêm vào danh sách mong muốn"
+              onClick={(e) => {
+                e.preventDefault();
+                handleAddToWishlist(props.product.id, 1, props.product.price, props.product.image);
+              }}
             >
               <span>add to wishlist</span>
             </a>
           </div>
           <div className="product-action action-icon-top">
-            <a href="#" className="btn-product btn-cart" onClick={() => handleAddToCart(props.product.id, 1, props.product.price, props.product.image)}>
+            <a
+              href="#"
+              className="btn-product btn-cart"
+              onClick={(e) => {
+                e.preventDefault();
+                handleAddToCart(props.product.id, 1, props.product.price, props.product.image);
+              }}
+            >
               <span>add to cart</span>
             </a>
-            <Link to={`/productdetail/${props.product.id}`}
+            <Link
+              to={`/productdetail/${props.product.id}`}
               className="btn-product btn-quickview"
               title="Quick view"
             >
               <span>quick view</span>
-              </Link>
+            </Link>
             <a
               href="#"
               className="btn-product btn-compare"

@@ -11,6 +11,15 @@ function Brand() {
     sortOrder: "",
     status: "0",
   });
+  const [searchTerm, setSearchTerm] = useState(""); // State lưu từ khóa tìm kiếm
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value); 
+  };
+
+  const filteredBrands = brands.filter((brand) =>
+    brand.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   useEffect(() => {
     loadBrands();
   }, []);
@@ -188,9 +197,13 @@ function Brand() {
             </div>
             <div className="row my-2 align-items-center">
 
-              <div className="col-md-6">
-                <input type="text" className="search d-inline" />
-                <button className="btnsearch d-inline">Tìm kiếm</button>
+            <div className="col-md-6">
+                <input
+                  type="text"
+                  className="search d-inline"
+                  onChange={handleSearch} 
+                />
+                <button className="d-inline">Tìm kiếm</button>
               </div>
             </div>
             <table className="table table-bordered">
@@ -211,7 +224,7 @@ function Brand() {
                 </tr>
               </thead>
               <tbody>
-                {brands.map((brand) => (
+                {filteredBrands.map((brand) => (
                   <tr className="datarow" key={brand.id}>
                     <td className="text-center">
                       <input type="checkbox" />

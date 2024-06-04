@@ -89,8 +89,12 @@ function ProductDetail(props) {
     console.log("Adding to Wishlist:", productId, qty, price, imageName);
     
     if (!userId) {
-      console.error('User ID is not available.');
-      return;
+      Swal.fire(
+        "Chưa đăng nhập",
+        "Bạn cần đăng nhập để thêm sản phẩm vào danh sách mong muốn.",
+        "warning"
+      );
+            return;
     }
   
     if (props.wishlistItems && props.wishlistItems.length > 0) {
@@ -143,8 +147,12 @@ function ProductDetail(props) {
     const imageName = selectedImage ? selectedImage.split('/').pop() : products.image;
     console.log("Adding to cart:", productId, qty, price, imageName, paymentMethod);
     if (!userId) {
-      console.error("User ID is not available.");
-      return;
+      Swal.fire(
+        "Chưa đăng nhập",
+        "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.",
+        "warning"
+      );
+            return;
     }
   
     CartService.addItemToCart(userId, productId, qty, price, imageName, paymentMethod)

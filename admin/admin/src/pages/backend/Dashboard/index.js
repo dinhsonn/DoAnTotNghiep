@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Line, Doughnut, Bar } from 'react-chartjs-2';
-
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -11,7 +10,7 @@ import {
     Tooltip,
     Legend,
     ArcElement,
-    BarElement // Import BarElement
+    BarElement
 } from 'chart.js';
 
 ChartJS.register(
@@ -23,7 +22,7 @@ ChartJS.register(
     Tooltip,
     Legend,
     ArcElement,
-    BarElement // Register BarElement
+    BarElement
 );
 
 function Dashboard() {
@@ -34,7 +33,6 @@ function Dashboard() {
     const [earningsData, setEarningsData] = useState([]);
     const [refresh, setRefresh] = useState(false);
     
-    // Reference to chart components
     const lineChartRef = useRef(null);
     const barChartRef = useRef(null);
 
@@ -58,6 +56,12 @@ function Dashboard() {
         });
 
         return { dailyEarnings, monthlyEarnings };
+    };
+
+    const sortMonths = (a, b) => {
+        const [aYear, aMonth] = a.split('-').map(Number);
+        const [bYear, bMonth] = b.split('-').map(Number);
+        return aYear === bYear ? aMonth - bMonth : aYear - bYear;
     };
 
     const fetchSearchLog = () => {
@@ -90,7 +94,9 @@ function Dashboard() {
                     setDates(sortedDates);
                     setEarningsData(sortedDates.map(date => dailyEarnings[date]));
 
-                    const monthlyEarningsArray = Object.entries(monthlyEarnings).map(([month, earnings]) => ({ month, earnings }));
+                    const monthlyEarningsArray = Object.entries(monthlyEarnings)
+                        .sort(([a], [b]) => sortMonths(a, b))
+                        .map(([month, earnings]) => ({ month, earnings }));
                     setMonthlyEarnings(monthlyEarningsArray);
                 } else {
                     console.error('API response is not an array:', data);
@@ -107,7 +113,6 @@ function Dashboard() {
     }, [refresh]);
 
     useEffect(() => {
-        // Destroy existing charts before re-rendering
         if (lineChartRef.current && lineChartRef.current.chartInstance) {
             lineChartRef.current.chartInstance.destroy();
         }
@@ -115,7 +120,6 @@ function Dashboard() {
             barChartRef.current.chartInstance.destroy();
         }
     }, [refresh]);
-    
 
     const lineData = {
         labels: dates,
@@ -158,6 +162,18 @@ function Dashboard() {
         setRefresh(prev => !prev);
     };
 
+    const getCurrentMonthEarnings = () => {
+        const currentMonth = new Date().toISOString().slice(0, 7); // Format: "YYYY-MM"
+        const currentMonthEarnings = monthlyEarnings.find(item => item.month === currentMonth);
+        const currentMonthNumber = new Date().getMonth() + 1; // getMonth() returns 0-based month
+        return {
+            earnings: currentMonthEarnings ? currentMonthEarnings.earnings : 0,
+            month: currentMonthNumber
+        };
+    };
+
+    const currentMonthData = getCurrentMonthEarnings();
+
     return (
         <div className="content">
             <section className="content-header my-2">
@@ -169,8 +185,8 @@ function Dashboard() {
                         <button onClick={handleRefresh} className="btn btn-primary ml-2">Refresh</button>
                         <div className="info-box">
                             <div className="info-box-content">
-                                <span className="info-box-text">Thu nhập (Tháng): </span>
-                                <span className="info-box-number">{monthlyEarnings.reduce((acc, item) => acc + item.earnings, 0).toLocaleString()} VNĐ</span>
+                                <span className="info-box-text">Thu nhập tháng ({currentMonthData.month}): </span>
+                                <span className="info-box-number">{currentMonthData.earnings.toLocaleString()} VNĐ</span>
                             </div>
                         </div>
                     </div>
@@ -195,22 +211,21 @@ function Dashboard() {
                             <div className="info-box-content">
                                 <h3>Từ khóa được tìm kiếm nhiều nhất</h3>
                                 <ul>
-                                    {keywords.length > 0 ? (
-                                                                                keywords.map((item, index) => (
-                                                                                    <li key={index}>{item.keyword}</li>
-                                                                                ))
-                                                                            ) : (
-                                                                                <li>No keywords found</li>
-                                                                            )}
-                                                                        </ul>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </section>
-                                                </div>
-                                            );
-                                        }
-                                        
-                                        export default Dashboard;
-                                        
+                                    {keywords.length > 2 ? (
+                                        keywords.map((item, index) => (
+                                            <li key={index}>{item.keyword}</li>
+                                        ))
+                                    ) : (
+                                        <li>No keywords found</li>
+                                    )}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    );
+}
+
+export default Dashboard;

@@ -36,6 +36,19 @@ function Checkout() {
     const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
     if (loggedInUser) {
       setUserId(loggedInUser.id);
+    } else {
+      // Nếu chưa đăng nhập, hiển thị thông báo
+      Swal.fire({
+        icon: "info",
+        title: "Bạn cần đăng nhập",
+        text: "Vui lòng đăng nhập",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate('/')
+        } else {
+
+        }
+      });
     }
   }, []);
 
@@ -85,6 +98,7 @@ function Checkout() {
     )
       .then(() => {
         navigate('/');
+        
       })
       .catch(error => {
         console.error('Error removing selected items from cart:', error);
@@ -129,33 +143,41 @@ function Checkout() {
       });
   };
 
-  const sendToGoogleForm = (userId, productId, qty, price, image, paymentMethod) => {
+  const sendToGoogleForm = async (userId, productId, qty, price, image, paymentMethod) => {
     const formData = new FormData();
-    formData.append("entry.1876847216", checkouts.name); 
-    formData.append("entry.1347219946", checkouts.email);
-    formData.append("entry.722547786", checkouts.phone); 
-    formData.append("entry.1991618280", checkouts.address);
-    formData.append("entry.741691303", userId); 
-    formData.append("entry.2010503646", productId);
-    formData.append("entry.997239814", qty); 
-    formData.append("entry.1139756429", image);
-    formData.append("entry.124624452", price); 
-    formData.append("entry.648254165", paymentMethod);
+    formData.append("entry.694064165", checkouts.name); 
+    formData.append("entry.1252455685", checkouts.email);
+    formData.append("entry.559052945", checkouts.phone); 
+    formData.append("entry.85101321", checkouts.address);
+    formData.append("entry.1145311346", userId); 
+    try {
+      const productResponse = await ProductService.getById(productId);
+      const productName = productResponse.data.name;
+      formData.append("entry.774530511", productId);
+      formData.append("entry.57843749", productName);
+      formData.append("entry.1801308158", qty); 
+      formData.append("entry.1183188484", image);
+      formData.append("entry.1848489601", price); 
+      formData.append("entry.850051139", paymentMethod);
   
-    fetch("https://docs.google.com/forms/d/e/1FAIpQLSesBwNBl2jxmeRWqrYicGvaMwYHX7jDAU0T3s9ySZq-EVPnvg/viewform", {
-      method: "POST",
-      body: formData,
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      console.log("Dữ liệu đã được gửi lên Google Form thành công");
-    })
-    .catch(error => {
-      console.error("Lỗi khi gửi dữ liệu lên Google Form:", error);
-    });
+      fetch("https://docs.google.com/forms/u/0/d/e/1FAIpQLSczuHh35WNsFQ-2Q9hv-vYzYtc03jhot0Bee6qPkCTN0uRBqw/formResponse", {
+        method: "POST",
+        body: formData,
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        console.log("Dữ liệu đã được gửi lên Google Form thành công");
+      })
+      .catch(error => {
+        console.error("Lỗi khi gửi dữ liệu lên Google Form:", error);
+      });
+    } catch (error) {
+      console.error("Error fetching product:", error);
+    }
   };
+  
 
   const getImgUrl = (imageName) => {
     const endpoint = "productimages";
@@ -348,7 +370,6 @@ function Checkout() {
                     onClick={() => {
                       if (cartItems.length > 0 && validateForm()) { 
                         cartItems.forEach((item) => {
-                          // Truyền các thông tin cần thiết vào hàm handleAddToOrder
                           handleAddToOrder(
                             item.product ? item.product.id : null,
                             checkouts.name,

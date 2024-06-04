@@ -88,12 +88,15 @@ function Header() {
                         <div className="dropdown compare-dropdown">
                           <li className="icon-user" style={{ cursor: 'pointer', fontSize: '1.4em' }}>{name} </li>
                           <ul className="dropdown-menu">
-                            <h4 className="compare-product-title">
+                            <h4 className="titleoptioncte">
                               <a href="/profile">Thông tin tài khoản</a>
                             </h4>
-                            <h4 className="compare-product-title">
+                            <a href="/order" className="titleoptioncte">
+                              Quản lý đơn hàng
+                            </a>
+                            <button className="btn btn-primary">
                               <a href="#" onClick={handleLogout}>Đăng xuất</a>
-                            </h4>
+                            </button>
                           </ul>
                         </div>
                       ) : (

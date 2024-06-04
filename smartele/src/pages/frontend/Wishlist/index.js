@@ -4,17 +4,31 @@ import Swal from "sweetalert2";
 import WishlistService from "../../../services/WishlistService";
 import ProductService from "../../../services/ProductServices";
 import CartService from "../../../services/CartServices";
+import { useNavigate } from 'react-router-dom';
 
 function Wishlist() {
   document.title = "Wishlist";
   const [wishlistItems, setWishlistItems] = useState([]);
   const [userId, setUserId] = useState(null);
   const [totalAmount, setTotalAmount] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
     if (loggedInUser) {
       setUserId(loggedInUser.id);
+    } else {
+      Swal.fire({
+        icon: "info",
+        title: "Bạn cần đăng nhập",
+        text: "Vui lòng đăng nhập",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate('/')
+        } else {
+
+        }
+      });
     }
   }, []);
 

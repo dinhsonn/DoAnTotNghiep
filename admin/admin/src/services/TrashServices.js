@@ -187,6 +187,25 @@ function removeImage(id)
 {
     return httpAxios.delete(`trashproductimages/${id}`);
 }
+//Slider
+function getAllSlider()
+{
+    return httpAxios.get("trashsliders");
+    
+}
+function createSlider(data)
+{
+    return httpAxios.post("trashsliders", data);
+}
+function getByIdSlider(id) 
+{
+
+    return httpAxios.get(`trashsliders/${id}`);
+}
+function removeSlider(id)
+{
+    return httpAxios.delete(`trashsliders/${id}`);
+}
 const TrashServices = {
     getAll:getAll,
     create:create,
@@ -236,6 +255,11 @@ const TrashServices = {
     createImage,
     getByIdImage,
     removeImage,
+    //Slider
+    getAllSlider,
+    createSlider,
+    getByIdSlider,
+    removeSlider,
 
 }
 export default TrashServices;

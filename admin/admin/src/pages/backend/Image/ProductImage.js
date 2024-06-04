@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ImageService from "../../../services/ImageServices";
-import TrashServices from "../../../services/TrashServices";
 
 function ProductImage() {
   const [productImages, setProductImages] = useState([]);
@@ -18,11 +17,17 @@ function ProductImage() {
       console.error("Error loading products:", error);
     }
   };
+  const [searchTerm, setSearchTerm] = useState(""); 
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value); 
+  };
 
+  const filteredImage = productImages.filter((productImage) =>
+    productImage.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   const removeImage = async (id) => {
     try {
       await ImageService.remove(id);
-      await TrashServices.createImage(productImages.find(image => image.id === id));
       setProductImages(productImages.filter((image) => image.id !== id));
       console.log("Image deleted successfully");
       alert("Ảnh đã được xóa!");
@@ -57,10 +62,14 @@ function ProductImage() {
               </li>
             </ul>
           </div>
-          <div className="col-6 text-end">
-            <input type="text" className="search d-inline" />
-            <button className="d-inline btnsearch">Tìm kiếm</button>
-          </div>
+          <div className="col-md-6">
+                <input
+                  type="text"
+                  className="search d-inline"
+                  onChange={handleSearch} // Thêm sự kiện onChange cho ô tìm kiếm
+                />
+                <button className="d-inline">Tìm kiếm</button>
+              </div>
         </div>
       </section>
       <section className="content-body my-2">
@@ -80,7 +89,7 @@ function ProductImage() {
             </tr>
           </thead>
           <tbody>
-            {productImages.map((image, index) => (
+            {filteredImage.map((image, index) => (
               <tr key={index} className="datarow">
                 {/* Thêm các cột dữ liệu */}
                 <td>
