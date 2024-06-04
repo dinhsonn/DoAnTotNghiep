@@ -1,5 +1,7 @@
 package com.example.api.controller;
 
+import com.example.api.entity.Category;
+
 import com.example.api.entity.CategoryOptionValue;
 import com.example.api.entity.Product;
 import com.example.api.service.CategoryOptionValueService;
@@ -34,6 +36,7 @@ public class ProductController {
     private ProductService productService;
     @Autowired
     private CategoryOptionValueService categoryOptionValueService;
+  
 
     public ProductController(ProductService productService) {
         this.productService = productService;
@@ -106,4 +109,10 @@ public class ProductController {
     public List<Product> getProductsByCategoryOptionValue(@PathVariable CategoryOptionValue categoryOptionValueId) {
             return productService.getProductsByCategoryOptionValue(categoryOptionValueId);    
     }
+    @GetMapping("/byCategory/{categoryId}")
+    public List<Product> getProductsByCategory(@PathVariable Category categoryId) {
+            return productService.getProductsByCategory(categoryId);    
+    }
+
+
 }

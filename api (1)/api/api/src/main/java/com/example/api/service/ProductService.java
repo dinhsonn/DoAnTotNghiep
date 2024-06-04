@@ -1,5 +1,6 @@
 package com.example.api.service;
 
+import com.example.api.entity.Category;
 
 import com.example.api.entity.CategoryOptionValue;
 import com.example.api.entity.Product;
@@ -20,12 +21,16 @@ public interface ProductService {
     Product updateProduct(Product product);
 
     void deleteProduct(Long id);
-    
+
     List<Product> getProductsByIds(List<Long> productIds);
 
     Product updateProductQty(Long productId, int qty);
 
     List<Product> getRelatedProducts(Long brandId);
-    
+
     List<Product> getProductsByCategoryOptionValue(CategoryOptionValue categoryOptionValue);
+
+    List<Product> getProductsByCategory(Category categoryId);
+
+
 }

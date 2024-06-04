@@ -3,6 +3,8 @@ package com.example.api.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.api.entity.Brand;
+import com.example.api.entity.Category;
+
 import com.example.api.entity.CategoryOptionValue;
 import com.example.api.entity.Product;
 
@@ -15,4 +17,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Page<Product> findAll(Pageable pageable);
     List<Product> findByBrandId(Brand brand);
     List<Product> findByCategoryOptionValue(CategoryOptionValue categoryOptionValue);
+    List<Product> findByCategoryId(Category categoryId);
+
 }

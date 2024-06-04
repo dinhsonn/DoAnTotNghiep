@@ -7,6 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.api.entity.Brand;
+import com.example.api.entity.Category;
+
 import com.example.api.entity.CategoryOptionValue;
 import com.example.api.entity.Product;
 import com.example.api.service.ProductService;
@@ -98,6 +100,12 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> getProductsByCategoryOptionValue(CategoryOptionValue categoryOptionValue) {
         return productRepository.findByCategoryOptionValue(categoryOptionValue);
     }
+    @Override
+    public List<Product> getProductsByCategory(Category categoryId) {
+        return productRepository.findByCategoryId(categoryId);
+    }
+
+
     
 
 }

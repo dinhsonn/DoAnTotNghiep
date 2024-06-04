@@ -80,6 +80,9 @@ function ProductItemSale(props) {
     const endpoint = "productimages";
     return `http://localhost:8082/api/${endpoint}/image/${imageName}`;
   };
+  const formatCurrency = (number) => {
+    return number.toLocaleString('vi-VN') + 'đ';
+  };
 
   return (
     <div className="col-6 col-md-4 col-lg-4 col-xl-3">
@@ -130,10 +133,10 @@ function ProductItemSale(props) {
           </h3>
          
           <div className="product-price">
-          <del>{props.product.productId.price}đ</del>
+          <del>{formatCurrency(props.product.productId.price)}đ</del>
           </div>
           <div className="product-price">
-              Được giảm còn: {props.product.salePrice}đ
+              Được giảm còn: {formatCurrency(props.product.salePrice)}đ
           </div>
 
           <div className="ratings-container">

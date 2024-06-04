@@ -84,7 +84,6 @@
             this.id = Long.parseLong(id);
         }
 
-        // Constructor to set the status field
         public Product(int status) {
             this.status = status;
             this.createdAt = new Date();
