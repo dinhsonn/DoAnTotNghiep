@@ -7,7 +7,6 @@ import com.example.api.entity.Product;
 import com.example.api.service.CategoryOptionValueService;
 import com.example.api.service.ProductService;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 

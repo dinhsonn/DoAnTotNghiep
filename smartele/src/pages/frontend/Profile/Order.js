@@ -12,11 +12,12 @@ const Order = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(2);
   const [loading, setLoading] = useState(true);
+  const [selectedTab, setSelectedTab] = useState('pendingPayment');
   const navigate = useNavigate();
 
   useEffect(() => {
     const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-    if (loggedInUser) {
+    if (loggedInUser && loggedInUser.id) {
       setUserId(loggedInUser.id);
     } else {
       // Redirect to login page if not logged in
@@ -37,13 +38,16 @@ const Order = () => {
 
     OrderService.getOrders(userId)
       .then(response => {
-        // Filter orders to only include those belonging to the logged-in user
-        const userOrders = response.data.filter(order => order.user.id === userId);
-        setOrders(userOrders);
+        if (response.data) {
+          const userOrders = response.data.filter(order => order.user.id === userId);
+          setOrders(userOrders);
+        } else {
+          console.error('No data received from the server');
+        }
         setLoading(false);
       })
       .catch(error => {
-        console.error('Lỗi khi lấy danh sách đơn hàng:', error);
+        console.error('Error fetching orders:', error);
         setLoading(false);
       });
   }, [userId]);
@@ -57,14 +61,33 @@ const Order = () => {
       return <p>Không có đơn hàng nào.</p>;
     }
 
+    const filteredOrders = orders.filter(order => {
+      if (selectedTab === 'pendingPayment') {
+        return order.status === 1;
+      } else if (selectedTab === 'pendingDelivery') {
+        return order.status === 2;
+      } else if (selectedTab === 'completed') {
+        return order.status === 3;
+      }
+      return false;
+    });
+
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = orders.slice(indexOfFirstItem, indexOfLastItem);
-    const totalPages = Math.ceil(orders.length / itemsPerPage);
+    const currentItems = filteredOrders.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
 
     return (
       <>
         <table className="table">
+          <thead>
+            <tr>
+              <th>Sản phẩm</th>
+              <th>Số lượng</th>
+              <th>Tổng cộng</th>
+              <th>Trạng thái</th>
+            </tr>
+          </thead>
           <tbody>
             {currentItems.map((item) => (
               <tr key={item.id}>
@@ -83,7 +106,7 @@ const Order = () => {
                 </td>
                 <td className="quantity-col">
                   <div className="cart-product-quantity">
-                    <span>Số lượng: {item.qty}</span>
+                    <span>{item.qty}</span>
                   </div>
                 </td>
                 <td className="total-col">
@@ -121,13 +144,11 @@ const Order = () => {
       case 1:
         return "Chờ xác nhận";
       case 2:
-        return "Đã xác nhận";
-      case 3:
         return "Đang giao hàng";
-      case 4:
-        return "Giao thành công";
+      case 3:
+        return "Đã hoàn thành";
       default:
-        return "Trạng thái không xác định";
+        return "Người nhận không nhận hàng";
     }
   };
 
@@ -136,7 +157,27 @@ const Order = () => {
       <Sidebar />
       <div className="order-content">
         <h2>Danh sách đơn hàng</h2>
-        {loading ? <p>Loading...</p> : renderOrders()}
+        <div className="tabs">
+          <button
+            onClick={() => setSelectedTab('pendingPayment')}
+            className={selectedTab === 'pendingPayment' ? 'active' : ''}
+          >
+            Chờ xác nhận
+          </button>
+          <button
+            onClick={() => setSelectedTab('pendingDelivery')}
+            className={selectedTab === 'pendingDelivery' ? 'active' : ''}
+          >
+            Chờ giao hàng
+          </button>
+          <button
+            onClick={() => setSelectedTab('completed')}
+            className={selectedTab === 'completed' ? 'active' : ''}
+          >
+            Đã hoàn thành
+          </button>
+        </div>
+        {renderOrders()}
       </div>
     </div>
   );

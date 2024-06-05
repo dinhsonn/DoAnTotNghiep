@@ -4,7 +4,7 @@ import * as XLSX from "xlsx";
 import OrderService from '../../../services/OrderServices';
 import ProductService from '../../../services/ProductServices';
 
-function Order() {
+function OrderEx() {
     const [orders, setOrders] = useState([]);
     const [products, setProducts] = useState([]);
     const [searchTerm, setSearchTerm] = useState(""); 
@@ -12,9 +12,11 @@ function Order() {
       setSearchTerm(event.target.value); 
     };
   
-    const filteredOrder = orders.filter((order) =>
-        order.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredOrder = orders
+        .filter(order => order.status === 3)
+        .filter(order =>
+            order.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -84,11 +86,7 @@ function Order() {
                 console.error('Error updating order status:', error);
             });
     };
-    const confirmAllOrders = () => {
-        orders.forEach(order => {
-            updateOrderStatus(order.id, 2);
-        });
-    };
+
 
     return (
         <div className="content">
@@ -115,7 +113,6 @@ function Order() {
             </section>
             <section className="content-body my-2">
             <div className="d-flex justify-content-between mb-3">
-                    <button className="btn btn-primary" onClick={confirmAllOrders}>Xác nhận tất cả đơn hàng</button>
                 </div>
                                 <table className="table table-bordered">
                     <thead>
@@ -187,4 +184,4 @@ function Order() {
     );
 }
 
-export default Order;
+export default OrderEx;

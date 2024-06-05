@@ -38,8 +38,7 @@ import Category from '../pages/backend/Category/index';
 // import MenuCreate from '../pages/backend/Menu/MenuCreate';
 // import MenuUpdate from '../pages/backend/Menu/MenuUpdate';
 import Order from '../pages/backend/Order/index';
-import OrderShow from '../pages/backend/Order/OrderShow';
-import OrderExport from '../pages/backend/Order/OrderExport';
+import OrderShow from '../pages/backend/Order/OrderEx';
  import Post from '../pages/backend/Post/index';
  import PostShow from '../pages/backend/Post/PostShow';
  import PostCreate from '../pages/backend/Post/PostCreate';
@@ -97,6 +96,8 @@ import CategoryTrash from "../pages/backend/Category/CategoryTrash";
 import Contact from "../pages/backend/Contact";
 import ContactShow from "../pages/backend/Contact/ContactShow";
 import ContactTrash from "../pages/backend/Contact/ContactTrash";
+import OrderEx from "../pages/backend/Order/OrderEx";
+import OrderSuc from "../pages/backend/Order/OrderSuc";
 
 const RouterPrivate = [
 
@@ -152,8 +153,8 @@ const RouterPrivate = [
   // { path: "/admin/menu/update/:id", component: MenuUpdate },
 
   { path: "/order", component: Order },
-  { path: "/order/show/:id", component: OrderShow },
-  { path: "/order/export", component: OrderExport },
+  { path: "/order/dang-giao", component: OrderEx },
+  { path: "/order/thanh-cong", component: OrderSuc },
 
   { path: "/post", component: Post },
   { path: "/post/show/:id", component: PostShow },
