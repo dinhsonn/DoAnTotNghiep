@@ -96,9 +96,11 @@ function OrderEx() {
                     <div className="col-6">
                         <ul className="manager">
                             <li><Link to="/order">Tất cả ({orders.length})</Link></li>
+                            <li><Link to="/order/xac-nhan">Đã xác nhận</Link></li>
+
                             <li><Link to="/order/dang-giao">Đơn đã giao</Link></li>
                             <li><Link to="/order/thanh-cong">Đơn hoàn thành</Link></li>
-                            <li><Link to="#">Đơn hoàn</Link></li>
+                            <li><Link to="/order/that-bai">Đơn hoàn</Link></li>
                         </ul>
                     </div>
                     <div className="col-md-6">

@@ -98,6 +98,9 @@ import ContactShow from "../pages/backend/Contact/ContactShow";
 import ContactTrash from "../pages/backend/Contact/ContactTrash";
 import OrderEx from "../pages/backend/Order/OrderEx";
 import OrderSuc from "../pages/backend/Order/OrderSuc";
+import OrderFalse from "../pages/backend/Order/OrderFal";
+import OrderService from "../services/OrderServices";
+import OrderCheck from "../pages/backend/Order/OrderCheck";
 
 const RouterPrivate = [
 
@@ -153,8 +156,11 @@ const RouterPrivate = [
   // { path: "/admin/menu/update/:id", component: MenuUpdate },
 
   { path: "/order", component: Order },
+  { path: "/order/xac-nhan", component: OrderCheck },
   { path: "/order/dang-giao", component: OrderEx },
   { path: "/order/thanh-cong", component: OrderSuc },
+  { path: "/order/that-bai", component: OrderFalse },
+
 
   { path: "/post", component: Post },
   { path: "/post/show/:id", component: PostShow },

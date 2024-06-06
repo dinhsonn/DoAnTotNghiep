@@ -4,7 +4,7 @@ import * as XLSX from "xlsx";
 import OrderService from '../../../services/OrderServices';
 import ProductService from '../../../services/ProductServices';
 
-function OrderSuc() {
+function OrderFalse() {
    const [orders, setOrders] = useState([]);
    const [products, setProducts] = useState([]);
    const [searchTerm, setSearchTerm] = useState(""); 
@@ -12,7 +12,7 @@ function OrderSuc() {
      setSearchTerm(event.target.value); 
    };
    const filteredOrder = orders
-   .filter(order => order.status === 4)
+   .filter(order => order.status === 5)
    .filter(order =>
        order.name.toLowerCase().includes(searchTerm.toLowerCase())
    );
@@ -64,6 +64,8 @@ function OrderSuc() {
                return "Đang giao hàng";
            case 4:
                return "Giao thành công";
+            case 5:
+            return "Giao không thành công";
            default:
                return "Trạng thái không xác định";
        }
@@ -166,14 +168,8 @@ function OrderSuc() {
                                <td>{order.address}</td>
                                <td>{product.name}</td>
                                <td>{new Date(order.createdAt).toLocaleDateString()}</td>
-                               <td>
-                                   <select value={order.status} onChange={(e) => updateOrderStatus(order.id, e.target.value)}>
-                                       <option value={1}>Chờ xác nhận</option>
-                                       <option value={2}>Đã xác nhận</option>
-                                       <option value={3}>Đang giao hàng</option>
-                                       <option value={4}>Giao thành công</option>
-                                   </select>
-                               </td>
+                               <td>{getStatusText(order.status)}</td>
+
                                <td className="text-center">{order.id}</td>
                            </tr>
                        );
@@ -185,4 +181,4 @@ function OrderSuc() {
    );
 }
 
-export default OrderSuc;
+export default OrderFalse;

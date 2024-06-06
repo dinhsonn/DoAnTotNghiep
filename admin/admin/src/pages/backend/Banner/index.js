@@ -48,12 +48,10 @@ function Banner() {
     }
   };
 
-  // Lấy URL hình ảnh banner
   const getImgUrl = (imageName) => {
     const endpoint = "banners";
     let imageUrl = `http://localhost:8082/api/${endpoint}/image/${imageName}`;
 
-    // Xóa bớt một phần đuôi ".png" nếu có
     imageUrl = imageUrl.replace(/\.png/g, "") + ".png";
 
     return imageUrl;

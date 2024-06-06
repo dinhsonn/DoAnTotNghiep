@@ -4,7 +4,7 @@ import * as XLSX from "xlsx";
 import OrderService from '../../../services/OrderServices';
 import ProductService from '../../../services/ProductServices';
 
-function Order() {
+function OrderCheck() {
     const [orders, setOrders] = useState([]);
     const [products, setProducts] = useState([]);
     const [searchTerm, setSearchTerm] = useState(""); 
@@ -13,7 +13,7 @@ function Order() {
     };
   
     const filteredOrder = orders
-        .filter(order => order.status === 1)
+        .filter(order => order.status === 2)
         .filter(order =>
             order.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
@@ -86,12 +86,6 @@ function Order() {
                 console.error('Error updating order status:', error);
             });
     };
-    const confirmAllOrders = () => {
-        orders.forEach(order => {
-            updateOrderStatus(order.id, 2);
-        });
-    };
-
     return (
         <div className="content">
             <section className="content-header my-2">
@@ -101,6 +95,7 @@ function Order() {
                         <ul className="manager">
                             <li><Link to="/order">Tất cả ({orders.length})</Link></li>
                             <li><Link to="/order/xac-nhan">Đã xác nhận</Link></li>
+
                             <li><Link to="/order/dang-giao">Đơn đã giao</Link></li>
                             <li><Link to="/order/thanh-cong">Đơn hoàn thành</Link></li>
                             <li><Link to="/order/that-bai">Đơn hoàn</Link></li>
@@ -118,7 +113,6 @@ function Order() {
             </section>
             <section className="content-body my-2">
             <div className="d-flex justify-content-between mb-3">
-                    <button className="btn btn-primary" onClick={confirmAllOrders}>Xác nhận tất cả đơn hàng</button>
                 </div>
                                 <table className="table table-bordered">
                     <thead>
@@ -190,4 +184,4 @@ function Order() {
     );
 }
 
-export default Order;
+export default OrderCheck;
