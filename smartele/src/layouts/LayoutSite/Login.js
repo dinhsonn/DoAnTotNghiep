@@ -282,12 +282,6 @@ const handleGoogleLogin = async (credentialResponse) => {
 
                           </div>
                           {/* End .col-6 */}
-                          <div className="col-sm-6">
-                            <a href="#" className="btn btn-login btn-f">
-                              <i className="icon-facebook-f" />
-                              Đăng nhập với Facebook
-                            </a>
-                          </div>
                           {/* End .col-6 */}
                         </div>
                         {/* End .row */}
@@ -381,12 +375,6 @@ const handleGoogleLogin = async (credentialResponse) => {
                             </GoogleOAuthProvider>
                           </div>
                           {/* End .col-6 */}
-                          <div className="col-sm-6">
-                            <a href="#" className="btn btn-login  btn-f">
-                              <i className="icon-facebook-f" />
-                              Đăng nhập với Facebook
-                            </a>
-                          </div>
                           {/* End .col-6 */}
                         </div>
                         {/* End .row */}

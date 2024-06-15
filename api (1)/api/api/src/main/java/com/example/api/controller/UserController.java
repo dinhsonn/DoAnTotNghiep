@@ -1,18 +1,19 @@
 package com.example.api.controller;
 
+import com.example.api.entity.Order;
 import com.example.api.entity.User;
+import com.example.api.entity.VerifyPasswordRequest;
 import com.example.api.service.OrderService;
 import com.example.api.service.UserService;
-
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.example.api.entity.Order;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -20,11 +21,11 @@ import com.example.api.entity.Order;
 public class UserController {
 
     private final UserService userService;
-    private final OrderService orderService; // Add this line
+    private final OrderService orderService;
 
-    public UserController(UserService userService, OrderService orderService) { // Modify constructor
+    public UserController(UserService userService, OrderService orderService) {
         this.userService = userService;
-        this.orderService = orderService; // Initialize orderService
+        this.orderService = orderService;
     }
 
     @GetMapping("/{id}/orders")
@@ -36,6 +37,7 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
     }
+
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
         User savedUser = userService.createUser(user);
@@ -78,5 +80,19 @@ public class UserController {
         return new ResponseEntity<>("User successfully deleted!", HttpStatus.OK);
     }
 
-
+    @PostMapping("/verify-password")
+    public ResponseEntity<Boolean> verifyPassword(@RequestBody VerifyPasswordRequest request) {
+        boolean isValid = userService.verifyPassword(request.getUserId(), request.getOldPassword());
+        return new ResponseEntity<>(isValid, HttpStatus.OK);
+    }
+    @PutMapping("/{id}/password")
+    public ResponseEntity<String> updatePassword(@PathVariable Long id, @RequestBody Map<String, String> passwordMap) {
+        String newPassword = passwordMap.get("newPassword");
+        User updatedUser = userService.updatePassword(id, newPassword);
+        if (updatedUser != null) {
+            return ResponseEntity.ok("Password updated successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to update password");
+        }
+    }
 }

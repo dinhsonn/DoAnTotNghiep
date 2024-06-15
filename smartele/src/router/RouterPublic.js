@@ -20,6 +20,8 @@ import Order from "../pages/frontend/Profile/Order";
 import Search from "../pages/frontend/Search";
 import ForgotPassword from "../layouts/LayoutSite/ForgotPassword";
 import Address from "../pages/frontend/Profile/Address";
+import EditPassword from "../layouts/LayoutSite/Passsword";
+import ChangePassword from "../pages/frontend/Profile/ChangePassword";
 
 const RouterPublic = [
 
@@ -48,6 +50,10 @@ const RouterPublic = [
     {path:'/order',component:Order},
     {path:'/addresses',component:Address},
     {path:'/quenmatkhau',component:ForgotPassword},
+    {path:'/doimatkhau',component:EditPassword},
+    {path:'/changepassword',component:ChangePassword},
+
+
 
 
 ]

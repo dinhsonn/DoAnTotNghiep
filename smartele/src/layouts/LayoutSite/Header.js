@@ -91,9 +91,19 @@ function Header() {
                             <h4 className="titleoptioncte">
                               <a href="/profile">Thông tin tài khoản</a>
                             </h4>
-                            <a href="/order" className="titleoptioncte">
+                            <h4 className="titleoptioncte">
+                            <a href="/order">
                               Quản lý đơn hàng
                             </a>
+                            </h4>
+
+                            <h4 className="titleoptioncte">
+                            <a href="/changepassword" className="titleoptioncte">
+                              Đổi mật khẩu
+                            </a>
+                            </h4>
+
+
                             <button className="btn btn-primary">
                               <a href="#" onClick={handleLogout}>Đăng xuất</a>
                             </button>

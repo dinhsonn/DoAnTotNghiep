@@ -19,6 +19,7 @@ public interface UserService {
 
     public User findById(Long id);
 
-    
+    public boolean verifyPassword(Long userId, String oldPassword);
 
+    public User updatePassword(Long userId, String newPassword);
 }
