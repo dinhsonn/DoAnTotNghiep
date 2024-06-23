@@ -47,16 +47,13 @@ function Slider() {
         {currentSlider && (
           <div>
             <figure style={{ width: "100%", height: "400px", overflow: "hidden" }}>
-              <a href={currentSlider.link}>
+              <a>
                 <picture style={{ width: "100%", height: "100%", objectFit: "cover" }}>
                   <img src={`http://localhost:8082/api/sliders/image/${currentSlider.image}`} alt={currentSlider.alt} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 </picture>
               </a>
             </figure>
             <div className="intro-content">
-              <a href={currentSlider.link} className="btn btn-primary btn-round">
-                <span>Click Here</span>
-              </a>
             </div>
           </div>
         )}

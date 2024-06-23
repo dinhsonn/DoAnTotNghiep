@@ -160,41 +160,6 @@ function Header() {
               </div>
             </div>
             <div className="header-right">
-              <div className="dropdown compare-dropdown">
-                <a href="#" className="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static" title="Compare Products" aria-label="Compare Products">
-                  <div className="icon">
-                    <i className="icon-random" />
-                  </div>
-                  <p>So sánh</p>
-                </a>
-                <div className="dropdown-menu dropdown-menu-right">
-                  <ul className="compare-products">
-                    <li className="compare-product">
-                      <a href="#" className="btn-remove" title="Remove Product">
-                        <i className="icon-close" />
-                      </a>
-                      <h4 className="compare-product-title">
-                        <a href="product.html">Blue Night Dress</a>
-                      </h4>
-                    </li>
-                    <li className="compare-product">
-                      <a href="#" className="btn-remove" title="Remove Product">
-                        <i className="icon-close" />
-                      </a>
-                      <h4 className="compare-product-title">
-                        <a href="product.html">White Long Skirt</a>
-                      </h4>
-                    </li>
-                  </ul>
-                  <div className="compare-actions">
-                    <a href="#" className="action-link">Xóa tất cả</a>
-                    <a href="#" className="btn btn-outline-primary-2">
-                      <span>So sánh</span>
-                      <i className="icon-long-arrow-right" />
-                    </a>
-                  </div>
-                </div>
-              </div>
               <div className="wishlist">
                 <a href="/wishlist" title="Wishlist">
                   <div className="icon">

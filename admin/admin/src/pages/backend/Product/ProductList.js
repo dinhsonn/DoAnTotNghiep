@@ -11,10 +11,10 @@ function ProductList() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [categoryOption, setCategoryOption] = useState([]);
-  const [categoryOptionValue, setCategoryOptionvalue] = useState([]);
+  const [categoryOptionValue, setCategoryOptionValue] = useState([]);
   const [brands, setBrands] = useState([]);
   const [images, setImages] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]); // State for filtered products
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,7 +28,7 @@ function ProductList() {
 
   const loadProductImages = async () => {
     try {
-      const response = await ImageService.getAll(); // Ensure ImageService has a method getAll()
+      const response = await ImageService.getAll();
       setImages(response.data.content);
     } catch (error) {
       console.error("Error loading product images:", error);
@@ -58,16 +58,16 @@ function ProductList() {
       const response = await CategoryService.categoryOption();
       setCategoryOption(response.data.content);
     } catch (error) {
-      console.error("Error loading categories:", error);
+      console.error("Error loading category options:", error);
     }
   };
 
   const loadCategoryOptionValue = async () => {
     try {
       const response = await CategoryService.categoryOptionValue();
-      setCategoryOptionvalue(response.data.content);
+      setCategoryOptionValue(response.data.content);
     } catch (error) {
-      console.error("Error loading categories:", error);
+      console.error("Error loading category option values:", error);
     }
   };
 
@@ -84,39 +84,39 @@ function ProductList() {
     try {
       const productImage = images.find(image => image.productId.id === id);
       if (productImage) {
-        const confirmDelete = window.confirm("Vui lòng xóa ảnh trước");
+        const confirmDelete = window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này và ảnh đi kèm?");
         if (!confirmDelete) {
           return;
         }
       }
-      // Xóa sản phẩm
       await ProductService.remove(id);
       await TrashServices.create(products.find(product => product.id === id));
-      setProducts(products.filter((product) => product.id !== id));
+      setProducts(products.filter(product => product.id !== id));
       console.log("Product deleted successfully");
-      alert("Sản phẩm đã được xóa!");
+      alert("Sản phẩm đã được xóa thành công!");
     } catch (error) {
       console.error("Error deleting product:", error);
+      alert("Xóa sản phẩm không thành công. Vui lòng thử lại!");
     }
   };
-  
+
   const exportToExcel = () => {
     const simplifiedProducts = products.map(product => ({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      qty: product.qty,
-      description:product.description,
-      warranty:product.warranty,
-      specifications:product.specifications,
+      'ID': product.id,
+      'Tên sản phẩm': product.name,
+      'Giá': product.price,
+      'Số lượng': product.qty,
+      'Mô tả': product.description,
+      'Bảo hành': product.warranty,
+      'Thông số': product.specifications,
     }));
-  
+
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.json_to_sheet(simplifiedProducts);
-  
+
     const header = [['ID', 'Tên sản phẩm', 'Giá', 'Số lượng', 'Mô tả', 'Bảo hành', 'Thông số']];
     XLSX.utils.sheet_add_aoa(ws, header, { origin: 'A1' });
-  
+
     ws['!cols'] = [
       { wpx: 100 }, 
       { wpx: 200 }, 
@@ -126,20 +126,18 @@ function ProductList() {
       { wpx: 200 }, 
       { wpx: 400 }  
     ];
-  
+
     XLSX.utils.book_append_sheet(wb, ws, 'Products');
-  
+
     XLSX.writeFile(wb, 'Danh sách sản phẩm.xlsx');
   };
 
   const getImgUrl = (imageName) => {
-    const endpoint = 'productimages'; 
+    const endpoint = 'productimages'; // Replace with your actual endpoint
     let imageUrl = `http://localhost:8082/api/${endpoint}/image/${imageName}`;
-    
     imageUrl = imageUrl.replace(/\.png/g, "") + ".png";
-
     return imageUrl;
-};
+  };
 
   const handleAddImage = (productId) => {
     navigate(`/image/create?productId=${productId}`);
@@ -147,7 +145,9 @@ function ProductList() {
 
   const handleSearch = (event) => {
     const keyword = event.target.value;
-    const filteredProducts = products.filter(product => product.name.toLowerCase().includes(keyword.toLowerCase()));
+    const filteredProducts = products.filter(product => 
+      product.name.toLowerCase().includes(keyword.toLowerCase())
+    );
     setFilteredProducts(filteredProducts);
   };
 
@@ -155,17 +155,13 @@ function ProductList() {
     <div className="content">
       <section className="content-header my-2">
         <h1 className="d-inline">Sản phẩm</h1>
-        <Link to={"/product/create"} className="btn-add">
-          Thêm mới
-        </Link>
+        <Link to={"/product/create"} className="btn-add">Thêm mới</Link>
         <button onClick={exportToExcel}>Xuất ra Excel</button>
         <div className="row mt-3 align-items-center">
           <div className="col-6">
             <ul className="manager">
-              <li>
-                <Link to={"/product"}>Tất cả ({(products.length)}) </Link>
-              </li>
-              <li><Link to={"/product/trash"}>Rác </Link></li>
+              <li><Link to={"/product"}>Tất cả ({products.length})</Link></li>
+              <li><Link to={"/product/trash"}>Rác</Link></li>
             </ul>
           </div>
           <div className="col-6 text-end">
@@ -190,24 +186,16 @@ function ProductList() {
                   <a className="page-link">«</a>
                 </li>
                 <li className="page-item">
-                  <a className="page-link" href="#">
-                    1
-                  </a>
+                  <a className="page-link" href="#">1</a>
                 </li>
                 <li className="page-item">
-                  <a className="page-link" href="#">
-                    2
-                  </a>
+                  <a className="page-link" href="#">2</a>
                 </li>
                 <li className="page-item">
-                  <a className="page-link" href="#">
-                    3
-                  </a>
+                  <a className="page-link" href="#">3</a>
                 </li>
                 <li className="page-item">
-                  <a className="page-link" href="#">
-                    »
-                  </a>
+                  <a className="page-link" href="#">»</a>
                 </li>
               </ul>
             </nav>
@@ -215,10 +203,8 @@ function ProductList() {
         </div>
       </section>
       <section className="content-body my-2">
-        {/* Product list section */}
         <table className="table table-bordered">
           <thead>
-            {/* Table header */}
             <tr>
               <th className="text-center" style={{ width: 30 }}>
                 <input type="checkbox" id="checkboxAll" />
@@ -235,7 +221,6 @@ function ProductList() {
             </tr>
           </thead>
           <tbody>
-            {/* Display filteredProducts if available, otherwise display products */}
             {(filteredProducts.length > 0 ? filteredProducts : products).map((product, index) => {
               const productImage = images.find(image => image.productId.id === product.id);
               return (
@@ -263,12 +248,12 @@ function ProductList() {
                     </div>
                   </td>
                   <td>
-                    {productImage ? (
-                      <img src={getImgUrl(productImage.image)} alt={productImage.image} style={{ width: '180px' }} />
-                    ) : (
-                      <button className="btn btn-primary" onClick={() => handleAddImage(product.id)}>Thêm hình ảnh</button>
-                    )}
-                  </td>
+  {productImage && (
+    <img src={getImgUrl(productImage.image)} alt={productImage.image} style={{ width: '180px' }} />
+  )}
+  <button className="btn btn-primary" onClick={() => handleAddImage(product.id)}>Thêm hình ảnh</button>
+</td>
+
                   <td>{product.price}</td>
                   <td>{product.qty}</td>
                   <td>{product.categoryId.name}</td>
@@ -287,4 +272,3 @@ function ProductList() {
 }
 
 export default ProductList;
-

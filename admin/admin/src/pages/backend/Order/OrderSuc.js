@@ -12,7 +12,7 @@ function OrderSuc() {
      setSearchTerm(event.target.value); 
    };
    const filteredOrder = orders
-   .filter(order => order.status === 4)
+   .filter(order => order.status === 5)
    .filter(order =>
        order.name.toLowerCase().includes(searchTerm.toLowerCase())
    );
@@ -127,7 +127,6 @@ function OrderSuc() {
                            <th>Địa chỉ</th>
                            <th>Tên sản phẩm</th>
                            <th>Ngày đặt hàng</th>
-                           <th>Tình trạng</th>
                            <th className="text-center" style={{ width: '30px' }}>ID</th>
                        </tr>
                    </thead>
@@ -166,14 +165,6 @@ function OrderSuc() {
                                <td>{order.address}</td>
                                <td>{product.name}</td>
                                <td>{new Date(order.createdAt).toLocaleDateString()}</td>
-                               <td>
-                                   <select value={order.status} onChange={(e) => updateOrderStatus(order.id, e.target.value)}>
-                                       <option value={1}>Chờ xác nhận</option>
-                                       <option value={2}>Đã xác nhận</option>
-                                       <option value={3}>Đang giao hàng</option>
-                                       <option value={4}>Giao thành công</option>
-                                   </select>
-                               </td>
                                <td className="text-center">{order.id}</td>
                            </tr>
                        );

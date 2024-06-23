@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import Sidebar from './Sidebar';
 import OrderService from '../../../services/OrderServices';
+import ReportService from '../../../services/ReportServices';
 
 const Order = () => {
   const [userId, setUserId] = useState(null);
@@ -20,7 +21,6 @@ const Order = () => {
     if (loggedInUser && loggedInUser.id) {
       setUserId(loggedInUser.id);
     } else {
-      // Redirect to login page if not logged in
       Swal.fire({
         title: 'Bạn cần đăng nhập',
         text: 'Để xem đơn hàng, vui lòng đăng nhập hoặc đăng ký tài khoản.',
@@ -35,7 +35,6 @@ const Order = () => {
 
   useEffect(() => {
     if (!userId) return;
-
     OrderService.getOrders(userId)
       .then(response => {
         if (response.data) {
@@ -52,24 +51,62 @@ const Order = () => {
       });
   }, [userId]);
 
+  const handleReport = (orderId) => {
+    Swal.fire({
+      title: 'Báo cáo đơn hàng',
+      input: 'textarea',
+      inputLabel: 'Nội dung báo cáo',
+      inputPlaceholder: 'Nhập nội dung...',
+      showCancelButton: true,
+      confirmButtonText: 'Gửi báo cáo',
+      cancelButtonText: 'Hủy'
+    }).then((result) => {
+      if (result.isConfirmed && result.value) {
+        const report = {
+          order: { id: orderId },
+          user: { id: userId },
+          content: result.value
+        };
+        ReportService.submitReport(report)
+          .then(() => {
+            Swal.fire('Báo cáo thành công!', '', 'success');
+          })
+          .catch((error) => {
+            Swal.fire('Lỗi khi gửi báo cáo', error.message, 'error');
+          });
+      }
+    });
+  };
+  const formatCurrency = (number) => {
+    return number.toLocaleString('vi-VN') + 'đ';
+  };
   const renderOrders = () => {
     if (loading) {
       return <p>Loading...</p>;
     }
-
     if (!orders.length) {
       return <p>Không có đơn hàng nào.</p>;
     }
 
     const filteredOrders = orders.filter(order => {
-      if (selectedTab === 'pendingPayment') {
-        return order.status === 1;
-      } else if (selectedTab === 'pendingDelivery') {
-        return order.status === 2;
-      } else if (selectedTab === 'completed') {
-        return order.status === 3;
+      switch (selectedTab) {
+        case 'pendingPayment':
+          return order.status === OrderStatus.PENDING_PAYMENT;
+        case 'confirmed':
+          return order.status === OrderStatus.CONFIRMED;
+        case 'pendingDelivery':
+          return order.status === OrderStatus.PENDING_DELIVERY;
+        case 'delivered':
+          return order.status === OrderStatus.DELIVERED;
+        case 'completed':
+          return order.status === OrderStatus.COMPLETED;
+        case 'cancelled':
+          return order.status === OrderStatus.CANCELLED;
+        case 'returned':
+          return order.status === OrderStatus.RETURNED;
+        default:
+          return false;
       }
-      return false;
     });
 
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -86,6 +123,7 @@ const Order = () => {
               <th>Số lượng</th>
               <th>Tổng cộng</th>
               <th>Trạng thái</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -110,10 +148,15 @@ const Order = () => {
                   </div>
                 </td>
                 <td className="total-col">
-                  ${item.price * item.qty}
+                  ${formatCurrency(item.price * item.qty)}
                 </td>
                 <td className="status-col">
                   {getStatusText(item.status)}
+                </td>
+                <td className="action-col">
+                  {item.status === OrderStatus.PENDING_DELIVERY && (
+                    <button onClick={() => handleReport(item.id)}>Báo cáo</button>
+                  )}
                 </td>
               </tr>
             ))}
@@ -141,12 +184,20 @@ const Order = () => {
 
   const getStatusText = (status) => {
     switch (status) {
-      case 1:
+      case OrderStatus.PENDING_PAYMENT:
         return "Chờ xác nhận";
-      case 2:
+      case OrderStatus.CONFIRMED:
+        return "Đã xác nhận";
+      case OrderStatus.PENDING_DELIVERY:
         return "Đang giao hàng";
-      case 3:
+      case OrderStatus.DELIVERED:
+        return "Đã giao";
+      case OrderStatus.COMPLETED:
         return "Đã hoàn thành";
+      case OrderStatus.CANCELLED: 
+        return "Đã hủy";
+      case OrderStatus.RETURNED:
+        return "Trả hàng";
       default:
         return "Người nhận không nhận hàng";
     }
@@ -165,10 +216,22 @@ const Order = () => {
             Chờ xác nhận
           </button>
           <button
+            onClick={() => setSelectedTab('confirmed')}
+            className={selectedTab === 'confirmed' ? 'active' : ''}
+          >
+            Đã xác nhận
+          </button>
+          <button
             onClick={() => setSelectedTab('pendingDelivery')}
             className={selectedTab === 'pendingDelivery' ? 'active' : ''}
           >
             Chờ giao hàng
+          </button>
+          <button
+            onClick={() => setSelectedTab('delivered')}
+            className={selectedTab === 'delivered' ? 'active' : ''}
+          >
+            Đã giao
           </button>
           <button
             onClick={() => setSelectedTab('completed')}
@@ -176,11 +239,27 @@ const Order = () => {
           >
             Đã hoàn thành
           </button>
+          <button
+            onClick={() => setSelectedTab('cancelled')}
+            className={selectedTab === 'cancelled' ? 'active' : ''}
+          >
+            Đã hủy
+          </button>
         </div>
         {renderOrders()}
       </div>
     </div>
   );
+};
+
+const OrderStatus = {
+  PENDING_PAYMENT: 1,
+  CONFIRMED: 2,
+  PENDING_DELIVERY: 3,
+  DELIVERED: 4,
+  COMPLETED: 5,
+  CANCELLED: 6,
+  RETURNED: 7,
 };
 
 export default Order;

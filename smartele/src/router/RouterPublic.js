@@ -14,7 +14,6 @@ import Post from "../pages/frontend/Blog/Post";
 import PostDetail from "../pages/frontend/Blog/PostDetail";
 import Cart from "../pages/frontend/Cart";
 import About from "../pages/frontend/About";
-import SuccessPage from "../pages/frontend/Checkout/test";
 import Profile from "../pages/frontend/Profile/Profile";
 import Order from "../pages/frontend/Profile/Order";
 import Search from "../pages/frontend/Search";
@@ -22,13 +21,16 @@ import ForgotPassword from "../layouts/LayoutSite/ForgotPassword";
 import Address from "../pages/frontend/Profile/Address";
 import EditPassword from "../layouts/LayoutSite/Passsword";
 import ChangePassword from "../pages/frontend/Profile/ChangePassword";
+import AdminReports from "../pages/frontend/Profile/AdminReports";
+import ChatComponent from "../pages/frontend/Profile/ChatComponent";
 
 const RouterPublic = [
 
 
     {path:'/',component:Home},
     {path:'/search',component:Search},
-
+    {path:'/admin',component:AdminReports},
+    {path:'/chatbox',component:ChatComponent},
     {path:'/product',component:Product},
     {path:'/wishlist',component:Wishlist},
     {path:'/checkout',component:Checkout},
@@ -45,7 +47,6 @@ const RouterPublic = [
     // // {path:'/tim-kiem/:key',component:Search},
     {path:'/cart',component:Cart},
     {path:'/about',component:About},
-    {path:'/test',component:SuccessPage},
     {path:'/profile',component:Profile},
     {path:'/order',component:Order},
     {path:'/addresses',component:Address},

@@ -1,23 +1,29 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import ProductService from '../../../services/ProductServices';
 import ImageService from '../../../services/ImageServices';
 import axios from 'axios';
 
 function ImageCreate() {
+  const location = useLocation();
+  const productId = new URLSearchParams(location.search).get('productId'); // Lấy productId từ query params
+
   const [formData, setFormData] = useState({
     name: '',
-    productId: '',
+    productId: productId || '', // Đặt giá trị mặc định cho productId từ query params
     image: '',
     link: '',
     sortOrder: '',
-    status: '',
+    status: '1', // Giá trị mặc định là '1' (Xuất bản)
   });
+
   const [file, setFile] = useState(null);
   const [imageName, setImageName] = useState('');
   const [message, setMessage] = useState('');
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
+    // Load danh sách sản phẩm khi component mount
     ProductService.getAll()
       .then(response => {
         setProducts(response.data.content);
@@ -41,19 +47,21 @@ function ImageCreate() {
       setMessage('Please fill in all fields.');
       return;
     }
+
     const formDataImage = { ...formData };
     formDataImage.image = imageName;
+
     const formDataUpload = new FormData();
     formDataUpload.append('file', file);
     formDataUpload.append('customName', imageName);
 
     try {
-      const response = await axios.post('http://localhost:8082/api/productimages/image', formDataUpload);
-      setMessage(response.data);
+      const responseUpload = await axios.post('http://localhost:8082/api/productimages/image', formDataUpload);
+      setMessage(responseUpload.data);
       setFile(null);
       setImageName('');
 
-      // Sau khi tải lên ảnh thành công, thực hiện tạo mới slider
+      // Sau khi tải lên ảnh thành công, thực hiện tạo mới ảnh
       ImageService.create(formDataImage)
         .then(response => {
           console.log('Tạo mới ảnh thành công:', response.data);
@@ -87,21 +95,21 @@ function ImageCreate() {
         <form onSubmit={handleSubmit}>
           <div className="row">
             <div className="col-md-9">
-            <div className="mb-3">
-              <label htmlFor="productId" className="form-label">Product ID:</label>
-              <select
-                id="productId"
-                name="productId"
-                className="form-select"
-                onChange={handleChange}
-                value={formData.productId}
-              >
-                <option value="">Select Product</option>
-                {products.map(product => (
-                  <option key={product.id} value={product.id}>{product.name}</option>
-                ))}
-              </select>
-            </div>
+              <div className="mb-3">
+                <label htmlFor="productId" className="form-label">Product ID:</label>
+                <select
+                  id="productId"
+                  name="productId"
+                  className="form-select"
+                  onChange={handleChange}
+                  value={formData.productId}
+                >
+                  <option value="">Select Product</option>
+                  {products.map(product => (
+                    <option key={product.id} value={product.id}>{product.name}</option>
+                  ))}
+                </select>
+              </div>
               <div className="mb-3">
                 <label><strong>Tên ảnh (*)</strong></label>
                 <input type="text" name="name" className="form-control" placeholder="Nhập tên slider" onChange={handleChange} value={formData.name}/>
@@ -139,7 +147,7 @@ function ImageCreate() {
                   <br />
                 </div>
                 <div className="box-footer text-end px-2 py-3">
-                  <button type="submit"className="btn btn-success btn-sm text-end">Thêm</button>
+                  <button type="submit" className="btn btn-success btn-sm text-end">Thêm</button>
                 </div>
               </div>
             </div>

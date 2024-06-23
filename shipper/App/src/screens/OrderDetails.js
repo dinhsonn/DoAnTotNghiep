@@ -15,9 +15,9 @@ const OrderDetails = ({ route }) => {
                 return "Đã xác nhận";
             case 3:
                 return "Đang giao hàng";
-            case 4:
-                return "Giao thành công";
             case 5:
+                return "Giao thành công";
+            case 6:
                 return "Khách không nhận hàng";
             default:
                 return "Không xác định";
@@ -72,7 +72,7 @@ const OrderDetails = ({ route }) => {
         { status: 1, text: "Chờ xác nhận" },
         { status: 2, text: "Đã xác nhận" },
         { status: 3, text: "Thành công" },
-        { status: 5, text: "Không nhận hàng" },
+        { status: 6, text: "Không nhận hàng" },
     ];
 
     return (

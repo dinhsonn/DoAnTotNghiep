@@ -95,17 +95,16 @@ function OrderCheck() {
                         <ul className="manager">
                             <li><Link to="/order">Tất cả ({orders.length})</Link></li>
                             <li><Link to="/order/xac-nhan">Đã xác nhận</Link></li>
-
                             <li><Link to="/order/dang-giao">Đơn đã giao</Link></li>
                             <li><Link to="/order/thanh-cong">Đơn hoàn thành</Link></li>
-                            <li><Link to="/order/that-bai">Đơn hoàn</Link></li>
+                            <li><Link to="/order/that-bai">Đơn bị hủy</Link></li>
                         </ul>
                     </div>
                     <div className="col-md-6">
                 <input
                   type="text"
                   className="search d-inline"
-                  onChange={handleSearch} // Thêm sự kiện onChange cho ô tìm kiếm
+                  onChange={handleSearch}
                 />
                 <button className="d-inline">Tìm kiếm</button>
               </div>
@@ -114,7 +113,7 @@ function OrderCheck() {
             <section className="content-body my-2">
             <div className="d-flex justify-content-between mb-3">
                 </div>
-                                <table className="table table-bordered">
+                    <table className="table table-bordered">
                     <thead>
                         <tr>
                             <th className="text-center" style={{ width: '30px' }}>
@@ -171,6 +170,8 @@ function OrderCheck() {
                                         <option value={2}>Đã xác nhận</option>
                                         <option value={3}>Đang giao hàng</option>
                                         <option value={4}>Giao thành công</option>
+                                        <option value={5}>Đã hoàn thành</option>
+                                        <option value={6}>Đã hủy</option>
                                     </select>
                                 </td>
                                 <td className="text-center">{order.id}</td>

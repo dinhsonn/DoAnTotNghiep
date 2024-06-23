@@ -86,9 +86,6 @@ function Sidebar() {
                               <li>
                                  <Link to={"/order"}>Tất cả đơn hàng</Link>
                               </li>
-                              <li>
-                                 <Link to={"/order/export"}>Xuất hàng</Link>
-                              </li>
                            </ul>
                         </li>
                         <li className="hdlitem">
