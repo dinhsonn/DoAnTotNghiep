@@ -6,7 +6,7 @@ function AboutCreate() {
     const [formData, setFormData] = useState({
         title: '',
         content: '',
-        status: ''
+        layout: '1'
     });
 
     const handleChange = (e) => {
@@ -44,18 +44,19 @@ function AboutCreate() {
             <section className="content-body my-2">
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
-                        <label htmlFor="title" className="form-label">Title:</label>
+                        <label htmlFor="title" className="form-label">Chủ đề:</label>
                         <input type="text" className="form-control" id="title" name="title" value={formData.title} onChange={handleChange} required />
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="content" className="form-label">Content:</label>
+                        <label htmlFor="content" className="form-label">Chi tiết:</label>
                         <textarea className="form-control" id="content" name="content" value={formData.content} onChange={handleChange} required />
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="status" className="form-label">Status:</label>
-                        <select className="form-select" id="status" name="status" value={formData.status} onChange={handleChange}>
-                        <option value="1">Xuất bản</option>
-                    <option value="2">Chưa xuất bản</option>
+                        <label htmlFor="layout" className="form-label">Bố cục:</label>
+                        <select className="form-select" id="status" name="layout" value={formData.layout} onChange={handleChange}>
+                        <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
                         </select>
                     </div>
                 </form>

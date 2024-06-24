@@ -7,7 +7,7 @@ function AboutEdit() {
     const [formData, setFormData] = useState({
         title: "",
         content: "",
-        status: ""
+        layout: "1"
     });
 
     useEffect(() => {
@@ -49,18 +49,19 @@ function AboutEdit() {
             <section className="content-body my-2">
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label htmlFor="title">Title</label>
+                        <label htmlFor="title">Chủ đề</label>
                         <input type="text" className="form-control" id="title" name="title" value={formData.title} onChange={handleChange} />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="content">Content</label>
+                        <label htmlFor="content">Chi tiết</label>
                         <textarea className="form-control" id="content" name="content" value={formData.content} onChange={handleChange}></textarea>
                     </div>
                     <div className="form-group">
-                        <label htmlFor="status">Trạng thái</label>
-                        <select className="form-control" id="status" name="status" value={formData.status} onChange={handleChange}>
-                            <option value="0">Xuất bản</option>
-                            <option value="1">Chưa xuất bản</option>
+                        <label htmlFor="status">Bố cục</label>
+                        <select className="form-control" id="layout" name="layout" value={formData.layout} onChange={handleChange}>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
                         </select>
                     </div>
                     <button type="submit" className="btn btn-primary">Lưu</button>

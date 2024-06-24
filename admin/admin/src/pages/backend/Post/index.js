@@ -118,9 +118,11 @@ function Post() {
                           </Link>
                    </div>
                 </td>
-                <td>{post.detail}</td>
+                <td> {post.detail.length > 50
+                                ? post.detail.slice(0, 250) + "..."
+                                : post.detail}</td>
                 <td>{post.topicId.name}</td>
-                <td>{post.status}</td>
+                <td>{post.status=== 0 ?"Xuất bản":"Chưa xuất bản"}</td>
                 <td className="text-center">{post.id}</td>
              </tr>
             ))}

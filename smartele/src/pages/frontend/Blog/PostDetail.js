@@ -39,8 +39,8 @@ function PostDetail() {
   </nav>
   {post && (
   <div className="page-content">
-    <figure className="entry-media">
-    <img src={getImgUrl(post.image)} alt={post.image} style={{ width: '20%', display: 'block', margin: '0 auto' }} />
+    <figure>
+    <img src={getImgUrl(post.image)} alt={post.image} style={{ width: '30%', display: 'block', margin: '0 auto' }} />
     </figure>
     <div className="container">
       <article className="entry single-entry entry-fullwidth">
@@ -54,7 +54,12 @@ function PostDetail() {
               </h2>
               <div className="entry-content editor-content">
                 <p>
-                {post.detail}
+                {post.detail.split(';').map((line, index) => (
+                        <p key={index}>
+                          {line.trim()}
+                          {index < post.detail.split(';').length - 1 && <br />}
+                        </p>
+                      ))}
                 </p>
               </div>
               <div className="entry-footer row no-gutters">
@@ -71,63 +76,7 @@ function PostDetail() {
  
       </article>
       {/* End .pager-nav */}
-      <div className="related-posts">
-        <h3 className="title">Related Posts</h3>
-        <div
-          className="owl-carousel owl-simple"
-          data-toggle="owl"
-          data-owl-options='{
-                          "nav": false, 
-                          "dots": true,
-                          "margin": 20,
-                          "loop": false,
-                          "responsive": {
-                              "0": {
-                                  "items":1
-                              },
-                              "480": {
-                                  "items":2
-                              },
-                              "768": {
-                                  "items":3
-                              },
-                              "992": {
-                                  "items":4
-                              }
-                          }
-                      }'
-        >
-          <article className="entry entry-grid">
-            <figure className="entry-media">
-              <a href="single.html">
-                <img
-                  src="assets/images/blog/grid/3cols/post-1.jpg"
-                  alt="image desc"
-                />
-              </a>
-            </figure>
-            {/* End .entry-media */}
-            <div className="entry-body">
-              <div className="entry-meta">
-                <a href="#">Nov 22, 2018</a>
-                <span className="meta-separator">|</span>
-                <a href="#">2 Comments</a>
-              </div>
-              {/* End .entry-meta */}
-              <h2 className="entry-title">
-                <a href="single.html">Cras ornare tristique elit.</a>
-              </h2>
-              {/* End .entry-title */}
-              <div className="entry-cats">
-                in <a href="#">Lifestyle</a>,<a href="#">Shopping</a>
-              </div>
-              {/* End .entry-cats */}
-            </div>
-            {/* End .entry-body */}
-          </article>
-        </div>
-        {/* End .owl-carousel */}
-      </div>
+
     </div>
     
     {/* End .container */}

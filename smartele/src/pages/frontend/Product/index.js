@@ -18,13 +18,16 @@ function Product() {
   const queryParams = new URLSearchParams(location.search);
   const categoryOptionValueId = queryParams.get("categoryOptionValueId");
   const [productValueLoaded, setProductValueLoaded] = useState(false);
+  const [productsPerPage] = useState(12);
+  const [currentPage, setCurrentPage] = useState(1);
+
   useEffect(() => {
     if (categoryOptionValueId) {
       ProductServices.getProductsByCategoryOptionValue(categoryOptionValueId)
         .then((response) => {
           setProductValue(response.data);
-          console.log("kkk",response.data)
-          setProductValueLoaded(true); 
+          console.log("kkk", response.data);
+          setProductValueLoaded(true);
         })
         .catch((error) => {
           console.error("Error fetching products:", error);
@@ -33,7 +36,6 @@ function Product() {
       setProductValueLoaded(false);
     }
   }, [categoryOptionValueId]);
-  
 
   useEffect(() => {
     BrandServices.getAll()
@@ -59,7 +61,6 @@ function Product() {
         const [productsResponse, productImagesResponse] = await Promise.all([
           ProductServices.getAll(),
           ProductServices.getProductImage(),
-        
         ]);
         const productsData = productsResponse.data.content;
         const productImagesData = productImagesResponse.data.content;
@@ -194,9 +195,31 @@ function Product() {
           })
         : true;
 
-    return brandMatch && priceMatch && categoryMatch ;
+    return brandMatch && categoryMatch && priceMatch;
   });
 
+  // Pagination
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = filteredProducts.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
+
+  // Page numbers
+  const pageNumbers = [];
+  for (
+    let i = 1;
+    i <= Math.ceil(filteredProducts.length / productsPerPage);
+    i++
+  ) {
+    pageNumbers.push(i);
+  }
+
+  // Handle page click
+  const handlePageClick = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
   return (
     <>
       <main className="main">
@@ -227,7 +250,8 @@ function Product() {
               {/* End .toolbox-left */}
               <div className="toolbox-center">
                 <div className="toolbox-info">
-                  Hiển thị <span>12 trên 56</span> Sản phẩm
+                  Hiển thị <span>{currentProducts.length}</span> trên{" "}
+                  <span>{filteredProducts.length}</span> Sản phẩm
                 </div>
                 {/* End .toolbox-info */}
               </div>
@@ -252,20 +276,36 @@ function Product() {
             {/* End .toolbox */}
             <div className="products">
               <div className="row">
-              {productValueLoaded
-                ? combinedProductValueData.map((combinedItem, index) => (
-                    <ProductItem3 product={combinedItem} key={index} />
-                  ))
-                : filteredProducts.map((combinedItem, index) => (
-                    <ProductItem3 product={combinedItem} key={index} />
-                  ))}
+                {productValueLoaded
+                  ? combinedProductValueData.map((combinedItem, index) => (
+                      <ProductItem3 product={combinedItem} key={index} />
+                    ))
+                  : currentProducts.map((combinedItem, index) => (
+                      <ProductItem3 product={combinedItem} key={index} />
+                    ))}
               </div>
+
               {/* End .row */}
-              <div className="load-more-container text-center">
-                <a href="#" className="btn btn-outline-darker btn-load-more">
-                  XEM THÊM <i className="icon-refresh" />
-                </a>
-              </div>
+              <nav className="pagination justify-content-center" >
+                <ul className="pagination" >
+                  {pageNumbers.map((number) => (
+                    <li
+                      key={number}
+                      className={`page-item ${
+                        currentPage === number ? "active" : ""
+                      }`}
+                    >
+                      <a
+                        href="#"
+                        className="page-link"
+                        onClick={() => handlePageClick(number)}
+                      >
+                        {number}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
               {/* End .load-more-container */}
             </div>
             {/* End .products */}

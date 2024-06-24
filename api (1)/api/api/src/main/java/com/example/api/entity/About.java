@@ -32,7 +32,7 @@ public class About {
     private String content;
 
     @Column(nullable = false)
-    private int status;
+    private int layout;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false)

@@ -120,7 +120,7 @@ function Home() {
             >
               <div className="owl-carousel owl-full carousel-equal-height carousel-with-shadow">
                 <div className="row">
-                  {combinedData.map((combinedItem, index) => (
+                  {combinedData.slice(0, 8).map((combinedItem, index) => (
                     <ProductItem3 product={combinedItem} key={index} />
                   ))}
                 </div>

@@ -71,9 +71,9 @@ function About() {
                             <th className="text-center" style={{width: '30px'}}>
                                 <input type="checkbox" id="checkAll" />
                             </th>
-                            <th>Title</th>
-                            <th>Content</th>
-                            <th>Trạng thái</th>
+                            <th>Chủ đề</th>
+                            <th>Chi tiết</th>
+                            <th>Bố cục</th>
                             <th className="text-center" style={{width: '30px'}}>ID</th>
                             <th className="text-center">Actions</th>
                         </tr>
@@ -86,7 +86,7 @@ function About() {
                                 </td>
                                 <td>{about.title}</td>
                                 <td>{about.content}</td>
-                                <td>{about.status}</td>
+                                <td>{about.layout}</td>
                                 <td className="text-center">{about.id}</td>
                                 <td className="text-center">
                                     <div className="function_style">

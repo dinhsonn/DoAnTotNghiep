@@ -25,7 +25,7 @@ function Banner() {
         {banners.map((banner, index) => (
           <div className="banner mb-lg-1 mb-xl-2" key={banner.id} >
             <a href={banner.link} >
-            <img  src={getImgUrl(banner.image)} alt="Banner" />
+            <img src={getImgUrl(banner.image)} alt="Banner" style={{width: "100%", height: "100%", objectFit: "cover"}} />
             </a>
             <div className="banner-content">
               <h4 className="banner-subtitle d-lg-none d-xl-block">

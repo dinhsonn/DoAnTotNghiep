@@ -16843,7 +16843,12 @@ button:focus {
 /* '' */
 .icon-yarn:before {
   content: '\f7e3'; }
-
+  .banner {
+    width: 100%; /* Đảm bảo chiều rộng của banner là 100% */
+    height: auto; /* Chiều cao tự động điều chỉnh theo nội dung */
+    overflow: hidden; /* Đảm bảo không bị tràn bên ngoài */
+    position: relative; /* Để có thể điều chỉnh vị trí của con */
+  }  
 /* '' */
 
 /*# sourceMappingURL=style.css.map */

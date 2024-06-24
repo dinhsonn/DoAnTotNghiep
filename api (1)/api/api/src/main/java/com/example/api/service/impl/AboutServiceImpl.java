@@ -41,7 +41,7 @@
             if (existingAbout != null) {
                 existingAbout.setTitle(about.getTitle());
                 existingAbout.setContent(about.getContent());
-                existingAbout.setStatus(about.getStatus());
+                existingAbout.setLayout(about.getLayout());
                 existingAbout.setUpdatedAt(new Date());
                 existingAbout.setDeletedAt(new Date());
                 return aboutRepository.save(existingAbout);

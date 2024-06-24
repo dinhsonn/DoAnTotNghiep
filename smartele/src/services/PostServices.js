@@ -1,9 +1,15 @@
 import httpAxios from "../httpAxios";
 
 
+
 function getAll()
 {
     return httpAxios.get("posts");
+
+}
+function getAllTopic()
+{
+    return httpAxios.get("topics");
 
 }
 function create(data)
@@ -24,6 +30,7 @@ function remove(id)
 }
 const PostService = {
     getAll:getAll,
+    getAllTopic:getAllTopic,
     create:create,
     remove:remove,
     getById:getById,
