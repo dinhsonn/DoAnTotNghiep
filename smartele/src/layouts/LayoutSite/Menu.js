@@ -156,9 +156,9 @@ function Menu() {
                 if (!parentMenu.parentId) {
                   return (
                     <li key={parentMenu.id}>
-                      <Link to={parentMenu.link} className="sf-with-ul">
+                      <a href={parentMenu.link} className="sf-with-ul">
                         {parentMenu.name}
-                      </Link>
+                      </a>
                       {menus.map((childMenu) => {
                         if (childMenu.parentId === parentMenu.id) {
                           return (

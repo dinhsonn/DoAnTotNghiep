@@ -46,9 +46,9 @@ function Slider() {
     <div style={{ position: "relative" }}>
         {currentSlider && (
           <div>
-            <figure style={{ width: "100%", height: "400px", overflow: "hidden" }}>
+            <figure style={{ width: "1200px", height: "400px", overflow: "hidden" }}>
               <a>
-                <picture style={{ width: "100%", height: "100%", objectFit: "cover" }}>
+                <picture style={{ width: "1200px%", height: "400px%", objectFit: "cover" }}>
                   <img src={`http://localhost:8082/api/sliders/image/${currentSlider.image}`} alt={currentSlider.alt} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 </picture>
               </a>
@@ -57,10 +57,10 @@ function Slider() {
             </div>
           </div>
         )}
-        <div style={{ position: "absolute", left: "10px", top: "50%", cursor: "pointer" }} onClick={handlePreviousSlide}>
+        <div style={{ position: "absolute", left: "0px", top: "50%", cursor: "pointer" }} onClick={handlePreviousSlide}>
           <FontAwesomeIcon icon={faChevronLeft} style={{ fontSize: "24px" }} />
         </div>
-        <div style={{ position: "absolute", right: "10px", top: "50%", cursor: "pointer" }} onClick={handleNextSlide}>
+        <div style={{ position: "absolute", left: "1200px", top: "50%", cursor: "pointer" }} onClick={handleNextSlide}>
           <FontAwesomeIcon icon={faChevronRight} style={{ fontSize: "24px" }} />
         </div>
     </div>

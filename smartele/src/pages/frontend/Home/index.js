@@ -70,7 +70,6 @@ function Home() {
                 {/* End .intro-slider-container */}
               </div>
               {/* End .col-lg-8 */}
-              <Banner />
               {/* End .col-lg-4 */}
             </div>
             {/* End .row */}
