@@ -15,6 +15,8 @@ function ProductList() {
   const [brands, setBrands] = useState([]);
   const [images, setImages] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [productsPerPage] = useState(5);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,6 +27,12 @@ function ProductList() {
     loadCategoryOptionValue();
     loadProductImages();
   }, []);
+
+  useEffect(() => {
+    const indexOfLastProduct = currentPage * productsPerPage;
+    const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+    setFilteredProducts(products.slice(indexOfFirstProduct, indexOfLastProduct));
+  }, [currentPage, products, productsPerPage]);
 
   const loadProductImages = async () => {
     try {
@@ -118,13 +126,13 @@ function ProductList() {
     XLSX.utils.sheet_add_aoa(ws, header, { origin: 'A1' });
 
     ws['!cols'] = [
-      { wpx: 100 }, 
-      { wpx: 200 }, 
-      { wpx: 100 }, 
-      { wpx: 100 }, 
-      { wpx: 200 }, 
-      { wpx: 200 }, 
-      { wpx: 400 }  
+      { wpx: 100 },
+      { wpx: 200 },
+      { wpx: 100 },
+      { wpx: 100 },
+      { wpx: 200 },
+      { wpx: 200 },
+      { wpx: 400 }
     ];
 
     XLSX.utils.book_append_sheet(wb, ws, 'Products');
@@ -145,11 +153,13 @@ function ProductList() {
 
   const handleSearch = (event) => {
     const keyword = event.target.value;
-    const filteredProducts = products.filter(product => 
+    const filteredProducts = products.filter(product =>
       product.name.toLowerCase().includes(keyword.toLowerCase())
     );
-    setFilteredProducts(filteredProducts);
+    setFilteredProducts(filteredProducts.slice(0, productsPerPage));
   };
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <div className="content">
@@ -170,34 +180,22 @@ function ProductList() {
           </div>
         </div>
         <div className="row mt-1 align-items-center">
-          <div className="col-md-8">
-            <select name="" className="d-inline me-1">
-              <option value="">Tất cả danh mục</option>
-            </select>
-            <select name="" className="d-inline me-1">
-              <option value="">Tất cả thương hiệu</option>
-            </select>
-            <button className="btnfilter">Lọc</button>
-          </div>
           <div className="col-md-4 text-end">
             <nav aria-label="Page navigation example">
               <ul className="pagination pagination-sm justify-content-end">
-                <li className="page-item disabled">
-                  <a className="page-link">«</a>
+                <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                  <button className="page-link" onClick={() => paginate(currentPage - 1)}>«</button>
                 </li>
-                <li className="page-item">
-                  <a className="page-link" href="#">1</a>
-                </li>
-                <li className="page-item">
-                  <a className="page-link" href="#">2</a>
-                </li>
-                <li className="page-item">
-                  <a className="page-link" href="#">3</a>
-                </li>
-                <li className="page-item">
-                  <a className="page-link" href="#">»</a>
+                {[...Array(Math.min(Math.ceil(products.length / productsPerPage), 5)).keys()].map(number => (
+                  <li key={number} className={`page-item ${currentPage === number + 1 ? 'active' : ''}`}>
+                    <button className="page-link" onClick={() => paginate(number + 1)}>{number + 1}</button>
+                  </li>
+                ))}
+                <li className={`page-item ${currentPage === Math.ceil(products.length / productsPerPage) ? 'disabled' : ''}`}>
+                  <button className="page-link" onClick={() => paginate(currentPage + 1)}>»</button>
                 </li>
               </ul>
+
             </nav>
           </div>
         </div>
@@ -221,7 +219,7 @@ function ProductList() {
             </tr>
           </thead>
           <tbody>
-            {(filteredProducts.length > 0 ? filteredProducts : products).map((product, index) => {
+            {filteredProducts.map((product, index) => {
               const productImage = images.find(image => image.productId.id === product.id);
               return (
                 <tr key={index} className="datarow">
@@ -248,12 +246,11 @@ function ProductList() {
                     </div>
                   </td>
                   <td>
-  {productImage && (
-    <img src={getImgUrl(productImage.image)} alt={productImage.image} style={{ width: '180px' }} />
-  )}
-  <button className="btn btn-primary" onClick={() => handleAddImage(product.id)}>Thêm hình ảnh</button>
-</td>
-
+                    {productImage && (
+                      <img src={getImgUrl(productImage.image)} alt={productImage.image} style={{ width: '180px' }} />
+                    )}
+                    <button className="btn btn-primary" onClick={() => handleAddImage(product.id)}>Thêm hình ảnh</button>
+                  </td>
                   <td>{product.price}</td>
                   <td>{product.qty}</td>
                   <td>{product.categoryId.name}</td>

@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import ContactService from "../../../services/ContactServices";
 
 function Contact() {
+  document.title = "Liên hệ";
   const navigate = useNavigate();
   const [contacts, setContacts] = useState({
     name: "",

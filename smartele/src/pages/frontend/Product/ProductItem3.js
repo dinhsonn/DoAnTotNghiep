@@ -159,24 +159,6 @@ function ProductItem3(props) {
             <a href="product.html">{props.product.name}</a>
           </h3>
           <div className="product-price">{formatCurrency(props.product.price)}</div>
-          <div className="ratings-container">
-            <div className="ratings">
-              <div className="ratings-val" style={{ width: "0%" }} />
-            </div>
-            <span className="ratings-text">( 0 Reviews )</span>
-          </div>
-          <div className="product-nav product-nav-dots">
-            <a href="#" style={{ background: "#cc9966" }}>
-              <span className="sr-only">Color name</span>
-            </a>
-            <a
-              href="#"
-              className="active"
-              style={{ background: "#ebebeb" }}
-            >
-              <span className="sr-only">Color name</span>
-            </a>
-          </div>
         </div>
       </div>
     </div>

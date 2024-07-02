@@ -1,7 +1,6 @@
 package com.example.api.repository;
 
 import com.example.api.entity.Order;
-import com.example.api.entity.User;
 
 import java.util.List;
 

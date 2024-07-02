@@ -1,9 +1,13 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ImageService from "../../../services/ImageServices";
+import Pagination from "../../../layouts/LayoutAdmin/Pagination";
 
 function ProductImage() {
   const [productImages, setProductImages] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [productsPerPage] = useState(5);
+  const [searchTerm, setSearchTerm] = useState(""); 
 
   useEffect(() => {
     loadProductImages();
@@ -17,14 +21,19 @@ function ProductImage() {
       console.error("Error loading products:", error);
     }
   };
-  const [searchTerm, setSearchTerm] = useState(""); 
+
   const handleSearch = (event) => {
     setSearchTerm(event.target.value); 
   };
 
-  const filteredImage = productImages.filter((productImage) =>
+  const filteredImages = productImages.filter((productImage) =>
     productImage.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentImages = filteredImages.slice(indexOfFirstProduct, indexOfLastProduct);
+
   const removeImage = async (id) => {
     try {
       await ImageService.remove(id);
@@ -35,6 +44,7 @@ function ProductImage() {
       console.error("Error deleting product:", error);
     }
   };
+
   const getImgUrl = (imageName) => {
     const endpoint = 'productimages'; 
     let imageUrl = `http://localhost:8082/api/${endpoint}/image/${imageName}`;
@@ -42,7 +52,9 @@ function ProductImage() {
     imageUrl = imageUrl.replace(/\.png/g, "") + ".png";
 
     return imageUrl;
-};
+  };
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <div className="content">
@@ -63,17 +75,21 @@ function ProductImage() {
             </ul>
           </div>
           <div className="col-md-6">
-                <input
-                  type="text"
-                  className="search d-inline"
-                  onChange={handleSearch} // Thêm sự kiện onChange cho ô tìm kiếm
-                />
-                <button className="d-inline">Tìm kiếm</button>
-              </div>
+            <input
+              type="text"
+              className="search d-inline"
+              onChange={handleSearch}
+            />
+            <button className="d-inline">Tìm kiếm</button>
+          </div>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={Math.ceil(filteredImages.length / productsPerPage)}
+            onPageChange={paginate}
+          />
         </div>
       </section>
       <section className="content-body my-2">
-        {/* Phần hiển thị danh sách sản phẩm */}
         <table className="table table-bordered">
           <thead>
             <tr>
@@ -89,9 +105,8 @@ function ProductImage() {
             </tr>
           </thead>
           <tbody>
-            {filteredImage.map((image, index) => (
+            {currentImages.map((image, index) => (
               <tr key={index} className="datarow">
-                {/* Thêm các cột dữ liệu */}
                 <td>
                   <input type="checkbox" id={`checkId${index}`} />
                 </td>

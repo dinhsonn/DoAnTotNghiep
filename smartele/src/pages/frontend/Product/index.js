@@ -284,8 +284,6 @@ function Product() {
                       <ProductItem3 product={combinedItem} key={index} />
                     ))}
               </div>
-
-              {/* End .row */}
               <nav className="pagination justify-content-center" >
                 <ul className="pagination" >
                   {pageNumbers.map((number) => (

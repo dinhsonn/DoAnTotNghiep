@@ -252,25 +252,13 @@
                                 className="custom-control-input"
                                 id="signin-remember"
                               />
-                              <label
-                                className="custom-control-label"
-                                htmlFor="signin-remember"
-                              >
-                                Nhớ mật khẩu
-                              </label>
                             </div>
-                            {/* End .custom-checkbox */}
-                            <a href="#" className="forgot-link">
-                              Quên mật khẩu?
-                            </a>
                           </div>
                           {/* End .form-footer */}
                         </form>
                         <div className="form-choice">
                           <p className="text-center">hoặc đăng nhập</p>
-                          <div className="row">
-                            <div className="col-sm-6">
-
+                            <div className="">
                               <GoogleOAuthProvider clientId="596128456614-9p85u5suisisqptve10k94haa8tmul8s.apps.googleusercontent.com">
                                 <GoogleLogin
                                   onSuccess={handleGoogleLogin}
@@ -279,12 +267,7 @@
                                   }}
                                 />
                               </GoogleOAuthProvider>
-
                             </div>
-                            {/* End .col-6 */}
-                            {/* End .col-6 */}
-                          </div>
-                          {/* End .row */}
                         </div>
                         {/* End .form-choice */}
                       </div>
@@ -350,12 +333,6 @@
                                 id="register-policy"
                                 required=""
                               />
-                              <label
-                                className="custom-control-label"
-                                htmlFor="register-policy"
-                              >
-                                Tôi đồng ý với <a href="#">chính sách bảo mật</a> *
-                              </label>
                             </div>
                             {/* End .custom-checkbox */}
                           </div>

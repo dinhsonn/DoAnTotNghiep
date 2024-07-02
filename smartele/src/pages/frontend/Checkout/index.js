@@ -20,10 +20,101 @@ function Checkout() {
     email: "",
     phone: "",
     address: "",
+    homeAddress: "",
   });
   const [defaultLocation, setDefaultLocation] = useState(null);
   const navigate = useNavigate();
   const warehouseLocation = { lat: 10.8471, lng: 106.7695 };
+  const [tinhThanh, setTinhThanh] = useState([]);
+  const [quanHuyen, setQuanHuyen] = useState([]);
+  const [phuongXa, setPhuongXa] = useState([]);
+  const [selectedTinhThanh, setSelectedTinhThanh] = useState({});
+  const [selectedQuanHuyen, setSelectedQuanHuyen] = useState({});
+  const [selectedPhuongXa, setSelectedPhuongXa] = useState({});
+  useEffect(() => {
+    const fetchTinhThanh = async () => {
+      try {
+        const response = await fetch('https://esgoo.net/api-tinhthanh/1/0.htm');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        if (data.error === 0) {
+          setTinhThanh(data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchTinhThanh();
+  }, []);
+  const handleTinhThanhChange = async (e) => {
+    const idTinhThanh = e.target.value;
+    try {
+      const response = await fetch(`https://esgoo.net/api-tinhthanh/2/${idTinhThanh}.htm`);
+      if (!response.ok) {
+        throw new Error('Lỗi mạng');
+      }
+      const data = await response.json();
+      if (data.error === 0) {
+        setQuanHuyen(data.data);
+        const selectedTinh = tinhThanh.find(item => item.id === idTinhThanh) || {};
+        setSelectedTinhThanh(selectedTinh);
+        setSelectedQuanHuyen({});
+        setSelectedPhuongXa({});
+        // Cập nhật địa chỉ ở đây
+        updateAddress(selectedTinh.name, '', '');
+        calculateShippingCost(selectedTinh.name);
+      }
+    } catch (error) {
+      console.error('Lỗi khi lấy dữ liệu:', error);
+    }
+  };
+
+  const handleQuanHuyenChange = async (e) => {
+    const idQuanHuyen = e.target.value;
+    try {
+      const response = await fetch(`https://esgoo.net/api-tinhthanh/3/${idQuanHuyen}.htm`);
+      if (!response.ok) {
+        throw new Error('Lỗi mạng');
+      }
+      const data = await response.json();
+      if (data.error === 0) {
+        setPhuongXa(data.data);
+        const selectedQuan = quanHuyen.find(item => item.id === idQuanHuyen) || {};
+        setSelectedQuanHuyen(selectedQuan);
+        setSelectedPhuongXa({});
+        // Cập nhật địa chỉ ở đây
+        updateAddress(selectedTinhThanh.name, selectedQuan.name, '');
+        calculateShippingCost(selectedTinhThanh.name + ', ' + selectedQuan.name);
+      }
+    } catch (error) {
+      console.error('Lỗi khi lấy dữ liệu:', error);
+    }
+  };
+
+  const handlePhuongXaChange = (e) => {
+    const idPhuongXa = e.target.value;
+    const selectedPhuong = phuongXa.find(item => item.id === idPhuongXa) || {};
+    setSelectedPhuongXa(selectedPhuong);
+    // Cập nhật địa chỉ ở đây
+    updateAddress(selectedTinhThanh.name, selectedQuanHuyen.name, selectedPhuong.name, checkouts.homeAddress);
+    calculateShippingCost(selectedTinhThanh.name + ', ' + selectedQuanHuyen.name + ', ' + selectedPhuong.name);
+  };
+
+  const updateAddress = (tinhThanh, quanHuyen, phuongXa, homeAddress) => {
+    const addressParts = [tinhThanh || '', quanHuyen || '', phuongXa || '', homeAddress || ''];
+    const address = addressParts.filter(part => part.trim() !== '').join(', ').trim();
+    setCheckouts((prevState) => ({
+      ...prevState,
+      address: address,
+      homeAddress: homeAddress,
+    }));
+  };
+
+
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -87,16 +178,19 @@ function Checkout() {
     fetchCartItems();
   }, [userId]);
 
-  useEffect(() => {
-    const fetchDefaultLocation = async () => {
-      try {
-        const response = await axios.get(`https://api.opencagedata.com/geocode/v1/json?q=Qu%E1%BA%ADn%209%2C%20Th%E1%BB%A7%20%C4%90%E1%BB%A9c&key=${YOUR_OPENCAGE_API_KEY}`);
-        const { lat, lng } = response.data.results[0].geometry;
-        setDefaultLocation({ lat, lng });
-      } catch (error) {
-        console.error("Error fetching default location:", error);
-      }
-    };
+  useEffect(() => {const fetchDefaultLocation = async () => {
+    try {
+      const defaultAddress = "Cao Đẳng Công Thương TP.HCM";
+      const response = await axios.get(
+        `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(defaultAddress)}&key=${YOUR_OPENCAGE_API_KEY}`
+      );
+      const { lat, lng } = response.data.results[0].geometry;
+      setDefaultLocation({ lat, lng });
+    } catch (error) {
+      console.error("Error fetching default location:", error);
+    }
+  };
+  
     fetchDefaultLocation();
   }, []);
 
@@ -109,7 +203,7 @@ function Checkout() {
 
   const calculateShippingCost = async (address) => {
     if (!defaultLocation) {
-      console.error("Default location is not available.");
+      console.error("Vị trí mặc định không khả dụng.");
       return;
     }
   
@@ -120,18 +214,19 @@ function Checkout() {
   
       let cost;
       if (distance <= 10) {
-        cost = 20000;
+        cost = 20000; // Phí cố định nếu khoảng cách nhỏ hơn hoặc bằng 10km
       } else {
-        cost = distance * 5000;
+        cost = distance * 5000; // Phí tính theo khoảng cách nếu lớn hơn 10km
       }
   
       setShippingCost(cost);
     } catch (error) {
-      console.error("Error fetching coordinates:", error);
-      return error; 
+      console.error("Lỗi khi lấy thông tin vị trí:", error);
+      return error;
     }
   };
   
+
 
 
   const getDistance = (location1, location2) => {
@@ -163,8 +258,8 @@ function Checkout() {
     }
   };
 
-  const handleAddToOrder = (productId, name, email, phone, address, qty, price, image, paymentMethod) => {
-    console.log("Adding to order:", productId, name, email, phone, address, qty, price, image, paymentMethod);
+  const handleAddToOrder = (productId, name, email, phone, address, homeAddress, qty, price, image, paymentMethod) => {
+    console.log("Adding to order:", productId, name, email, phone, address, homeAddress, qty, price, image, paymentMethod);
     if (!userId) {
       console.error('User ID is not available.');
       return;
@@ -173,7 +268,7 @@ function Checkout() {
     const subtotal = ((price * qty) + shippingCost).toFixed(0);
     const subtotalNumber = parseFloat(subtotal);
 
-    OrderService.addItemToOrder(userId, productId, name, email, phone, address, qty, subtotalNumber, image, paymentMethod)
+    OrderService.addItemToOrder(userId, productId, name, email, phone, address, homeAddress, qty, subtotalNumber, image, paymentMethod)
       .then(() => {
         if (paymentMethod === 'Thanh toán VNpay') {
           axios.get('http://localhost:8082/pay', { params: { amount: subtotalNumber * 100 } })
@@ -332,20 +427,71 @@ function Checkout() {
                           name="address"
                           placeholder="Địa chỉ *"
                           value={checkouts.address}
-                          onChange={(e) => {
-                            handleChange(e);
-                            // Clear previous error
-                            Swal.close();
-                          }}
-                          onBlur={async () => {
-                            const error = await calculateShippingCost(checkouts.address);
-                            if (error) {
-                              Swal.fire("Lỗi", "Không tìm thấy địa chỉ", "error");
-                            }
-                          }}
+                          readOnly
                           required
                         />
-
+                      </div>
+                      <div className="col-12">
+                        <label>Địa chỉ</label>
+                        <div className="row">
+                          <div className="col-sm-4">
+                            <select
+                              className="form-control"
+                              id="tinhthanh"
+                              name="tinhthanh"
+                              onChange={handleTinhThanhChange}
+                              value={selectedTinhThanh.id || ""}
+                              required
+                            >
+                              <option value="">Chọn tỉnh/thành phố</option>
+                              {tinhThanh.map((item) => (
+                                <option key={item.id} value={item.id}>{item.name}</option>
+                              ))}
+                            </select>
+                          </div>
+                          <div className="col-sm-4">
+                            <select
+                              className="form-control"
+                              id="quanhuyen"
+                              name="quanhuyen"
+                              onChange={handleQuanHuyenChange}
+                              value={selectedQuanHuyen.id || ""}
+                              required
+                            >
+                              <option value="">Chọn quận/huyện</option>
+                              {quanHuyen.map((item) => (
+                                <option key={item.id} value={item.id}>{item.name}</option>
+                              ))}
+                            </select>
+                          </div>
+                          <div className="col-sm-4">
+                            <select
+                              className="form-control"
+                              id="phuongxa"
+                              name="phuongxa"
+                              onChange={handlePhuongXaChange}
+                              value={selectedPhuongXa.id || ""}
+                              required
+                            >
+                              <option value="">Chọn phường/xã</option>
+                              {phuongXa.map((item) => (
+                                <option key={item.id} value={item.id}>{item.name}</option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-12">
+                        <label>Địa chỉ nhà</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="homeAddress"
+                          name="homeAddress"
+                          placeholder="Địa chỉ nhà"
+                          value={checkouts.homeAddress}
+                          onChange={handleChange}
+                        />
                       </div>
                     </div>
                   </div>
@@ -457,6 +603,7 @@ function Checkout() {
                                 checkouts.email,
                                 checkouts.phone,
                                 checkouts.address,
+                                checkouts.homeAddress,
                                 item.qty,
                                 subtotal,
                                 item.image,

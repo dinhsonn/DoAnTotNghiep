@@ -71,7 +71,7 @@ function ProductTrending() {
     <div className="container trending">
       <div className="heading heading-flex mb-3">
         <div className="heading-left">
-          <h2 className="title">Sản phẩm thịnh hành</h2>
+          <h2 className="title">Danh mục sản phẩm </h2>
           {/* End .title */}
         </div>
         {/* End .heading-left */}

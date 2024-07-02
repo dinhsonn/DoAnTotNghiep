@@ -36,6 +36,10 @@ function getProductSale()
 {
     return httpAxios.get("productsale");
 }
+function getProductSaleById(id)
+{
+    return httpAxios.get(`productsale/${id}`);
+}
 function getProductsByBrandId(brandId)
 {
     return httpAxios.get(`products/related/${brandId}`);
@@ -84,6 +88,7 @@ const ProductService = {
     updateProductQty:updateProductQty,
     getProductsByBrandId:getProductsByBrandId,
     getProductsByCategory:getProductsByCategory,
-    getProductsByCategoryOptionValue:getProductsByCategoryOptionValue
+    getProductsByCategoryOptionValue:getProductsByCategoryOptionValue,
+    getProductSaleById,
 }
 export default ProductService;

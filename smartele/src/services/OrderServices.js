@@ -1,8 +1,8 @@
 import httpAxios from "../httpAxios";
 
 const OrderService = {
-  addItemToOrder: (userId, productId, name, email, phone, address, qty, price, image, paymentMethod) => {
-    return httpAxios.post(`/orders/add/${userId}/${productId}/${name}/${email}/${phone}/${address}/${qty}/${price}/${image}/${paymentMethod}`)
+  addItemToOrder: (userId, productId, name, email, phone, address,homeAddress, qty, price, image, paymentMethod) => {
+    return httpAxios.post(`/orders/add/${userId}/${productId}/${name}/${email}/${phone}/${address}/${homeAddress}/${qty}/${price}/${image}/${paymentMethod}`)
       .then(() => {
         console.log("Product added to order successfully.");
       })

@@ -31,8 +31,9 @@ function Dashboard() {
     const [monthlyEarnings, setMonthlyEarnings] = useState([]);
     const [dates, setDates] = useState([]);
     const [earningsData, setEarningsData] = useState([]);
+    const [orderCount, setOrderCount] = useState(0);
     const [refresh, setRefresh] = useState(false);
-    
+
     const lineChartRef = useRef(null);
     const barChartRef = useRef(null);
 
@@ -98,6 +99,9 @@ function Dashboard() {
                         .sort(([a], [b]) => sortMonths(a, b))
                         .map(([month, earnings]) => ({ month, earnings }));
                     setMonthlyEarnings(monthlyEarningsArray);
+
+                    // Đếm số đơn hàng
+                    setOrderCount(data.length);
                 } else {
                     console.error('API response is not an array:', data);
                 }
@@ -206,12 +210,20 @@ function Dashboard() {
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-md-12">
+                    <div className="col-md-6">
+                        <div className="info-box">
+                            <div className="info-box-content">
+                                <h3>Số đơn hàng tháng</h3>
+                                <span className="info-box-number">{orderCount}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-md-6">
                         <div className="info-box">
                             <div className="info-box-content">
                                 <h3>Từ khóa được tìm kiếm nhiều nhất</h3>
                                 <ul>
-                                    {keywords.length > 2 ? (
+                                    {keywords.length > 0 ? (
                                         keywords.map((item, index) => (
                                             <li key={index}>{item.keyword}</li>
                                         ))

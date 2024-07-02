@@ -3,6 +3,8 @@ import AboutService from "../../../services/AboutServices";
 import { useEffect, useState } from "react";
 
 function About() {
+  document.title = "About";
+
   const [abouts, setAbouts] = useState([]);
   const [aboutLayout1, setAboutLayout1] = useState(null);
   const [aboutLayout2, setAboutLayout2] = useState(null);

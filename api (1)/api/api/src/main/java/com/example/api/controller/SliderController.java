@@ -51,15 +51,13 @@ public class SliderController {
             @RequestParam("file") MultipartFile file,
             @RequestParam("customName") String customName) {
         try {
-             //String uploadDir = "C:\\Users\\DELL\\Desktop\\New folder\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage";
-            String uploadDir = "C:\\Users\\MY-PC\\OneDrive\\Máy tính\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage";
+             String uploadDir = "C:\\Users\\DELL\\Desktop\\New folder\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage";
+            //String uploadDir = "C:\\Users\\MY-PC\\OneDrive\\Máy tính\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage";
             File directory = new File(uploadDir);
             if (!directory.exists()) {
                 directory.mkdirs();
             }
-
             String fileName = customName + ".png";
-
             String filePath = uploadDir + File.separator + fileName;
 
             try (FileOutputStream fos = new FileOutputStream(filePath)) {
@@ -119,8 +117,8 @@ public class SliderController {
 
         try {
             if (file != null && !file.isEmpty()) {
-                // String uploadDir = "C:\\Users\\DELL\\Desktop\\New folder\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage";
-                String uploadDir = "C:\\Users\\MY-PC\\OneDrive\\Máy tính\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage";
+                 String uploadDir = "C:\\Users\\DELL\\Desktop\\New folder\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage";
+              //  String uploadDir = "C:\\Users\\MY-PC\\OneDrive\\Máy tính\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage";
 
                 String originalFilename = file.getOriginalFilename();
                 String fileName = originalFilename.substring(0, originalFilename.lastIndexOf('.')) + ".png";

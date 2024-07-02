@@ -120,7 +120,9 @@ function Search(props) {
       });
     }
   }, [searchTerm]);
-
+  const formatCurrency = (number) => {
+    return number.toLocaleString('vi-VN') + 'đ';
+  };
   return (
     <div className="page-content">
       <div className="container">
@@ -186,25 +188,7 @@ function Search(props) {
                       <h3 className="product-title">
                         <a href="product.html">{result.name}</a>
                       </h3>
-                      <div className="product-price">{result.price}đ</div>
-                      <div className="ratings-container">
-                        <div className="ratings">
-                          <div className="ratings-val" style={{ width: "0%" }} />
-                        </div>
-                        <span className="ratings-text">( 0 Reviews )</span>
-                      </div>
-                      <div className="product-nav product-nav-dots">
-                        <a href="#" style={{ background: "#cc9966" }}>
-                          <span className="sr-only">Color name</span>
-                        </a>
-                        <a
-                          href="#"
-                          className="active"
-                          style={{ background: "#ebebeb" }}
-                        >
-                          <span className="sr-only">Color name</span>
-                        </a>
-                      </div>
+                      <div className="product-price">{formatCurrency(result.price)}</div>
                     </div>
                   </div>
                 </div>

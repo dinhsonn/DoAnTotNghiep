@@ -40,8 +40,8 @@ public class ProductImageController {
     public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file,
             @RequestParam("customName") String customName) {
         try {
-            //String uploadDir = "C:\\Users\\DELL\\Desktop\\New folder\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage";
-            String uploadDir = "C:\\Users\\MY-PC\\OneDrive\\Máy tính\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage";
+            String uploadDir = "C:\\Users\\DELL\\Desktop\\New folder\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage";
+           // String uploadDir = "C:\\Users\\MY-PC\\OneDrive\\Máy tính\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage";
 
             File directory = new File(uploadDir);
             if (!directory.exists()) {
@@ -110,8 +110,8 @@ public class ProductImageController {
         try {
             if (file != null && !file.isEmpty()) {
                 // Nếu có file ảnh được cung cấp, thì cập nhật ảnh
-                 //String uploadDir = "C:\\Users\\DELL\\Desktop\\New folder\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage";
-                String uploadDir = "C:\\Users\\MY-PC\\OneDrive\\Máy tính\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage";
+                 String uploadDir = "C:\\Users\\DELL\\Desktop\\New folder\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage";
+               // String uploadDir = "C:\\Users\\MY-PC\\OneDrive\\Máy tính\\DoAnTotNghiep\\api (1)\\api\\src\\main\\resources\\static\\dataImage";
 
                 String originalFilename = file.getOriginalFilename();
                 String fileName = originalFilename.substring(0, originalFilename.lastIndexOf('.')) + ".png";

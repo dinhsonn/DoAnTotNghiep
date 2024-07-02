@@ -27,7 +27,7 @@ public class ProductSaleController {
 
     @GetMapping("{id}")
     public ResponseEntity<ProductSale> getProductSaleById(@PathVariable("id") Long productSaleId) {
-        ProductSale productSale = productSaleService.getProductSaleById(productSaleId);
+        ProductSale productSale = productSaleService.getProductSaleById(productSaleId); 
         if (productSale != null) {
             return new ResponseEntity<>(productSale, HttpStatus.OK);
         } else {

@@ -44,11 +44,6 @@ import OrderShow from '../pages/backend/Order/OrderEx';
  import PostCreate from '../pages/backend/Post/PostCreate';
  import PostEdit from '../pages/backend/Post/PostEdit';
  import PostTrash from '../pages/backend/Post/PostTrash';
- import Page from '../pages/backend/Page/index';
- import PageShow from '../pages/backend/Page/PageShow';
- import PageCreate from '../pages/backend/Page/PageCreate';
- import PageEdit from '../pages/backend/Page/PageEdit';
- import PageTrash from '../pages/backend/Page/PageTrash';
 import Slider from '../pages/backend/Slider/index';
 import SliderShow from '../pages/backend/Slider/SliderShow';
 import SliderCreate from '../pages/backend/Slider/SliderCreate';
@@ -173,12 +168,6 @@ const RouterPrivate = [
   { path: "/about/create", component: AboutCreate },
   { path: "/about/edit/:id", component: AboutEdit },
   { path: "/about/trash", component:  AboutTrash},
-
-  { path: "/page", component: Page },
-  { path: "/page/show/:id", component: PageShow },
-  { path: "/page/create", component: PageCreate },
-  { path: "/page/edit/:id", component: PageEdit },
-  { path: "/page/trash", component: PageTrash },
 
   { path: "/slider", component: Slider },
   { path: "/slider/show/:id", component: SliderShow },

@@ -103,12 +103,12 @@ function CartHeader() {
           <span className="cart-total-price">{formatCurrency(totalAmount)}</span>
         </div>
         <div className="dropdown-cart-action">
-          <a href={"cart"} className="btn btn-primary">
+          <Link to={"cart"} className="btn btn-primary">
             Giỏ hàng
-          </a>
-          <a href={"checkout"} className="btn btn-primary">
+          </Link>
+          <Link to={"checkout"} className="btn btn-primary">
             Thanh Toán
-          </a>
+          </Link>
         </div>
       </div>
     </div>

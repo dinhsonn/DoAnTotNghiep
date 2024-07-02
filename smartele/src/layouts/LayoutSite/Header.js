@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from 'axios'; // Thêm axios để gửi request tới backend
+import axios from 'axios';
 import Login from "./Login";
 import Menu from "./Menu";
 import CartHeader from "./CartHeader";
@@ -8,39 +8,41 @@ import './Header.css';
 
 function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [name, setName] = useState(""); // State cho tên người dùng
-  const [searchQuery, setSearchQuery] = useState(''); // State cho tìm kiếm
+  const [name, setName] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
 
   const navigate = useNavigate();
 
-  // Xử lý khi đăng nhập thành công
+  // Function to handle successful login
   const handleLoginSuccess = (user) => {
     setIsLoggedIn(true);
     setName(user.name);
     localStorage.setItem('loggedInUser', JSON.stringify(user));
   };
 
-  // Xử lý khi đăng xuất
   const handleLogout = () => {
+    const storedUser = JSON.parse(localStorage.getItem('loggedInUser'));
+    if (storedUser) {
+    }
+
     localStorage.removeItem('loggedInUser');
     setIsLoggedIn(false);
     setName("");
     window.location.href = '/';
   };
 
-  // Xử lý khi submit form tìm kiếm
+
   const handleSearchSubmit = async (event) => {
     event.preventDefault();
     console.log(`User searched for: ${searchQuery}`);
 
-    // Gửi thông tin tìm kiếm tới backend
+    // Log search query to backend
     try {
       await axios.post('http://localhost:8082/api/search-log', { query: searchQuery });
     } catch (error) {
       console.error('Error logging search query:', error);
     }
 
-    // Điều hướng tới trang kết quả tìm kiếm
     navigate(`/search?q=${searchQuery}`);
   };
 
@@ -92,18 +94,11 @@ function Header() {
                               <a href="/profile">Thông tin tài khoản</a>
                             </h4>
                             <h4 className="titleoptioncte">
-                            <a href="/order">
-                              Quản lý đơn hàng
-                            </a>
+                              <a href="/order">Quản lý đơn hàng</a>
                             </h4>
-
                             <h4 className="titleoptioncte">
-                            <a href="/changepassword" className="titleoptioncte">
-                              Đổi mật khẩu
-                            </a>
+                              <a href="/changepassword">Đổi mật khẩu</a>
                             </h4>
-
-
                             <button className="btn btn-primary">
                               <a href="#" onClick={handleLogout}>Đăng xuất</a>
                             </button>

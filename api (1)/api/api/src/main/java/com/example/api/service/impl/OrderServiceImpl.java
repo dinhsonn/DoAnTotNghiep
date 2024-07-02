@@ -33,7 +33,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void addItemToOrder(Long userId, Long productId, String name, String email,
-                                String phone, String address, int qty, double price,
+                                String phone, String address,String homeAddress, int qty, double price,
                                 String image, String paymentMethod) {
         User user = userService.findById(userId);
         if (user == null) {
@@ -47,6 +47,7 @@ public class OrderServiceImpl implements OrderService {
         newOrderItem.setEmail(email);
         newOrderItem.setPhone(phone);
         newOrderItem.setAddress(address);
+        newOrderItem.setHomeAddress(homeAddress);
         newOrderItem.setQty(qty);
         newOrderItem.setPrice(price);
         newOrderItem.setStatus(1);

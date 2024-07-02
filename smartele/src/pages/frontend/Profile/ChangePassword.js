@@ -175,7 +175,7 @@ const ChangePassword = () => {
                     <FontAwesomeIcon icon={showNewPassword ? faEyeSlash : faEye} />
                   </span>
                 </div>
-              </div>
+              </div>  
               <div className="col-sm-12">
                 <label>Xác nhận mật khẩu:</label>
                 <div className="input-group">

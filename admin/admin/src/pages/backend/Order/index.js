@@ -69,7 +69,6 @@ function Order() {
                 return "Trạng thái không xác định";
         }
     }
-
     const updateOrderStatus = (id, status) => {
         OrderService.updateOrderStatus(id, status)
             .then(response => {
@@ -168,7 +167,7 @@ function Order() {
                                 </td>
                                 <td>{order.phone}</td>
                                 <td>{order.email}</td>
-                                <td>{order.address}</td>
+                                <td>{order.homeAddress}, {order.address}</td>
                                 <td>{product.name}</td>
                                 <td>{new Date(order.createdAt).toLocaleDateString()}</td>
                                 <td>

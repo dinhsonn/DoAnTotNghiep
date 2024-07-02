@@ -133,29 +133,10 @@ function ProductItemSale(props) {
           </h3>
          
           <div className="product-price">
-          <del>{formatCurrency(props.product.productId.price)}đ</del>
+          <del>{formatCurrency(props.product.productId.price)}</del>
           </div>
           <div className="product-price">
-              Được giảm còn: {formatCurrency(props.product.salePrice)}đ
-          </div>
-
-          <div className="ratings-container">
-            <div className="ratings">
-              <div className="ratings-val" style={{ width: "0%" }} />
-            </div>
-            <span className="ratings-text">( 0 Reviews )</span>
-          </div>
-          <div className="product-nav product-nav-dots">
-            <a href="#" style={{ background: "#cc9966" }}>
-              <span className="sr-only">Color name</span>
-            </a>
-            <a
-              href="#"
-              className="active"
-              style={{ background: "#ebebeb" }}
-            >
-              <span className="sr-only">Color name</span>
-            </a>
+              Được giảm còn: {formatCurrency(props.product.salePrice)}
           </div>
         </div>
       </div>

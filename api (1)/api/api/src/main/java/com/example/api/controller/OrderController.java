@@ -27,13 +27,14 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @PostMapping("/add/{userId}/{productId}/{name}/{email}/{phone}/{address}/{qty}/{price}/{image}/{paymentMethod}")
+    @PostMapping("/add/{userId}/{productId}/{name}/{email}/{phone}/{address}/{homeAddress}/{qty}/{price}/{image}/{paymentMethod}")
     public void addItemOrder(@PathVariable Long userId, @PathVariable Long productId,
                              @PathVariable String name, @PathVariable String email,
                              @PathVariable String phone, @PathVariable String address,
+                             @PathVariable String homeAddress,
                              @PathVariable int qty, @PathVariable double price,
                              @PathVariable String image, @PathVariable String paymentMethod) {
-        orderService.addItemToOrder(userId, productId, name, email, phone, address, qty, price, image, paymentMethod);
+        orderService.addItemToOrder(userId, productId, name, email, phone, address,homeAddress, qty, price, image, paymentMethod);
     }
     @DeleteMapping("/{orderId}")
     public void deleteOrder(@PathVariable Long orderId) {

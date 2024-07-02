@@ -161,7 +161,7 @@ function OrderCheck() {
                                 </td>
                                 <td>{order.phone}</td>
                                 <td>{order.email}</td>
-                                <td>{order.address}</td>
+                                <td>{order.homeAddress}, {order.address}</td>
                                 <td>{product.name}</td>
                                 <td>{new Date(order.createdAt).toLocaleDateString()}</td>
                                 <td>

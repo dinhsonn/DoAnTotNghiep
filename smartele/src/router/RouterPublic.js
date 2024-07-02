@@ -26,7 +26,6 @@ import ChatComponent from "../pages/frontend/Profile/ChatComponent";
 
 const RouterPublic = [
 
-
     {path:'/',component:Home},
     {path:'/search',component:Search},
     {path:'/admin',component:AdminReports},

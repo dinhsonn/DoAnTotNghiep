@@ -31,6 +31,9 @@ public class Order {
 
     @Column(nullable = false)
     private String address;
+
+    @Column(nullable = false)
+    private String homeAddress;
     
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

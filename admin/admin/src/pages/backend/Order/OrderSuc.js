@@ -12,7 +12,7 @@ function OrderSuc() {
      setSearchTerm(event.target.value); 
    };
    const filteredOrder = orders
-   .filter(order => order.status === 5)
+   .filter(order => order.status === 4 )
    .filter(order =>
        order.name.toLowerCase().includes(searchTerm.toLowerCase())
    );
@@ -162,7 +162,7 @@ function OrderSuc() {
                                </td>
                                <td>{order.phone}</td>
                                <td>{order.email}</td>
-                               <td>{order.address}</td>
+                               <td>{order.homeAddress}, {order.address}</td>
                                <td>{product.name}</td>
                                <td>{new Date(order.createdAt).toLocaleDateString()}</td>
                                <td className="text-center">{order.id}</td>

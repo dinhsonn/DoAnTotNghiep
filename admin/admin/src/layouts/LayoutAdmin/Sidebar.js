@@ -23,17 +23,7 @@ function Sidebar() {
                               </li>
                               <li>
                                  <Link to={"/image"}>Hình ảnh sản phẩm</Link>
-                              </li>
-                              <li>
-                                 <Link to={"/productoption"}>Option sản phẩm</Link>
-                              </li>
-                              <li>
-                                 <Link to={"/productoptionvalue"}>Giá trị option sản phẩm</Link>
-                              </li>
-                              <li>
-                                 <Link to={"/product/import"}>Nhập hàng</Link>
-                              </li>
-                        
+                              </li>                        
                               <li>
                                  <Link to={"/sale"}>Khuyễn mãi</Link>
                               </li>
@@ -73,9 +63,7 @@ function Sidebar() {
                               <li>
                                  <Link to={"/topic"}>Chủ đề</Link>
                               </li>
-                              <li>
-                                 <Link to={"/page"}>Trang đơn</Link>
-                              </li>
+
                            </ul>
                         </li>
                         <li className="hdlitem item-sub">
@@ -122,9 +110,6 @@ function Sidebar() {
                            <ul className="submenu">
                               <li>
                                  <Link to={"/admin"}>Thành viên</Link>
-                              </li>
-                              <li>
-                                 <Link to={"/config"}>Cấu hình</Link>
                               </li>
                            </ul>
                         </li>

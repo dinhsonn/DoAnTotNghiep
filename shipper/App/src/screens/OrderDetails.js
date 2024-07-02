@@ -15,9 +15,9 @@ const OrderDetails = ({ route }) => {
                 return "Đã xác nhận";
             case 3:
                 return "Đang giao hàng";
-            case 5:
+            case 4:
                 return "Giao thành công";
-            case 6:
+            case 5:
                 return "Khách không nhận hàng";
             default:
                 return "Không xác định";
@@ -49,6 +49,19 @@ const OrderDetails = ({ route }) => {
             .catch((err) => console.error('An error occurred', err));
     };
 
+    const openAddressInGoogleMaps = (address) => {
+        const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+        Linking.canOpenURL(url)
+            .then((supported) => {
+                if (supported) {
+                    Linking.openURL(url);
+                } else {
+                    Alert.alert("Lỗi", "Không thể mở địa chỉ trong Google Maps");
+                }
+            })
+            .catch((err) => console.error('An error occurred', err));
+    };
+
     const confirmUpdateStatus = (id, status) => {
         let statusText = getStatusText(status);
         Alert.alert(
@@ -71,8 +84,8 @@ const OrderDetails = ({ route }) => {
     const statusSteps = [
         { status: 1, text: "Chờ xác nhận" },
         { status: 2, text: "Đã xác nhận" },
-        { status: 3, text: "Thành công" },
-        { status: 6, text: "Không nhận hàng" },
+        { status: 4, text: "Thành công" },
+        { status: 5, text: "Không nhận hàng" },
     ];
 
     return (
@@ -112,11 +125,13 @@ const OrderDetails = ({ route }) => {
                                         styles.statusCircle,
                                         {
                                             backgroundColor:
-                                                orderStatus >= step.status
-                                                    ? step.status === 5 && orderStatus === 5
-                                                        ? "#d9534f" // Màu đỏ cho trạng thái "Khách không nhận hàng"
+                                                orderStatus === step.status
+                                                    ? step.status === 5
+                                                        ? "#d9534f"
                                                         : "#5cb85c"
-                                                    : "#ddd",
+                                                    : orderStatus > step.status
+                                                        ? "#5cb85c"
+                                                        : "#ddd",
                                         },
                                     ]}
                                 />
@@ -126,7 +141,7 @@ const OrderDetails = ({ route }) => {
                                             styles.statusLine,
                                             {
                                                 backgroundColor:
-                                                    orderStatus >= step.status + 1
+                                                    orderStatus > step.status
                                                         ? "#5cb85c"
                                                         : "#ddd",
                                             },
@@ -138,135 +153,148 @@ const OrderDetails = ({ route }) => {
                                         styles.statusText,
                                         {
                                             color:
-                                                orderStatus >= step.status
-                                                    ? step.status === 5 && orderStatus === 5
-                                                        ? "#d9534f" // Màu đỏ cho trạng thái "Khách không nhận hàng"
+                                                orderStatus === step.status
+                                                    ? step.status === 5
+                                                        ? "#d9534f"
                                                         : "#5cb85c"
-                                                    : "#ddd",
+                                                    : orderStatus > step.status
+                                                        ? "#5cb85c"
+                                                        : "#ddd",
                                         },
                                     ]}
                                 >
-                            
                                     {step.text}
-                                    </Text>
-                                </View>
-                            ))}
-                        </View>
-                    </Card.Content>
-    
-                    <Divider />
-                    <Card.Actions>
-                        <Button
-                            style={[styles.button, styles.callButton]}
-                            mode="contained"
-                            onPress={() => makeCall(order.phone)}
-                        >
-                            Gọi điện cho khách
-                        </Button>
-                    </Card.Actions>
-                    <Card.Actions>
-                        <Button
-                            style={styles.button}
-                            mode="contained"
-                            onPress={() => confirmUpdateStatus(order.id, 4)}
-                        >
-                            Đánh dấu là đã giao
-                        </Button>
-                    </Card.Actions>
-                    <Card.Actions>
-                        <Button
-                            style={[styles.button, styles.cancelButton]}
-                            mode="contained"
-                            onPress={() => confirmUpdateStatus(order.id, 5)}
-                        >
-                            Khách không nhận hàng
-                        </Button>
-                    </Card.Actions>
-                </Card>
-            </View>
-        );
-    };
-    
-    const styles = StyleSheet.create({
-        container: {
-            flex: 1,
-            backgroundColor: '#fff',
-            padding: 10,
-        },
-        card: {
-            flexShrink: 1,
-            marginVertical: 10,
-            borderRadius: 8,
-            borderWidth: 1,
-            borderColor: '#ddd',
-        },
-        orderHeader: {
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginBottom: 10,
-        },
-        orderId: {
-            fontSize: 16,
-            fontWeight: 'bold',
-            color: '#d9534f',
-        },
-        infoContainer: {
-            flexDirection: 'row',
-            marginBottom: 5,
-            flexWrap: 'wrap',
-        },
-        infoLabel: {
-            fontWeight: 'bold',
-            color: '#333',
-            width: 120,
-        },
-        infoValue: {
-            color: '#555',
-            flexShrink: 1,
-        },
-        statusContainer: {
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginTop: 20,
-            flexWrap: 'wrap',
-        },
-        statusStep: {
-            flex: 1,
-            alignItems: 'center',
-        },
-        statusCircle: {
-            width: 24,
-            height: 24,
-            borderRadius: 12,
-            marginBottom: 5,
-        },
-        statusLine: {
-            position: 'absolute',
-            top: 12,
-            left: '50%',
-            height: 2,
-            width: '100%',
-            zIndex: -1,
-        },
-        statusText: {
-            fontSize: 12,
-            textAlign: 'center',
-        },
-        button: {
-            backgroundColor: '#5cb85c',
-            marginRight: 5,
-            flexShrink: 1,
-        },
-        cancelButton: {
-            backgroundColor: '#d9534f',
-            flexShrink: 1,
-        },
-        callButton: {
-            backgroundColor: '#428bca',
-            flexShrink: 1,
-        },
-    });
-    
-    export default OrderDetails;
-    
+                                </Text>
+                            </View>
+                        ))}
+                    </View>
+                </Card.Content>
+
+                <Divider />
+                <Card.Actions>
+                    <Button
+                        style={[styles.button, styles.callButton]}
+                        mode="contained"
+                        onPress={() => makeCall(order.phone)}
+                    >
+                        Gọi điện cho khách
+                    </Button>
+                </Card.Actions>
+                <Card.Actions>
+                    <Button
+                        style={[styles.button, styles.mapButton]}
+                        mode="contained"
+                        onPress={() => openAddressInGoogleMaps(order.address)}
+                    >
+                        Đến điểm giao
+                    </Button>
+                </Card.Actions>
+                <Card.Actions>
+                    <Button
+                        style={styles.button}
+                        mode="contained"
+                        onPress={() => confirmUpdateStatus(order.id, 4)}
+                    >
+                        Đánh dấu là đã giao
+                    </Button>
+                </Card.Actions>
+                <Card.Actions>
+                    <Button
+                        style={[styles.button, styles.cancelButton]}
+                        mode="contained"
+                        onPress={() => confirmUpdateStatus(order.id, 5)}
+                    >
+                        Khách không nhận hàng
+                    </Button>
+                </Card.Actions>
+            </Card>
+        </View>
+    );
+};
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        padding: 10,
+    },
+    card: {
+        flexShrink: 1,
+        marginVertical: 10,
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: '#ddd',
+    },
+    orderHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 10,
+    },
+    orderId: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#d9534f',
+    },
+    infoContainer: {
+        flexDirection: 'row',
+        marginBottom: 5,
+        flexWrap: 'wrap',
+    },
+    infoLabel: {
+        fontWeight: 'bold',
+        color: '#333',
+        width: 120,
+    },
+    infoValue: {
+        color: '#555',
+        flexShrink: 1,
+    },
+    statusContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginTop: 20,
+        flexWrap: 'wrap',
+    },
+    statusStep: {
+        flex: 1,
+        alignItems: 'center',
+    },
+    statusCircle: {
+        width: 24,
+        height: 24,
+        borderRadius: 12,
+        marginBottom: 5,
+    },
+    statusLine: {
+        position: 'absolute',
+        top: 12,
+        left: '50%',
+        height: 2,
+        width: '100%',
+        zIndex: -1,
+    },
+    statusText: {
+        fontSize: 12,
+        textAlign: 'center',
+    },
+    button: {
+        backgroundColor: '#5cb85c',
+        marginRight: 5,
+        flexShrink: 1,
+    },
+    cancelButton: {
+        backgroundColor: '#d9534f',
+        flexShrink: 1,
+    },
+    callButton: {
+        backgroundColor: '#428bca',
+        flexShrink: 1,
+    },
+    mapButton: {
+        backgroundColor: '#00aaff',
+        flexShrink: 1,
+    },
+});
+
+export default OrderDetails;

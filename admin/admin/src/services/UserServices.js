@@ -22,6 +22,9 @@ function remove(id) {
 const getOrdersByUserId = (userId) => {
     return httpAxios.get(`/users/${userId}/orders`);
   };
+  const getUserActivityStatus = (userId) => {
+    return httpAxios.get(`/user-activity/active-status/${userId}`);
+  };
 const UserService = {
     getAll: getAll,
     create: create,
@@ -29,6 +32,7 @@ const UserService = {
     update: update,
     remove: remove,
     getOrdersByUserId:getOrdersByUserId,
+    getUserActivityStatus
 };
 
 export default UserService;
